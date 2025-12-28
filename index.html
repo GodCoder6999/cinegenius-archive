@@ -1,211 +1,285 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineGenius | The Archive</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Permanent+Marker&family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-paper: #140028; --bg-panel: #220044; --ink: #ffffff; --ink-muted: #d1c4e9;
-            --border: #4a148c; --accent: #ff00cc; --accent-secondary: #00e5ff;
-            --card-bg: rgba(255, 255, 255, 0.07); --shadow-card: 0 15px 35px rgba(255, 0, 204, 0.4);
-            --graffiti-opacity: 0.15; --graffiti-color: #ffffff; --grain-opacity: 0.04; --imdb-yellow: #ffd700;
-            --font-head: 'Montserrat', sans-serif; --font-body: 'Poppins', sans-serif; --font-graffiti: 'Permanent Marker', cursive;
-        }
-        [data-theme="light"] {
-            --bg-paper: #fffbea; --bg-panel: #f0faff; --ink: #1a1a2e; --ink-muted: #5c5c8a;
-            --border: #afeeee; --accent: #00bcd4; --accent-secondary: #ff4081; --card-bg: #ffffff;
-            --shadow-card: 8px 8px 0px rgba(0, 188, 212, 0.3); --graffiti-opacity: 0.08; --graffiti-color: #000000;
-        }
-        * { box-sizing: border-box; }
-        body { background-color: var(--bg-paper); color: var(--ink); font-family: var(--font-body); margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        .masthead { height: 80px; border-bottom: 2px solid var(--border); display: flex; justify-content: space-between; align-items: center; padding: 0 60px; background: var(--bg-paper); z-index: 50; }
-        .logo { font-family: var(--font-head); font-weight: 900; font-size: 28px; text-transform: uppercase; }
-        .logo span { color: var(--accent); font-style: italic; }
-        .mode-toggle { display: flex; gap: 30px; background: var(--bg-panel); padding: 10px 20px; border-radius: 30px; border: 2px solid var(--border); }
-        .mode-btn { background: transparent; border: none; color: var(--ink-muted); font-weight: 700; cursor: pointer; padding: 8px 16px; border-radius: 20px; }
-        .mode-btn.active { background: var(--accent); color: #fff; }
-        .theme-switch { background: var(--bg-panel); border: 2px solid var(--accent); color: var(--accent); width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 22px; }
-        .editorial-layout { display: flex; flex: 1; overflow: hidden; position: relative; }
-        .research-sidebar { width: 400px; background: var(--bg-panel); padding: 35px; overflow-y: auto; border-right: 2px solid var(--border); }
-        .canvas { flex: 1; padding: 60px 80px; overflow-y: auto; }
-        .exhibit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 60px 40px; }
-        .exhibit-card { cursor: pointer; background: var(--card-bg); padding: 15px; border-radius: 16px; border: 2px solid var(--border); transition: 0.3s; }
-        .exhibit-card:hover { transform: translateY(-10px); border-color: var(--accent); }
-        .poster-frame { width: 100%; aspect-ratio: 2/3; border-radius: 10px; overflow: hidden; margin-bottom: 10px; }
-        .poster-frame img { width: 100%; height: 100%; object-fit: cover; }
-        .ai-score { color: #fff; background: var(--accent); padding: 4px 8px; border-radius: 10px; font-size: 10px; font-weight: 900; margin-top: 10px; text-transform: uppercase; }
-        .btn-archive, .btn-load-more { width: 100%; padding: 16px; background: linear-gradient(45deg, var(--accent), var(--accent-secondary)); color: #fff; border: none; font-weight: 900; cursor: pointer; text-transform: uppercase; border-radius: 8px; margin-top: 20px; }
-        .btn-load-more { width: auto; min-width: 250px; display: block; margin: 40px auto; border-radius: 30px; }
-        .snowflake { position: fixed; top: -20px; color: #fff; user-select: none; pointer-events: none; z-index: 9999; animation: fall linear forwards; }
-        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
-    </style>
-</head>
-<body data-theme="dark">
-    <header class="masthead">
-        <div class="logo">CineGenius <span>ARCHIVE</span></div>
-        <div class="mode-toggle">
-            <button class="mode-btn active" onclick="switchMode('filter')" id="btn-browse">Browse</button>
-            <button class="mode-btn" onclick="switchMode('search')" id="btn-search">Curate</button>
-            <button class="mode-btn" onclick="switchMode('knowledge')" id="btn-know">Intel</button>
-        </div>
-        <div style="display:flex; align-items:center;">
-            <button class="theme-switch" onclick="toggleTheme()">☀</button>
-            <button id="btn-snow" class="theme-switch" onclick="toggleSnow()" style="display:none; margin-left:15px;">❄</button>
-        </div>
-    </header>
-
-    <div class="editorial-layout">
-        <aside class="research-sidebar">
-            <div id="input-filter">
-                <textarea id="browse-mood" placeholder="How are you feeling?"></textarea>
-                <button class="btn-archive" onclick="runMoodSearch()">Vibe Check</button>
-                <div style="display:flex; margin: 20px 0; gap: 10px; background:var(--bg-paper); padding:5px; border-radius:30px;">
-                    <button id="b-btn-movie" class="mode-btn active" style="flex:1" onclick="setBrowseType('movie')">Movie</button>
-                    <button id="b-btn-tv" class="mode-btn" style="flex:1" onclick="setBrowseType('tv')">Series</button>
-                </div>
-                <div id="genre-container" style="display:flex; flex-wrap:wrap; gap:5px;"></div>
-                <button class="btn-archive" onclick="resetAndRunBrowse()">Apply Filters</button>
-            </div>
-            <div id="input-search" style="display:none;">
-                <input type="text" id="ref-search" placeholder="Reference Title (e.g. Inception)">
-                <textarea id="ai-context" placeholder="What specific vibes are you looking for?"></textarea>
-                <button class="btn-archive" onclick="resetAndRunCurate()">Generate AI Selection</button>
-            </div>
-        </aside>
-
-        <main class="canvas">
-            <h1 id="main-title">The Collection</h1>
-            <div id="grid-container" class="exhibit-grid"></div>
-            <button id="btn-load-more" class="btn-load-more" style="display:none;" onclick="loadMore()">Load More</button>
-        </main>
-    </div>
-
 <script>
-    const TMDB_KEY = "09ca3ca71692ba80b848d268502d24ed"; 
-    const BASE_URL = 'https://api.themoviedb.org/3';
-    const IMG_URL = 'https://image.tmdb.org/t/p/w500';
-    const API_SEARCH = "https://cinegenius-archive.vercel.app/api/smart-search";
+/* ================= CONFIG ================= */
+const TMDB_KEY = "09ca3ca71692ba80b848d268502d24ed"; 
+const BASE_URL = "https://api.themoviedb.org/3";
+const IMG_URL  = "https://image.tmdb.org/t/p/w500";
 
-    let currentMode = 'filter', browseType = 'movie', curateType = 'movie', currentPage = 1;
-    let isFetching = false, snowInterval, curatedTitles = [];
+const API_SEARCH = "https://cinegenius-archive.vercel.app/api/smart-search";
+const API_INTEL  = "https://cinegenius-archive.vercel.app/api/intel-brief";
 
-    window.onload = () => {
-        const g = [{id:28,n:"Action"}, {id:878,n:"Sci-Fi"}, {id:27,n:"Horror"}, {id:35,n:"Comedy"}];
-        g.forEach(x => { 
-            let d = document.createElement('div'); d.className='genre-pill'; d.innerText=x.n; d.dataset.id = x.id;
-            d.style = "cursor:pointer; padding:5px 10px; border:1px solid var(--border); border-radius:15px; font-size:12px;";
-            d.onclick=()=>{ d.style.background = d.style.background ? '' : 'var(--accent)'; d.classList.toggle('selected'); };
-            document.getElementById('genre-container').appendChild(d); 
+/* ================= STATE ================= */
+let currentMode  = "filter";
+let browseType   = "movie";
+let curateType   = "movie";
+let currentPage  = 1;
+let isFetching   = false;
+let curatedTitles = []; // 🔑 TRACK AI-USED TITLES
+let snowInterval;
+
+/* ================= INIT ================= */
+window.onload = () => {
+    const genres = [
+        {id:28,n:"Action"}, {id:878,n:"Sci-Fi"}, {id:27,n:"Horror"},
+        {id:35,n:"Comedy"}, {id:18,n:"Drama"}, {id:12,n:"Adventure"}
+    ];
+    const container = document.getElementById("genre-container");
+
+    genres.forEach(g => {
+        const d = document.createElement("div");
+        d.className = "genre-pill";
+        d.innerText = g.n;
+        d.dataset.id = g.id;
+        d.onclick = () => d.classList.toggle("selected");
+        container.appendChild(d);
+    });
+
+    checkSnowDate();
+    resetAndRunBrowse();
+};
+
+/* ================= THEME ================= */
+function toggleTheme() {
+    const body = document.body;
+    const current = body.getAttribute("data-theme");
+    body.setAttribute("data-theme", current === "dark" ? "light" : "dark");
+    document.getElementById("theme-icon").innerHTML = current === "dark" ? "☾" : "☀";
+}
+
+/* ================= SNOW ================= */
+function checkSnowDate() {
+    const d = new Date();
+    if (d.getMonth() === 11 || (d.getMonth() === 0 && d.getDate() <= 2)) {
+        document.getElementById("btn-snow").style.display = "flex";
+    }
+}
+
+function toggleSnow() {
+    const btn = document.getElementById("btn-snow");
+    if (btn.classList.contains("active")) {
+        btn.classList.remove("active");
+        clearInterval(snowInterval);
+        document.querySelectorAll(".snowflake").forEach(s => s.remove());
+    } else {
+        btn.classList.add("active");
+        snowInterval = setInterval(createSnowflake, 150);
+    }
+}
+
+function createSnowflake() {
+    const s = document.createElement("div");
+    s.className = "snowflake";
+    s.innerText = "❄";
+    s.style.left = Math.random() * 100 + "vw";
+    const dur = Math.random() * 3 + 2;
+    s.style.animationDuration = dur + "s";
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), dur * 1000);
+}
+
+/* ================= MODES ================= */
+function switchMode(mode) {
+    currentMode = mode;
+
+    ["btn-browse","btn-search","btn-know"].forEach(id =>
+        document.getElementById(id).classList.remove("active")
+    );
+
+    document.getElementById(
+        `btn-${mode === "filter" ? "browse" : mode === "search" ? "search" : "know"}`
+    ).classList.add("active");
+
+    ["filter","search","dossier"].forEach(m =>
+        document.getElementById(`input-${m}`).style.display =
+            (mode === (m === "dossier" ? "knowledge" : m)) ? "block" : "none"
+    );
+
+    if (mode === "filter") resetAndRunBrowse();
+}
+
+/* ================= BROWSE ================= */
+function setBrowseType(t) {
+    browseType = t;
+    ["b-btn-movie","b-btn-tv"].forEach(id =>
+        document.getElementById(id).classList.remove("active")
+    );
+    document.getElementById(t === "movie" ? "b-btn-movie" : "b-btn-tv")
+        .classList.add("active");
+    resetAndRunBrowse();
+}
+
+function resetAndRunBrowse() {
+    currentPage = 1;
+    document.getElementById("grid-container").innerHTML = "";
+    runBrowseSearch();
+}
+
+async function runBrowseSearch() {
+    if (isFetching) return;
+    isFetching = true;
+
+    try {
+        const genres = [...document.querySelectorAll(".genre-pill.selected")]
+            .map(g => g.dataset.id)
+            .join(",");
+
+        const res = await fetch(
+            `${BASE_URL}/discover/${browseType}?api_key=${TMDB_KEY}&page=${currentPage}` +
+            (genres ? `&with_genres=${genres}` : "")
+        );
+
+        const data = await res.json();
+        renderGrid(data.results || []);
+        document.getElementById("btn-load-more").style.display =
+            data.page < data.total_pages ? "block" : "none";
+    } finally {
+        isFetching = false;
+    }
+}
+
+/* ================= AI CURATE ================= */
+function setCurateType(t) {
+    curateType = t;
+    ["c-btn-movie","c-btn-tv"].forEach(id =>
+        document.getElementById(id).classList.remove("active")
+    );
+    document.getElementById(t === "movie" ? "c-btn-movie" : "c-btn-tv")
+        .classList.add("active");
+}
+
+function resetAndRunCurate() {
+    runCurateSearch(false);
+}
+
+async function runCurateSearch(isLoadMore = false) {
+    if (isFetching) return;
+    isFetching = true;
+
+    const grid = document.getElementById("grid-container");
+    const loadMoreBtn = document.getElementById("btn-load-more");
+
+    if (!isLoadMore) {
+        grid.innerHTML = `
+            <div style="grid-column:1/-1;text-align:center;padding:50px;
+            font-weight:900;color:var(--accent);">
+            AI CURATOR IS THINKING…
+            </div>`;
+        curatedTitles = [];
+    } else {
+        loadMoreBtn.innerHTML = "AI IS FINDING MORE…";
+    }
+
+    try {
+        const res = await fetch(API_SEARCH, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                refTitle: document.getElementById("ref-search").value,
+                userPrompt: document.getElementById("ai-context").value,
+                type: curateType,
+                exclude: curatedTitles
+            })
         });
-        checkSnowDate(); resetAndRunBrowse();
-    };
 
-    function toggleTheme() {
-        const body = document.body;
-        const current = body.getAttribute('data-theme');
-        body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
-    }
+        const aiData = await res.json();
 
-    function checkSnowDate() {
-        const d = new Date();
-        if (d.getMonth() === 11 || (d.getMonth() === 0 && d.getDate() <= 2)) document.getElementById('btn-snow').style.display = 'flex';
-    }
-
-    function toggleSnow() {
-        const btn = document.getElementById('btn-snow');
-        if (btn.classList.contains('active')) {
-            btn.classList.remove('active'); clearInterval(snowInterval); document.querySelectorAll('.snowflake').forEach(el => el.remove());
-        } else {
-            btn.classList.add('active'); snowInterval = setInterval(createSnowflake, 150);
-        }
-    }
-
-    function createSnowflake() {
-        const s = document.createElement('div'); s.className = 'snowflake'; s.innerText = '❄';
-        s.style.left = Math.random() * 100 + 'vw';
-        const dur = Math.random() * 3 + 2; s.style.animationDuration = dur + 's';
-        document.body.appendChild(s); setTimeout(() => s.remove(), dur * 1000);
-    }
-
-    function switchMode(mode) {
-        currentMode = mode;
-        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(`btn-${mode === 'filter' ? 'browse' : mode === 'search' ? 'search' : 'know'}`).classList.add('active');
-        document.getElementById('input-filter').style.display = mode === 'filter' ? 'block' : 'none';
-        document.getElementById('input-search').style.display = mode === 'search' ? 'block' : 'none';
-        if(mode === 'filter') resetAndRunBrowse();
-    }
-
-    function setBrowseType(t) { 
-        browseType = t; curateType = t;
-        document.getElementById('b-btn-movie').classList.toggle('active', t === 'movie');
-        document.getElementById('b-btn-tv').classList.toggle('active', t === 'tv');
-        resetAndRunBrowse(); 
-    }
-
-    function resetAndRunBrowse() { currentPage = 1; document.getElementById('grid-container').innerHTML = ''; runBrowseSearch(); }
-
-    async function runBrowseSearch() {
-        if (isFetching) return; isFetching = true;
-        try {
-            const genres = Array.from(document.querySelectorAll('.genre-pill.selected')).map(el => el.dataset.id).join(',');
-            const res = await fetch(`${BASE_URL}/discover/${browseType}?api_key=${TMDB_KEY}&page=${currentPage}${genres ? '&with_genres='+genres : ''}`);
-            const data = await res.json();
-            renderGrid(data.results || []);
-            document.getElementById('btn-load-more').style.display = data.page < data.total_pages ? 'block' : 'none';
-        } finally { isFetching = false; }
-    }
-
-    async function runCurateSearch(isLoadMore = false) {
-        if (isFetching) return; isFetching = true;
-        const grid = document.getElementById('grid-container');
-        const loadMoreBtn = document.getElementById('btn-load-more');
-        
-        if (!isLoadMore) { grid.innerHTML = 'AI IS THINKING...'; curatedTitles = []; }
-        else { loadMoreBtn.innerHTML = "AI IS FINDING MORE..."; }
-
-        try {
-            const res = await fetch(API_SEARCH, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ refTitle: document.getElementById('ref-search').value, userPrompt: document.getElementById('ai-context').value, type: curateType, exclude: curatedTitles })
-            });
-            const aiData = await res.json();
-            const promises = aiData.map(async (item) => {
-                const s = await fetch(`${BASE_URL}/search/${curateType}?api_key=${TMDB_KEY}&query=${encodeURIComponent(item.title)}`);
+        const results = (await Promise.all(
+            aiData.map(async item => {
+                const s = await fetch(
+                    `${BASE_URL}/search/${curateType}?api_key=${TMDB_KEY}&query=${encodeURIComponent(item.title)}`
+                );
                 const d = await s.json();
-                if(d.results?.[0]) { 
-                    d.results[0].match_score = item.score; 
-                    curatedTitles.push(item.title); 
-                    return d.results[0]; 
+                if (d.results?.[0]) {
+                    d.results[0].match_score = item.score;
+                    curatedTitles.push(item.title);
+                    return d.results[0];
                 }
-            });
-            if (!isLoadMore) grid.innerHTML = '';
-            renderGrid((await Promise.all(promises)).filter(x=>x), true);
-            loadMoreBtn.style.display = 'block';
-            loadMoreBtn.innerHTML = "Load More AI Curated Titles";
-        } catch (e) { grid.innerHTML = 'Error.'; } finally { isFetching = false; }
+            })
+        )).filter(Boolean);
+
+        if (!isLoadMore) grid.innerHTML = "";
+        renderGrid(results, true);
+
+        loadMoreBtn.style.display = "block";
+        loadMoreBtn.innerHTML = "Load More Curated Titles";
+    } catch (e) {
+        console.error(e);
+    } finally {
+        isFetching = false;
     }
+}
 
-    function resetAndRunCurate() { currentPage = 1; runCurateSearch(); }
-
-    function loadMore() {
+/* ================= LOAD MORE ================= */
+function loadMore() {
+    if (currentMode === "filter") {
         currentPage++;
-        if (currentMode === 'filter') runBrowseSearch();
-        else if (currentMode === 'search') runCurateSearch(true);
+        runBrowseSearch();
+    } else if (currentMode === "search") {
+        runCurateSearch(true);
     }
+}
 
-    function renderGrid(list, isAi=false) {
-        const grid = document.getElementById('grid-container');
-        list.forEach(m => {
-            if(!m.poster_path) return;
-            const card = document.createElement('div'); card.className = 'exhibit-card';
-            card.innerHTML = `<div class="poster-frame"><img src="${IMG_URL + m.poster_path}"></div><div class="film-title">${m.title || m.name}</div>${isAi ? `<div class="ai-score">MATCH: ${m.match_score}%</div>` : ''}`;
-            grid.appendChild(card);
+/* ================= GRID ================= */
+function renderGrid(list, isAi = false) {
+    const grid = document.getElementById("grid-container");
+
+    list.forEach(m => {
+        if (!m.poster_path) return;
+
+        const card = document.createElement("div");
+        card.className = "exhibit-card";
+        card.onclick = () => {
+            switchMode("knowledge");
+            document.getElementById("know-search").value = m.title || m.name;
+            runKnowledgeSearch();
+        };
+
+        card.innerHTML = `
+            <div class="poster-frame">
+                <img src="${IMG_URL + m.poster_path}">
+            </div>
+            <div style="font-weight:700;font-size:14px;">
+                ${m.title || m.name}
+            </div>
+            ${isAi ? `<div style="color:var(--accent);font-size:10px;font-weight:900;">
+                MATCH: ${m.match_score}%
+            </div>` : ""}
+        `;
+
+        grid.appendChild(card);
+    });
+}
+
+/* ================= INTEL ================= */
+async function runKnowledgeSearch() {
+    const grid = document.getElementById("grid-container");
+    grid.innerHTML = "Searching…";
+
+    try {
+        const sRes = await fetch(
+            `${BASE_URL}/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(document.getElementById("know-search").value)}`
+        );
+        const sData = await sRes.json();
+        const basic = sData.results[0];
+
+        const aiRes = await fetch(API_INTEL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                title: basic.title || basic.name,
+                type: basic.media_type
+            })
         });
+
+        const intel = await aiRes.json();
+
+        grid.innerHTML = `
+            <div style="grid-column:1/-1;">
+                <h2>${basic.title || basic.name}</h2>
+                <p>${intel.tagline_ai}</p>
+                <p>${intel.cultural_impact}</p>
+            </div>`;
+    } catch {
+        grid.innerHTML = "Error loading intel.";
     }
+}
 </script>
-</body>
-</html>
