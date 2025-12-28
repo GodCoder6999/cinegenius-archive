@@ -390,7 +390,11 @@
     const API_SEARCH = "https://cinegenius-archive.vercel.app/api/smart-search";
     const API_INTEL = "https://cinegenius-archive.vercel.app/api/intel-brief";
 
-    let currentMode = 'filter', browseType = 'movie', curateType = 'movie', currentPage = 1, isFetching = false, curatedTitles = [], snowInterval;
+    let currentMode = 'filter'; 
+    let browseType = 'movie'; 
+    let curateType = 'movie'; 
+    let currentPage = 1;
+    let isFetching = false;
     
     function toggleTheme() {
         const body = document.body;
@@ -621,31 +625,24 @@
         runCurateSearch();
     }
 
-    async function runCurateSearch(isLoadMore = false) {
-    if (isFetching) return; isFetching = true;
-    const grid = document.getElementById('grid-container'); const btn = document.getElementById('btn-load-more');
-    if (!isLoadMore) { grid.innerHTML = 'Thinking...'; curatedTitles = []; } else { btn.innerHTML = "FINDING MORE..."; }
-    try {
-        const res = await fetch(API_SEARCH, {
-            method: 'POST', headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ 
-                refTitle: document.getElementById('ref-search').value, 
-                userPrompt: document.getElementById('ai-context').value, 
-                type: curateType, 
-                exclude: curatedTitles // Sends list to backend to avoid repeats
-            })
-        });
-        const aiData = await res.json();
-        const promises = aiData.map(async (item) => {
-            const s = await fetch(`${BASE_URL}/search/${curateType}?api_key=${TMDB_KEY}&query=${encodeURIComponent(item.title)}`);
-            const d = await s.json();
-            if(d.results?.[0]) { d.results[0].match_score = item.score; curatedTitles.push(item.title); return d.results[0]; }
-        });
-        if (!isLoadMore) grid.innerHTML = '';
-        renderGrid((await Promise.all(promises)).filter(x=>x), true);
-        btn.style.display = 'block'; btn.innerHTML = "Load More AI Curated Titles";
-    } finally { isFetching = false; }
-}
+    async function runCurateSearch() {
+        if (isFetching) return;
+        isFetching = true;
+        const grid = document.getElementById('grid-container');
+        const loadMoreBtn = document.getElementById('btn-load-more');
+        loadMoreBtn.style.display = 'none';
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;font-weight:900;color:var(--accent);">AI CURATOR IS THINKING...</div>';
+        
+        try {
+            const ref = document.getElementById('ref-search').value;
+            const prompt = document.getElementById('ai-context').value;
+            if(!ref) { isFetching = false; return; }
+
+            const res = await fetch(API_SEARCH, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ refTitle: ref, userPrompt: prompt, type: curateType })
+            });
 
             if (!res.ok) throw new Error("Server Error");
             const aiData = await res.json();
@@ -670,12 +667,11 @@
     }
 
     function loadMore() {
-    if (currentMode === 'filter') {
-        currentPage++; runBrowseSearch();
-    } else {
-        runCurateSearch(true); // Triggers the updated AI search instead of DB search
+        currentPage++;
+        if(currentMode === 'filter') {
+            runBrowseSearch();
+        }
     }
-}
 
     // --- RENDER GRID ---
     function renderGrid(list, isAi=false) {
