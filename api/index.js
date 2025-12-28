@@ -4,6 +4,7 @@ const cors = require('cors');
 const axios = require('axios');
 
 const app = express();
+// Vercel manages the port automatically, but we keep this for local testing
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
@@ -25,19 +26,16 @@ function cleanJSON(text) {
     }
 }
 
-// 1. UPDATED CURATE / MOOD ENDPOINT
+// 1. CURATE / MOOD ENDPOINT
 app.post('/api/smart-search', async (req, res) => {
     try {
-        const { refTitle, userPrompt, type, exclude = [] } = req.body; 
-        // Tell the AI exactly what to ignore
-        const excludeString = exclude.length > 0 ? `\n\nDO NOT recommend these titles: ${exclude.join(', ')}.` : '';
-
+        const { refTitle, userPrompt, type } = req.body;
         const payload = {
             model: "llama-3.3-70b-versatile",
             messages: [
                 {
                     role: "system",
-                    content: `You are a film curator. Recommend 12 ${type === 'tv' ? 'Series' : 'Movies'}. STRICT JSON format. Array: [ { "title": "Name", "reason": "Why", "score": 90 } ].${excludeString}`
+                    content: `You are a film curator. Recommend 12 ${type === 'tv' ? 'Series' : 'Movies'}. STRICT JSON format. Array: [ { "title": "Name", "reason": "Why", "score": 90 } ].`
                 },
                 { role: "user", content: `Ref: "${refTitle}". Note: "${userPrompt}".` }
             ],
@@ -53,6 +51,7 @@ app.post('/api/smart-search', async (req, res) => {
     }
 });
 
+// 2. INTEL ENDPOINT
 app.post('/api/intel-brief', async (req, res) => {
     try {
         const { title, type } = req.body;
@@ -77,10 +76,12 @@ app.post('/api/intel-brief', async (req, res) => {
     }
 });
 
+// IMPORTANT: Only run app.listen locally. Vercel ignores this and uses the export.
 if (process.env.NODE_ENV !== 'production') {
     app.listen(PORT, () => {
         console.log(`🚀 Smart Server running locally at http://localhost:${PORT}`);
     });
 }
 
+// CRITICAL FOR VERCEL: Export the app object
 module.exports = app;
