@@ -25,12 +25,12 @@ function cleanJSON(text) {
     }
 }
 
-// 1. CURATE / MOOD ENDPOINT (Updated with Exclude logic)
+// 1. UPDATED CURATE / MOOD ENDPOINT
 app.post('/api/smart-search', async (req, res) => {
     try {
-        const { refTitle, userPrompt, type, exclude = [] } = req.body;
-        // Tell the AI specifically what to ignore so results are fresh
-        const excludeString = exclude.length > 0 ? `\n\nIMPORTANT: DO NOT recommend these titles: ${exclude.join(', ')}.` : '';
+        const { refTitle, userPrompt, type, exclude = [] } = req.body; 
+        // Tell the AI exactly what to ignore
+        const excludeString = exclude.length > 0 ? `\n\nDO NOT recommend these titles: ${exclude.join(', ')}.` : '';
 
         const payload = {
             model: "llama-3.3-70b-versatile",
@@ -53,7 +53,6 @@ app.post('/api/smart-search', async (req, res) => {
     }
 });
 
-// 2. INTEL ENDPOINT
 app.post('/api/intel-brief', async (req, res) => {
     try {
         const { title, type } = req.body;
