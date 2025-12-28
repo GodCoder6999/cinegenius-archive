@@ -227,6 +227,22 @@
         ::-webkit-scrollbar-track { background: var(--bg-paper); }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; border: 3px solid var(--bg-paper); }
         ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        /* --- SNOW EFFECT --- */
+        .snowflake {
+            position: fixed;
+            top: -20px;
+            color: #fff;
+            user-select: none;
+            pointer-events: none;
+            z-index: 9999;
+            text-shadow: 0 0 5px #00ffff;
+            animation-name: fall;
+            animation-timing-function: linear;
+        }
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
     </style>
 </head>
 <body data-theme="dark">
@@ -256,7 +272,10 @@
             <button class="mode-btn" onclick="switchMode('search')" id="btn-search">Curate</button>
             <button class="mode-btn" onclick="switchMode('knowledge')" id="btn-know">Intel</button>
         </div>
-        <button class="theme-switch" onclick="toggleTheme()" title="Switch Fun Mode">☀</button>
+        <div style="display:flex; align-items:center;">
+            <button class="theme-switch" onclick="toggleTheme()" title="Switch Fun Mode">☀</button>
+            <button id="btn-snow" class="theme-switch" onclick="toggleSnow()" title="Let it Snow!" style="display:none; margin-left:15px; background:var(--bg-panel); color:#fff;">❄</button>
+        </div>
     </header>
 
     <div class="editorial-layout">
@@ -402,8 +421,63 @@
             let d = document.createElement('div'); d.className='genre-pill'; d.innerText=x.n; d.dataset.id = x.id;
             d.onclick=()=>{d.classList.toggle('selected');}; c.appendChild(d); 
         });
+        
+        // Check for Season Logic on Load
+        checkSnowDate();
+        
         resetAndRunBrowse();
     };
+
+    // --- SNOW LOGIC ---
+    let snowInterval;
+
+    function checkSnowDate() {
+        const d = new Date();
+        // Month is 0-indexed (11 = Dec, 0 = Jan)
+        // Logic: Is it Month 11? OR Is it Month 0 AND Day <= 2?
+        const isSeason = (d.getMonth() === 11) || (d.getMonth() === 0 && d.getDate() <= 2);
+        
+        if (isSeason) {
+            document.getElementById('btn-snow').style.display = 'flex';
+        }
+    }
+
+    function toggleSnow() {
+        const btn = document.getElementById('btn-snow');
+        
+        if (btn.classList.contains('active')) {
+            // STOP SNOW
+            btn.classList.remove('active');
+            btn.style.background = 'var(--bg-panel)';
+            clearInterval(snowInterval);
+            document.querySelectorAll('.snowflake').forEach(el => el.remove());
+        } else {
+            // START SNOW
+            btn.classList.add('active');
+            btn.style.background = 'var(--accent)';
+            snowInterval = setInterval(createSnowflake, 150); // New flake every 150ms
+        }
+    }
+
+    function createSnowflake() {
+        const snow = document.createElement('div');
+        snow.classList.add('snowflake');
+        snow.innerText = '❄';
+        
+        // Randomize appearance
+        snow.style.left = Math.random() * 100 + 'vw';
+        snow.style.opacity = Math.random() * 0.7 + 0.3;
+        snow.style.fontSize = Math.random() * 20 + 10 + 'px';
+        
+        // Randomize speed (2s to 5s fall time)
+        const duration = Math.random() * 3 + 2;
+        snow.style.animationDuration = duration + 's';
+        
+        document.body.appendChild(snow);
+        
+        // Cleanup after animation
+        setTimeout(() => { snow.remove(); }, duration * 1000);
+    }
 
     function switchMode(mode) {
         currentMode = mode;
