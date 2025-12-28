@@ -8,37 +8,34 @@
     <style>
         /* --- VIBRANT THEME VARIABLES --- */
         :root {
-            /* == NEON NIGHTS (Dark Theme Default) == */
-            --bg-paper: #140028; /* Deep Grape bg */
-            --bg-panel: #220044; /* Richer purple panel */
+            --bg-paper: #140028;
+            --bg-panel: #220044;
             --ink: #ffffff;
-            --ink-muted: #d1c4e9; /* Light lavender */
-            --border: #4a148c; /* Vibrant purple border */
-            --accent: #ff00cc; /* HOT PINK! */
-            --accent-secondary: #00e5ff; /* NEON CYAN! */
+            --ink-muted: #d1c4e9;
+            --border: #4a148c;
+            --accent: #ff00cc;
+            --accent-secondary: #00e5ff;
             --card-bg: rgba(255, 255, 255, 0.07);
-            --shadow-card: 0 15px 35px rgba(255, 0, 204, 0.4); /* Pink glow shadow */
+            --shadow-card: 0 15px 35px rgba(255, 0, 204, 0.4);
             --graffiti-opacity: 0.15;
             --graffiti-color: #ffffff;
             --grain-opacity: 0.04;
             --imdb-yellow: #ffd700;
-
             --font-head: 'Montserrat', sans-serif;
             --font-body: 'Poppins', sans-serif;
             --font-graffiti: 'Permanent Marker', cursive;
         }
 
-        /* == TECHNICOLOR DAYDREAM (Light Theme Overrides) == */
         [data-theme="light"] {
-            --bg-paper: #fffbea; /* Creamy yellow bg */
-            --bg-panel: #f0faff; /* Light mint/sky panel */
-            --ink: #1a1a2e; /* Deep dark blue text */
+            --bg-paper: #fffbea;
+            --bg-panel: #f0faff;
+            --ink: #1a1a2e;
             --ink-muted: #5c5c8a;
-            --border: #afeeee; /* Pale turquoise border */
-            --accent: #00bcd4; /* BRIGHT TEAL! */
-            --accent-secondary: #ff4081; /* POP CORAL! */
+            --border: #afeeee;
+            --accent: #00bcd4;
+            --accent-secondary: #ff4081;
             --card-bg: #ffffff;
-            --shadow-card: 8px 8px 0px rgba(0, 188, 212, 0.3); /* Fun hard shadow */
+            --shadow-card: 8px 8px 0px rgba(0, 188, 212, 0.3);
             --graffiti-opacity: 0.08;
             --graffiti-color: #000000;
             --grain-opacity: 0.02;
@@ -58,7 +55,6 @@
             background-image: radial-gradient(circle at 10% 20%, var(--bg-panel) 0%, transparent 20%), radial-gradient(circle at 90% 80%, var(--bg-panel) 0%, transparent 20%);
         }
 
-        /* --- FUN BACKGROUND GRAPHICS --- */
         .film-grain {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 1;
@@ -88,7 +84,6 @@
         @keyframes grainMove { 0% { transform: translate(0,0) } 100% { transform: translate(-5%, -5%) } }
         @keyframes drift { 0% { transform: rotate(-10deg) translate(0,0); } 50% { transform: rotate(-8deg) translate(-2%, 2%); } 100% { transform: rotate(-10deg) translate(0,0); } }
 
-        /* --- HEADER --- */
         .masthead { 
             height: 80px; border-bottom: 2px solid var(--border); 
             display: flex; justify-content: space-between; align-items: center; 
@@ -111,7 +106,6 @@
         }
         .theme-switch:hover { transform: rotate(180deg) scale(1.1); background: var(--accent); color: #fff; }
 
-        /* --- SIDEBAR --- */
         .editorial-layout { display: flex; flex: 1; overflow: hidden; position: relative; z-index: 10; }
         .research-sidebar { 
             width: 400px; background: var(--bg-panel); padding: 35px; 
@@ -120,7 +114,6 @@
         }
         .sidebar-title { font-family: var(--font-head); font-weight: 900; font-size: 14px; letter-spacing: 1px; color: var(--accent-secondary); border-bottom: 2px dashed var(--border); padding-bottom: 15px; margin-bottom: 25px; text-align: center; text-transform: uppercase; }
         
-        /* FUN ACCORDION */
         details { margin-bottom: 20px; border: 2px solid var(--border); border-radius: 12px; background: var(--bg-paper); transition: 0.3s; overflow: hidden; }
         details:hover { border-color: var(--accent); transform: scale(1.01); }
         details[open] { border-color: var(--accent); box-shadow: 3px 3px 0px var(--accent-secondary); }
@@ -129,7 +122,6 @@
         details[open] summary:after { transform: rotate(180deg); content: "▲"; }
         .accordion-content { padding: 20px; }
 
-        /* INPUTS & CONTROLS */
         input, select, textarea { width: 100%; background: var(--bg-paper); color: var(--ink); border: 2px solid var(--border); padding: 14px; font-family: var(--font-body); font-weight: 600; font-size: 14px; border-radius: 8px; transition: 0.3s; margin-bottom: 15px; }
         input:focus, select:focus, textarea:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 15px var(--accent); transform: scale(1.02); }
         
@@ -137,15 +129,13 @@
         .toggle-opt { flex: 1; background: transparent; border: none; padding: 12px; color: var(--ink-muted); font-family: var(--font-head); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: 0.3s; }
         .toggle-opt.active { background: var(--accent); color: #fff; }
 
-        .genre-grid { gap: 10px; }
-        .genre-pill { font-family: var(--font-head); font-weight: 700; font-size: 11px; padding: 8px 12px; border-radius: 20px; border: 2px solid var(--border); cursor: pointer; transition: 0.3s; background: var(--bg-paper); color: var(--ink-muted); text-align: center; text-transform: uppercase; }
+        .genre-pill { font-family: var(--font-head); font-weight: 700; font-size: 11px; padding: 8px 12px; border-radius: 20px; border: 2px solid var(--border); cursor: pointer; transition: 0.3s; background: var(--bg-paper); color: var(--ink-muted); text-align: center; text-transform: uppercase; margin-bottom: 5px; }
         .genre-pill:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-3px) rotate(-2deg); }
         .genre-pill.selected { background: linear-gradient(135deg, var(--accent), var(--accent-secondary)); color: #fff; border-color: transparent; box-shadow: 3px 3px 10px rgba(0,0,0,0.3); transform: translateY(-3px) scale(1.05); }
 
         .btn-archive, .btn-decrypt { width: 100%; padding: 16px; background: linear-gradient(45deg, var(--accent), var(--accent-secondary)); color: #fff; border: none; font-family: var(--font-head); font-weight: 900; font-size: 14px; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; margin-top: 20px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-radius: 8px; box-shadow: 5px 5px 0px rgba(0,0,0,0.2); }
         .btn-archive:hover, .btn-decrypt:hover { transform: translateY(-4px) scale(1.02); box-shadow: 8px 8px 0px rgba(0,0,0,0.3); filter: brightness(1.1); }
 
-        /* --- VIBE CHECK (MOOD) BOX --- */
         .mood-box {
             background: rgba(255, 0, 204, 0.05);
             border: 2px dashed var(--accent);
@@ -168,13 +158,11 @@
             text-shadow: 2px 2px 0px var(--border);
         }
 
-        /* --- MAIN CONTENT --- */
         .canvas { flex: 1; padding: 60px 80px; overflow-y: auto; background: transparent; position: relative; }
         .section-header { font-family: var(--font-head); font-weight: 900; font-size: 60px; margin-bottom: 10px; color: var(--ink); text-transform: uppercase; letter-spacing: -2px; 
             background: linear-gradient(to right, var(--accent), var(--accent-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: fadeInUp 0.8s ease; }
         .section-sub { font-family: var(--font-head); font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; color: var(--ink-muted); margin-bottom: 60px; border-left: 5px solid var(--accent-secondary); padding-left: 20px; animation: fadeInUp 1s ease; }
         
-        /* FUN CARDS */
         .exhibit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 60px 40px; }
         .exhibit-card { 
             cursor: pointer; display: flex; flex-direction: column; 
@@ -186,7 +174,6 @@
         }
         .exhibit-card:nth-child(odd) { transform: rotate(-1deg); }
         .exhibit-card:nth-child(even) { transform: rotate(1deg); }
-
         .exhibit-card:hover { 
             transform: translateY(-15px) scale(1.05) rotate(0deg); 
             border-color: var(--accent);
@@ -206,23 +193,18 @@
         @keyframes popIn { from { opacity: 0; transform: scale(0.8) translateY(30px); } to { opacity: 1; transform: scale(1) translateY(0); } }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* INTEL STYLES */
-        #dossier-content { max-width: 1000px; margin: 0 auto; padding-top: 40px; animation: fadeInUp 0.8s ease; }
-        .dossier-header-title { font-family: var(--font-head); font-weight: 900; font-size: 56px; line-height: 1; color: var(--ink); text-shadow: 3px 3px 0px var(--accent-secondary); }
         .intel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; background: var(--bg-panel); padding: 30px; border: 3px solid var(--border); border-radius: 20px; margin-top: 40px; box-shadow: 8px 8px 0px rgba(0,0,0,0.1); }
         .intel-item div:first-child { font-family: var(--font-head); font-weight: 700; font-size: 11px; color: var(--ink-muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
         .intel-item div:last-child { font-size: 16px; color: var(--accent); font-weight: 700; }
 
         .spoiler-container { position: relative; cursor: pointer; border: 3px dashed var(--accent); padding: 20px; border-radius: 16px; transition: 0.3s; background: var(--bg-paper); overflow: hidden; }
-        .spoiler-container:hover { background: var(--bg-panel); transform: scale(1.02); }
         .spoiler-text { filter: blur(15px); transition: filter 0.8s ease, opacity 0.5s; user-select: none; opacity: 0.7; color: var(--ink); font-weight: 600; }
         .spoiler-text.revealed { filter: blur(0); user-select: text; opacity: 1; }
         .spoiler-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; background: rgba(0,0,0,0.1); }
         
-        .btn-load-more { padding: 15px 50px; background: var(--bg-panel); color: var(--ink); border: 3px solid var(--accent); font-family: var(--font-head); font-weight: 900; font-size: 12px; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; transition: 0.3s; border-radius: 30px; box-shadow: 5px 5px 0px var(--accent-secondary); }
+        .btn-load-more { padding: 15px 50px; background: var(--bg-panel); color: var(--ink); border: 3px solid var(--accent); font-family: var(--font-head); font-weight: 900; font-size: 12px; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; transition: 0.3s; border-radius: 30px; box-shadow: 5px 5px 0px var(--accent-secondary); display: block; margin: 40px auto; }
         .btn-load-more:hover { background: var(--accent); color: #fff; transform: translateY(-3px) scale(1.05); box-shadow: 8px 8px 0px var(--accent-secondary); }
 
-        /* Scrollbar */
         ::-webkit-scrollbar { width: 12px; }
         ::-webkit-scrollbar-track { background: var(--bg-paper); }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; border: 3px solid var(--bg-paper); }
@@ -284,11 +266,10 @@
             <div id="sidebar-controls">
                 
                 <div id="input-filter">
-                    
                     <div class="mood-box">
                         <span class="mood-label">✨ VIBE CHECK</span>
-                        <textarea id="browse-mood" class="ai-input" placeholder="How are you feeling? (e.g. I need something cozy...)" style="height:80px; margin-bottom:10px; font-size:12px;"></textarea>
-                        <button class="btn-archive" onclick="runMoodSearch()" style="margin-top:0; font-size:10px; padding:10px;">Find My Vibe with Filters</button>
+                        <textarea id="browse-mood" class="ai-input" placeholder="How are you feeling?" style="height:80px; margin-bottom:10px; font-size:12px;"></textarea>
+                        <button class="btn-archive" onclick="runMoodSearch()" style="margin-top:0; font-size:10px; padding:10px;">Find My Vibe</button>
                     </div>
 
                     <details open>
@@ -306,39 +287,16 @@
                             <select id="sort-select">
                                 <option value="popularity.desc">Most Popular</option>
                                 <option value="vote_average.desc">Highest Rated</option>
-                                <option value="primary_release_date.desc">Newest First</option>
-                                <option value="revenue.desc">Box Office Hit</option>
                             </select>
-                        </div>
-                    </details>
-                    <details>
-                        <summary>Release Date</summary>
-                        <div class="accordion-content">
-                            <span class="range-label">Year Range</span>
-                            <div class="range-group">
-                                <input type="number" id="year-start" placeholder="1980" min="1900" max="2025">
-                                <span style="color:var(--ink-muted); font-weight:bold;">-</span>
-                                <input type="number" id="year-end" placeholder="2025" min="1900" max="2025">
-                            </div>
-                        </div>
-                    </details>
-                    <details>
-                        <summary>User Rating (0-10)</summary>
-                        <div class="accordion-content">
-                            <div class="range-group">
-                                <input type="number" id="rate-min" placeholder="0" min="0" max="10" step="0.1">
-                                <span style="color:var(--ink-muted); font-weight:bold;">to</span>
-                                <input type="number" id="rate-max" placeholder="10" min="0" max="10" step="0.1">
-                            </div>
                         </div>
                     </details>
                     <details open>
                         <summary>Genres</summary>
                         <div class="accordion-content">
-                            <div class="genre-grid" id="genre-container"></div>
+                            <div class="genre-grid" id="genre-container" style="display: flex; flex-wrap: wrap; gap: 5px;"></div>
                         </div>
                     </details>
-                    <button class="btn-archive" onclick="resetAndRunBrowse()">Apply Filters Only (No AI)</button>
+                    <button class="btn-archive" onclick="resetAndRunBrowse()">Apply Filters</button>
                 </div>
 
                 <div id="input-search" style="display:none;">
@@ -349,36 +307,33 @@
                             <button class="toggle-opt" id="c-btn-tv" onclick="setCurateType('tv')">Series</button>
                         </div>
                     </div>
-                    <div class="control-group"><span class="control-label" style="font-weight:700; color:var(--accent);">Reference Work</span><input type="text" id="ref-search" placeholder="e.g. Inception"></div>
-                    <div class="control-group"><span class="control-label" style="font-weight:700; color:var(--accent);">Curatorial Notes</span><textarea id="ai-context" class="ai-input" placeholder="Give me a fun vibe..."></textarea></div>
+                    <div class="control-group">
+                        <span class="control-label" style="font-weight:700; color:var(--accent);">Reference Work</span>
+                        <input type="text" id="ref-search" placeholder="e.g. Inception">
+                    </div>
+                    <div class="control-group">
+                        <span class="control-label" style="font-weight:700; color:var(--accent);">Notes</span>
+                        <textarea id="ai-context" class="ai-input" placeholder="Fun vibes..."></textarea>
+                    </div>
                     <button class="btn-archive" onclick="resetAndRunCurate()">Generate Selection</button>
                 </div>
 
                 <div id="input-dossier" style="display:none;">
-                    <div class="control-group"><span class="control-label" style="font-weight:700; color:var(--accent);">Subject Title</span><input type="text" id="know-search" placeholder="Enter full title..."></div>
-                    <button class="btn-archive" onclick="runKnowledgeSearch()">Access File</button>
+                    <input type="text" id="know-search" placeholder="Enter title...">
+                    <button class="btn-archive" onclick="runKnowledgeSearch()">Access Intel</button>
                 </div>
             </div>
         </aside>
 
         <div class="canvas" id="main-canvas">
             <div id="view-collection">
-                <div id="header-dynamic">
-                    <h1 class="section-header">The Collection</h1>
-                    <div class="section-sub" id="main-subtitle">Current Exhibition: Advanced Filter</div>
-                </div>
-                
+                <h1 class="section-header">The Collection</h1>
+                <div class="section-sub" id="main-subtitle">Current Exhibition: Filter</div>
                 <div id="grid-container" class="exhibit-grid"></div>
-                
-                <div class="load-more-container">
-                    <button id="btn-load-more" class="btn-load-more" onclick="loadMore()" style="display:none;">Load More Titles</button>
-                </div>
+                <button id="btn-load-more" class="btn-load-more" onclick="loadMore()" style="display:none;">Load More</button>
             </div>
-
             <div id="view-dossier" style="display:none;">
-                <div id="dossier-content" style="text-align:center; padding-top:100px; color:var(--ink-muted); font-weight:700; font-size:20px;">
-                    Use the sidebar to grab a file!
-                </div>
+                <div id="dossier-content" style="text-align:center; padding-top:100px;">Use the sidebar.</div>
             </div>
         </div>
     </div>
@@ -395,67 +350,46 @@
     let curateType = 'movie'; 
     let currentPage = 1;
     let isFetching = false;
-    
+    let snowInterval;
+
     function toggleTheme() {
         const body = document.body;
-        const btn = document.querySelector('.theme-switch');
         const current = body.getAttribute('data-theme');
-        
-        if (current === 'dark') {
-            body.setAttribute('data-theme', 'light');
-            btn.innerHTML = '☾'; 
-        } else {
-            body.setAttribute('data-theme', 'dark');
-            btn.innerHTML = '☀'; 
-        }
+        body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+        document.querySelector('.theme-switch').innerHTML = current === 'dark' ? '☾' : '☀';
     }
 
     window.onload = () => {
         const g = [
             {id:28,n:"Action"}, {id:878,n:"Sci-Fi"}, {id:27,n:"Horror"}, {id:35,n:"Comedy"},
-            {id:18,n:"Drama"}, {id:53,n:"Thriller"}, {id:12,n:"Adventure"}, {id:9648,n:"Mystery"},
-            {id:10749,n:"Romance"}, {id:14,n:"Fantasy"}, {id:80,n:"Crime"}, {id:16,n:"Animation"}
+            {id:18,n:"Drama"}, {id:53,n:"Thriller"}, {id:12,n:"Adventure"}
         ];
         const c = document.getElementById('genre-container');
-        if(c) g.forEach(x => { 
+        g.forEach(x => { 
             let d = document.createElement('div'); d.className='genre-pill'; d.innerText=x.n; d.dataset.id = x.id;
             d.onclick=()=>{d.classList.toggle('selected');}; c.appendChild(d); 
         });
-        
-        // Check for Season Logic on Load
         checkSnowDate();
-        
         resetAndRunBrowse();
     };
 
-    // --- SNOW LOGIC ---
-    let snowInterval;
-
     function checkSnowDate() {
         const d = new Date();
-        // Month is 0-indexed (11 = Dec, 0 = Jan)
-        // Logic: Is it Month 11? OR Is it Month 0 AND Day <= 2?
         const isSeason = (d.getMonth() === 11) || (d.getMonth() === 0 && d.getDate() <= 2);
-        
-        if (isSeason) {
-            document.getElementById('btn-snow').style.display = 'flex';
-        }
+        if (isSeason) document.getElementById('btn-snow').style.display = 'flex';
     }
 
     function toggleSnow() {
         const btn = document.getElementById('btn-snow');
-        
         if (btn.classList.contains('active')) {
-            // STOP SNOW
             btn.classList.remove('active');
             btn.style.background = 'var(--bg-panel)';
             clearInterval(snowInterval);
             document.querySelectorAll('.snowflake').forEach(el => el.remove());
         } else {
-            // START SNOW
             btn.classList.add('active');
             btn.style.background = 'var(--accent)';
-            snowInterval = setInterval(createSnowflake, 150); // New flake every 150ms
+            snowInterval = setInterval(createSnowflake, 150);
         }
     }
 
@@ -463,111 +397,50 @@
         const snow = document.createElement('div');
         snow.classList.add('snowflake');
         snow.innerText = '❄';
-        
-        // Randomize appearance
         snow.style.left = Math.random() * 100 + 'vw';
         snow.style.opacity = Math.random() * 0.7 + 0.3;
         snow.style.fontSize = Math.random() * 20 + 10 + 'px';
-        
-        // Randomize speed (2s to 5s fall time)
-        const duration = Math.random() * 3 + 2;
-        snow.style.animationDuration = duration + 's';
-        
+        const dur = Math.random() * 3 + 2;
+        snow.style.animationDuration = dur + 's';
         document.body.appendChild(snow);
-        
-        // Cleanup after animation
-        setTimeout(() => { snow.remove(); }, duration * 1000);
+        setTimeout(() => { snow.remove(); }, dur * 1000);
     }
 
     function switchMode(mode) {
         currentMode = mode;
         document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-        if(mode==='filter') document.getElementById('btn-browse').classList.add('active');
-        if(mode==='search') document.getElementById('btn-search').classList.add('active');
-        if(mode==='knowledge') document.getElementById('btn-know').classList.add('active');
-
+        document.getElementById(`btn-${mode === 'filter' ? 'browse' : mode === 'search' ? 'search' : 'know'}`).classList.add('active');
         document.getElementById('input-filter').style.display = mode === 'filter' ? 'block' : 'none';
         document.getElementById('input-search').style.display = mode === 'search' ? 'block' : 'none';
         document.getElementById('input-dossier').style.display = mode === 'knowledge' ? 'block' : 'none';
-        
         document.getElementById('view-collection').style.display = mode !== 'knowledge' ? 'block' : 'none';
         document.getElementById('view-dossier').style.display = mode === 'knowledge' ? 'block' : 'none';
-        document.getElementById('btn-load-more').style.display = 'none';
-
-        if(mode === 'filter') {
-            document.getElementById('main-subtitle').innerText = "Current Exhibition: Advanced Filter";
-            resetAndRunBrowse();
-        } else if (mode === 'search') {
-            document.getElementById('main-subtitle').innerText = "Current Exhibition: AI Analysis";
-            document.getElementById('grid-container').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--ink-muted);font-weight:700;">Ready for Curation. Select Format & Reference.</div>';
-        }
+        if(mode === 'filter') resetAndRunBrowse();
     }
 
-    // --- NEW: SMART VIBE CHECK (MOOD + FILTERS) ---
     async function runMoodSearch() {
         const mood = document.getElementById('browse-mood').value;
-        if(!mood) { alert("Please type a mood first!"); return; }
-
-        // 1. Gather Filter Data
-        const genrePills = document.querySelectorAll('.genre-pill.selected');
-        const genreNames = Array.from(genrePills).map(p => p.innerText).join(", ");
-        
-        const yearStart = document.getElementById('year-start').value;
-        const yearEnd = document.getElementById('year-end').value;
-        
-        const rateMin = document.getElementById('rate-min').value;
-        const rateMax = document.getElementById('rate-max').value;
-        
-        // 2. Build the "Prompt Payload" for the AI
-        let filterContext = `\n\nCRITICAL CONSTRAINTS (You MUST follow these):`;
-        let hasFilters = false;
-
-        if (genreNames) { filterContext += `\n- Genre MUST be one of: ${genreNames}`; hasFilters = true; }
-        if (yearStart || yearEnd) { filterContext += `\n- Release Year MUST be between: ${yearStart||'Any'} and ${yearEnd||'Any'}`; hasFilters = true; }
-        if (rateMin || rateMax) { filterContext += `\n- Rating MUST be between: ${rateMin||0} and ${rateMax||10}`; hasFilters = true; }
-        
-        const fullPrompt = hasFilters ? `${mood} ${filterContext}` : mood;
-
-        // 3. UI Updates
+        if(!mood) return;
         const grid = document.getElementById('grid-container');
-        const loadMoreBtn = document.getElementById('btn-load-more');
-        loadMoreBtn.style.display = 'none';
-        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;font-weight:900;color:var(--accent);">AI IS FILTERING...</div>';
-        document.getElementById('main-subtitle').innerText = "Vibe: " + mood;
-
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;">AI THINKING...</div>';
         try {
             const res = await fetch(API_SEARCH, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                // Sending "General Recommendation" as refTitle tells the AI it's a mood search
-                body: JSON.stringify({ refTitle: "General Recommendation", userPrompt: fullPrompt, type: browseType })
+                body: JSON.stringify({ refTitle: "General Recommendation", userPrompt: mood, type: browseType })
             });
-
-            if (!res.ok) throw new Error("AI Server Error");
             const aiData = await res.json();
-
-            // Fetch metadata
             const promises = aiData.map(async (item) => {
                 const s = await fetch(`${BASE_URL}/search/${browseType}?api_key=${TMDB_KEY}&query=${encodeURIComponent(item.title)}`);
                 const d = await s.json();
-                if(d.results?.[0]) {
-                    d.results[0].ai_reason = item.reason;
-                    d.results[0].match_score = item.score;
-                    return d.results[0];
-                }
+                if(d.results?.[0]) { d.results[0].match_score = item.score; return d.results[0]; }
             });
-            
             const final = (await Promise.all(promises)).filter(x=>x);
             grid.innerHTML = '';
             renderGrid(final, true);
-
-        } catch (e) {
-            console.error(e);
-            grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--accent-secondary);font-weight:bold;">Vibe Check Failed. Server Error.</div>`;
-        }
+        } catch (e) { grid.innerHTML = 'Error.'; }
     }
 
-    // --- 1. BROWSE LOGIC (Standard API) ---
     function resetAndRunBrowse() {
         currentPage = 1;
         document.getElementById('grid-container').innerHTML = '';
@@ -577,52 +450,16 @@
     async function runBrowseSearch() {
         if (isFetching) return;
         isFetching = true;
-        const grid = document.getElementById('grid-container');
-        const loadMoreBtn = document.getElementById('btn-load-more');
-        loadMoreBtn.innerHTML = "Loading Fun Stuff...";
-        
-        if (currentPage === 1) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;font-weight:900;color:var(--accent);">ACCESSING DATABASE...</div>';
-        
         try {
             const sort = document.getElementById('sort-select').value;
-            const yearStart = document.getElementById('year-start').value;
-            const yearEnd = document.getElementById('year-end').value;
-            const rateMin = document.getElementById('rate-min').value;
-            const selectedGenres = Array.from(document.querySelectorAll('.genre-pill.selected')).map(el => el.dataset.id).join(',');
-
+            const genres = Array.from(document.querySelectorAll('.genre-pill.selected')).map(el => el.dataset.id).join(',');
             let url = `${BASE_URL}/discover/${browseType}?api_key=${TMDB_KEY}&sort_by=${sort}&page=${currentPage}`;
-            if(selectedGenres) url += `&with_genres=${selectedGenres}`;
-            if(rateMin) url += `&vote_average.gte=${rateMin}`;
-            
-            if(browseType === 'movie') {
-                if(yearStart) url += `&primary_release_date.gte=${yearStart}-01-01`;
-                if(yearEnd) url += `&primary_release_date.lte=${yearEnd}-12-31`;
-            } else {
-                if(yearStart) url += `&first_air_date.gte=${yearStart}-01-01`;
-                if(yearEnd) url += `&first_air_date.lte=${yearEnd}-12-31`;
-            }
-
+            if(genres) url += `&with_genres=${genres}`;
             const res = await fetch(url);
             const data = await res.json();
-            
-            if (currentPage === 1) grid.innerHTML = ''; 
             renderGrid(data.results || []);
-            
-            loadMoreBtn.innerHTML = "Load More Titles";
-            if (data.page < data.total_pages) {
-                loadMoreBtn.style.display = 'inline-block';
-            } else {
-                loadMoreBtn.style.display = 'none';
-            }
-
-        } catch (e) { console.error(e); } finally { isFetching = false; }
-    }
-
-    // --- 2. CURATE LOGIC ---
-    function resetAndRunCurate() {
-        currentPage = 1;
-        document.getElementById('grid-container').innerHTML = '';
-        runCurateSearch();
+            document.getElementById('btn-load-more').style.display = data.page < data.total_pages ? 'block' : 'none';
+        } finally { isFetching = false; }
     }
 
     async function runCurateSearch() {
@@ -631,175 +468,84 @@
         const grid = document.getElementById('grid-container');
         const loadMoreBtn = document.getElementById('btn-load-more');
         loadMoreBtn.style.display = 'none';
-        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;font-weight:900;color:var(--accent);">AI CURATOR IS THINKING...</div>';
-        
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;">AI CURATING...</div>';
         try {
             const ref = document.getElementById('ref-search').value;
             const prompt = document.getElementById('ai-context').value;
-            if(!ref) { isFetching = false; return; }
-
             const res = await fetch(API_SEARCH, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ refTitle: ref, userPrompt: prompt, type: curateType })
             });
-
-            if (!res.ok) throw new Error("Server Error");
             const aiData = await res.json();
-
             const promises = aiData.map(async (item) => {
                 const s = await fetch(`${BASE_URL}/search/${curateType}?api_key=${TMDB_KEY}&query=${encodeURIComponent(item.title)}`);
                 const d = await s.json();
-                if(d.results?.[0]) {
-                    d.results[0].ai_reason = item.reason;
-                    d.results[0].match_score = item.score;
-                    return d.results[0];
-                }
+                if(d.results?.[0]) { d.results[0].match_score = item.score; return d.results[0]; }
             });
             const final = (await Promise.all(promises)).filter(x=>x);
             grid.innerHTML = '';
             renderGrid(final, true);
+            loadMoreBtn.style.display = 'block';
+            loadMoreBtn.innerHTML = "Explore More Similar Titles";
+        } catch (e) { grid.innerHTML = 'Error.'; } finally { isFetching = false; }
+    }
 
-        } catch (e) { 
-            console.error(e); 
-            grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--accent-secondary);font-weight:bold;">Connection Failed. Check Server.</div>`; 
-        } finally { isFetching = false; }
+    function resetAndRunCurate() {
+        currentPage = 1;
+        runCurateSearch();
     }
 
     function loadMore() {
         currentPage++;
-        if(currentMode === 'filter') {
-            runBrowseSearch();
-        }
+        runBrowseSearch();
     }
 
-    // --- RENDER GRID ---
     function renderGrid(list, isAi=false) {
         const grid = document.getElementById('grid-container');
-        if(list.length === 0 && currentPage === 1) {
-            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;font-weight:700;color:var(--ink-muted);">No records found. Adjust filters!</div>';
-            return;
-        }
-
-        list.forEach((m, index) => {
+        list.forEach((m, idx) => {
             if(!m.poster_path) return;
-            const title = m.title || m.name;
-            const date = m.release_date || m.first_air_date;
-            const year = date ? date.split('-')[0] : 'N/A';
-            const rating = m.vote_average ? m.vote_average.toFixed(1) : 'NR';
-            
             const card = document.createElement('div'); card.className = 'exhibit-card';
-            card.style.animationDelay = `${index * 0.1}s`;
-            
-            const aiScoreHtml = isAi ? `<div class="ai-score">MATCH: ${m.match_score}%</div>` : '';
-            
-            card.onclick = () => { 
-                switchMode('knowledge');
-                document.getElementById('know-search').value = title;
-                runKnowledgeSearch();
-            };
-
+            card.style.animationDelay = `${idx * 0.1}s`;
+            card.onclick = () => { switchMode('knowledge'); document.getElementById('know-search').value = m.title || m.name; runKnowledgeSearch(); };
             card.innerHTML = `
-                <div class="poster-frame"><img src="${IMG_URL + m.poster_path}" loading="lazy"></div>
-                <div class="film-title" title="${title}">${title}</div>
-                <div class="film-meta-row">
-                    <span>${year}</span>
-                    <span class="meta-rating"><span class="star-icon">★</span> ${rating}</span>
-                </div>
-                ${aiScoreHtml}
+                <div class="poster-frame"><img src="${IMG_URL + m.poster_path}"></div>
+                <div class="film-title">${m.title || m.name}</div>
+                <div class="film-meta-row"><span>${(m.release_date || m.first_air_date || '').split('-')[0]}</span><span>★ ${m.vote_average.toFixed(1)}</span></div>
+                ${isAi ? `<div class="ai-score">MATCH: ${m.match_score}%</div>` : ''}
             `;
             grid.appendChild(card);
         });
     }
 
-    // --- 3. INTEL LOGIC ---
     async function runKnowledgeSearch() {
         const query = document.getElementById('know-search').value;
         const container = document.getElementById('dossier-content');
-        if(!query) return;
-
-        container.innerHTML = `<div style="text-align:center; padding:100px; color:var(--accent); font-weight:900; font-size:24px;">DECRYPTING ARCHIVES...</div>`;
-
+        container.innerHTML = "DECRYPTING...";
         try {
             const sRes = await fetch(`${BASE_URL}/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(query)}`);
             const sData = await sRes.json();
-            
-            if(!sData.results?.length) { container.innerHTML = "Record not found."; return; }
             const basic = sData.results[0];
-            const type = basic.media_type === 'tv' ? 'tv' : 'movie';
-            const title = basic.title || basic.name;
-
             const aiRes = await fetch(API_INTEL, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ title: title, type: type })
+                body: JSON.stringify({ title: basic.title || basic.name, type: basic.media_type })
             });
-
-            let aiIntel = aiRes.ok ? await aiRes.json() : { tagline_ai: "Analysis unavailable.", plot_twist: "Classified", cultural_impact: "Unknown", budget_est: "N/A", revenue_est: "N/A", status_verdict: "Unverified" };
-
-            window.revealSpoiler = function(el) {
-                const container = el.closest('.spoiler-container');
-                const text = container.querySelector('.spoiler-text');
-                const overlay = container.querySelector('.spoiler-overlay');
-                text.classList.add('revealed');
-                overlay.style.display = 'none';
-            }
-
+            const intel = await aiRes.json();
             container.innerHTML = `
-                <div style="display:flex; gap:50px; align-items:flex-start;">
-                    <img src="${IMG_URL + basic.poster_path}" style="width:320px; border-radius:16px; border:3px solid var(--border); box-shadow:var(--shadow-card); transform:rotate(-2deg);">
-                    <div style="flex:1;">
-                        <h1 class="dossier-header-title">${title}</h1>
-                        <div style="color:var(--accent); font-weight:700; font-size:13px; letter-spacing:1px; margin:10px 0 30px; text-transform:uppercase;">
-                            ${(basic.release_date||basic.first_air_date||'').split('-')[0]} • ${type.toUpperCase()} • <span class="star-icon">★</span> ${basic.vote_average.toFixed(1)}/10
-                        </div>
-                        <div style="font-size:22px; color:var(--ink); font-weight:900; font-style:italic; margin-bottom:30px; border-left: 5px solid var(--accent-secondary); padding-left:20px; line-height:1.2;">"${aiIntel.tagline_ai}"</div>
-                        
-                        <div style="margin-bottom:40px;">
-                            <h3 style="font-size:13px; color:var(--ink-muted); letter-spacing:2px; font-weight:900;">CULTURAL IMPACT</h3>
-                            <p style="font-size:15px; color:var(--ink); line-height:1.7; font-weight:500;">${aiIntel.cultural_impact}</p>
-                        </div>
-                        
-                        <div style="margin-bottom:40px;">
-                            <h3 style="font-size:13px; color:var(--accent-secondary); letter-spacing:2px; font-weight:900;">KEY PLOT TWIST (SPOILER)</h3>
-                            <div class="spoiler-container" onclick="revealSpoiler(this)">
-                                <div class="spoiler-overlay"><button class="btn-decrypt">Tap to Reveal</button></div>
-                                <p class="spoiler-text" style="font-size:16px; line-height:1.7; margin:0;">${aiIntel.plot_twist}</p>
-                            </div>
-                        </div>
-
-                        <div class="intel-grid">
-                            <div class="intel-item"><div>BUDGET (EST)</div><div>${aiIntel.budget_est}</div></div>
-                            <div class="intel-item"><div>REVENUE (EST)</div><div>${aiIntel.revenue_est}</div></div>
-                            <div class="intel-item"><div>STATUS VERDICT</div><div>${aiIntel.status_verdict}</div></div>
-                            <div class="intel-item"><div>POPULARITY INDEX</div><div>${basic.popularity.toFixed(0)}</div></div>
-                        </div>
+                <div style="display:flex; gap:30px;">
+                    <img src="${IMG_URL + basic.poster_path}" style="width:200px; border-radius:10px;">
+                    <div style="text-align:left;">
+                        <h2>${basic.title || basic.name}</h2>
+                        <p><i>"${intel.tagline_ai}"</i></p>
+                        <p>${intel.cultural_impact}</p>
                     </div>
                 </div>`;
-        } catch (e) { console.error(e); }
+        } catch (e) { container.innerHTML = "Error."; }
     }
 
-    function setBrowseType(t) { 
-        browseType = t; 
-        document.getElementById('b-btn-movie').classList.remove('active');
-        document.getElementById('b-btn-tv').classList.remove('active');
-        document.getElementById(t==='movie'?'b-btn-movie':'b-btn-tv').classList.add('active');
-        resetAndRunBrowse();
-    }
-    
-    function setCurateType(t) { 
-        curateType = t; 
-        document.getElementById('c-btn-movie').classList.remove('active');
-        document.getElementById('c-btn-tv').classList.remove('active');
-        document.getElementById(t==='movie'?'c-btn-movie':'c-btn-tv').classList.add('active');
-
-        const input = document.getElementById('ref-search');
-        if (t === 'movie') {
-            input.placeholder = "e.g. Inception";
-        } else {
-            input.placeholder = "e.g. Stranger Things";
-        }
-    }
+    function setBrowseType(t) { browseType = t; resetAndRunBrowse(); }
+    function setCurateType(t) { curateType = t; }
 </script>
 </body>
 </html>
