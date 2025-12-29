@@ -8,99 +8,30 @@
     <style>
         /* --- VIBRANT THEME VARIABLES --- */
         :root {
-            /* == NEON NIGHTS (Dark Theme Default) == */
-            --bg-paper: #140028; /* Deep Grape bg */
-            --bg-panel: #220044; /* Richer purple panel */
-            --ink: #ffffff;
-            --ink-muted: #d1c4e9; /* Light lavender */
-            --border: #4a148c; /* Vibrant purple border */
-            --accent: #ff00cc; /* HOT PINK! */
-            --accent-secondary: #00e5ff; /* NEON CYAN! */
-            --card-bg: rgba(255, 255, 255, 0.07);
-            --shadow-card: 0 15px 35px rgba(255, 0, 204, 0.4); /* Pink glow shadow */
-            --graffiti-opacity: 0.15;
-            --graffiti-color: #ffffff;
-            --grain-opacity: 0.04;
-            --imdb-yellow: #ffd700;
-
-            --font-head: 'Montserrat', sans-serif;
-            --font-body: 'Poppins', sans-serif;
-            --font-graffiti: 'Permanent Marker', cursive;
+            --bg-paper: #140028; --bg-panel: #220044; --ink: #ffffff; --ink-muted: #d1c4e9;
+            --border: #4a148c; --accent: #ff00cc; --accent-secondary: #00e5ff;
+            --card-bg: rgba(255, 255, 255, 0.07); --shadow-card: 0 15px 35px rgba(255, 0, 204, 0.4);
+            --graffiti-opacity: 0.15; --graffiti-color: #ffffff; --grain-opacity: 0.04; --imdb-yellow: #ffd700;
+            --font-head: 'Montserrat', sans-serif; --font-body: 'Poppins', sans-serif; --font-graffiti: 'Permanent Marker', cursive;
         }
-
-        /* == TECHNICOLOR DAYDREAM (Light Theme Overrides) == */
         [data-theme="light"] {
-            --bg-paper: #fffbea; /* Creamy yellow bg */
-            --bg-panel: #f0faff; /* Light mint/sky panel */
-            --ink: #1a1a2e; /* Deep dark blue text */
-            --ink-muted: #5c5c8a;
-            --border: #afeeee; /* Pale turquoise border */
-            --accent: #00bcd4; /* BRIGHT TEAL! */
-            --accent-secondary: #ff4081; /* POP CORAL! */
-            --card-bg: #ffffff;
-            --shadow-card: 8px 8px 0px rgba(0, 188, 212, 0.3); /* Fun hard shadow */
-            --graffiti-opacity: 0.08;
-            --graffiti-color: #000000;
-            --grain-opacity: 0.02;
-            --imdb-yellow: #f5c518;
+            --bg-paper: #fffbea; --bg-panel: #f0faff; --ink: #1a1a2e; --ink-muted: #5c5c8a;
+            --border: #afeeee; --accent: #00bcd4; --accent-secondary: #ff4081; --card-bg: #ffffff;
+            --shadow-card: 8px 8px 0px rgba(0, 188, 212, 0.3); --graffiti-opacity: 0.08; --graffiti-color: #000000;
+            --grain-opacity: 0.02; --imdb-yellow: #f5c518;
         }
-
         * { box-sizing: border-box; }
         body { 
-            background-color: var(--bg-paper); 
-            color: var(--ink); 
-            font-family: var(--font-body); 
-            margin: 0; padding: 0; 
-            height: 100vh; 
-            display: flex; flex-direction: column; 
-            overflow: hidden; 
-            transition: background-color 0.5s ease, color 0.5s ease;
+            background-color: var(--bg-paper); color: var(--ink); font-family: var(--font-body); margin: 0; padding: 0; 
+            height: 100vh; display: flex; flex-direction: column; overflow: hidden; transition: 0.5s;
             background-image: radial-gradient(circle at 10% 20%, var(--bg-panel) 0%, transparent 20%), radial-gradient(circle at 90% 80%, var(--bg-panel) 0%, transparent 20%);
         }
-
-        /* --- FUN BACKGROUND GRAPHICS --- */
-        .film-grain {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 1;
-            opacity: var(--grain-opacity);
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-            animation: grainMove 2s steps(4) infinite;
-        }
-
-        .graffiti-wall {
-            position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
-            pointer-events: none; z-index: 0;
-            opacity: var(--graffiti-opacity);
-            display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 60px;
-            transform: rotate(-10deg) scale(1.2);
-            animation: drift 60s linear infinite;
-        }
-        .graffiti-text {
-            font-family: var(--font-graffiti);
-            font-size: 90px;
-            color: var(--graffiti-color);
-            line-height: 1;
-            user-select: none;
-            text-transform: uppercase;
-            text-shadow: 3px 3px 0px var(--accent-secondary);
-        }
-
-        @keyframes grainMove { 0% { transform: translate(0,0) } 100% { transform: translate(-5%, -5%) } }
-        @keyframes drift { 0% { transform: rotate(-10deg) translate(0,0); } 50% { transform: rotate(-8deg) translate(-2%, 2%); } 100% { transform: rotate(-10deg) translate(0,0); } }
-
-        /* --- HEADER --- */
-        .masthead { 
-            height: 80px; border-bottom: 2px solid var(--border); 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 0 60px; background: var(--bg-paper); z-index: 50; flex-shrink: 0; 
-            position: relative; transition: 0.5s; box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
+        .masthead { height: 80px; border-bottom: 2px solid var(--border); display: flex; justify-content: space-between; align-items: center; padding: 0 60px; background: var(--bg-paper); z-index: 50; flex-shrink: 0; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
         .logo { font-family: var(--font-head); font-weight: 900; font-size: 28px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink); cursor: default; }
         .logo span { color: var(--accent); font-style: italic; text-shadow: 2px 2px 0px var(--accent-secondary); }
         
         .mode-toggle { display: flex; gap: 30px; background: var(--bg-panel); padding: 10px 20px; border-radius: 30px; border: 2px solid var(--border); }
         .mode-btn { background: transparent; border: none; color: var(--ink-muted); font-family: var(--font-head); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; padding: 8px 16px; transition:0.3s; border-radius: 20px; }
-        .mode-btn:hover { color: var(--accent); background: rgba(255,255,255,0.1); transform: translateY(-2px); }
         .mode-btn.active { background: var(--accent); color: #fff; box-shadow: 3px 3px 0px var(--accent-secondary); transform: translateY(-2px); }
 
         .theme-switch {
@@ -111,7 +42,6 @@
         }
         .theme-switch:hover { transform: rotate(180deg) scale(1.1); background: var(--accent); color: #fff; }
 
-        /* --- SIDEBAR --- */
         .editorial-layout { display: flex; flex: 1; overflow: hidden; position: relative; z-index: 10; }
         .research-sidebar { 
             width: 400px; background: var(--bg-panel); padding: 35px; 
@@ -120,7 +50,6 @@
         }
         .sidebar-title { font-family: var(--font-head); font-weight: 900; font-size: 14px; letter-spacing: 1px; color: var(--accent-secondary); border-bottom: 2px dashed var(--border); padding-bottom: 15px; margin-bottom: 25px; text-align: center; text-transform: uppercase; }
         
-        /* FUN ACCORDION */
         details { margin-bottom: 20px; border: 2px solid var(--border); border-radius: 12px; background: var(--bg-paper); transition: 0.3s; overflow: hidden; }
         details:hover { border-color: var(--accent); transform: scale(1.01); }
         details[open] { border-color: var(--accent); box-shadow: 3px 3px 0px var(--accent-secondary); }
@@ -129,7 +58,6 @@
         details[open] summary:after { transform: rotate(180deg); content: "▲"; }
         .accordion-content { padding: 20px; }
 
-        /* INPUTS & CONTROLS */
         input, select, textarea { width: 100%; background: var(--bg-paper); color: var(--ink); border: 2px solid var(--border); padding: 14px; font-family: var(--font-body); font-weight: 600; font-size: 14px; border-radius: 8px; transition: 0.3s; margin-bottom: 15px; }
         input:focus, select:focus, textarea:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 15px var(--accent); transform: scale(1.02); }
         
@@ -219,6 +147,14 @@
         .spoiler-text.revealed { filter: blur(0); user-select: text; opacity: 1; }
         .spoiler-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; background: rgba(0,0,0,0.1); }
         
+        /* NEW CAST STYLES */
+        .cast-grid { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px; margin-top: 20px; }
+        .cast-card { flex: 0 0 100px; text-align: center; }
+        .cast-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); margin-bottom: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: 0.3s; }
+        .cast-card:hover .cast-img { transform: scale(1.1); border-color: var(--accent-secondary); }
+        .cast-name { font-family: var(--font-head); font-weight: 700; font-size: 11px; color: var(--ink); margin-bottom: 3px; }
+        .cast-role { font-family: var(--font-body); font-size: 10px; color: var(--ink-muted); font-style: italic; }
+
         .btn-load-more { padding: 15px 50px; background: var(--bg-panel); color: var(--ink); border: 3px solid var(--accent); font-family: var(--font-head); font-weight: 900; font-size: 12px; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; transition: 0.3s; border-radius: 30px; box-shadow: 5px 5px 0px var(--accent-secondary); }
         .btn-load-more:hover { background: var(--accent); color: #fff; transform: translateY(-3px) scale(1.05); box-shadow: 8px 8px 0px var(--accent-secondary); }
 
@@ -659,6 +595,7 @@
                 const s = await fetch(`${BASE_URL}/search/${curateType}?api_key=${TMDB_KEY}&query=${encodeURIComponent(item.title)}`);
                 const d = await s.json();
                 if(d.results?.[0]) {
+                    d.results[0].ai_reason = item.reason;
                     d.results[0].match_score = item.score;
                     curatedTitles.push(item.title); // Track title to avoid duplicates
                     return d.results[0];
@@ -748,6 +685,27 @@
             const type = basic.media_type === 'tv' ? 'tv' : 'movie';
             const title = basic.title || basic.name;
 
+            // Fetch CAST
+            const castRes = await fetch(`${BASE_URL}/${type}/${basic.id}/credits?api_key=${TMDB_KEY}`);
+            const castData = await castRes.json();
+            const topCast = castData.cast.slice(0, 6);
+            
+            let castHtml = '';
+            if(topCast.length > 0) {
+                castHtml = `<div style="margin-bottom:40px;">
+                    <h3 style="font-size:13px; color:var(--ink-muted); letter-spacing:2px; font-weight:900; margin-bottom:15px;">TOP BILLING</h3>
+                    <div class="cast-grid">
+                        ${topCast.map(c => `
+                            <div class="cast-card">
+                                <img src="${c.profile_path ? IMG_URL + c.profile_path : 'https://via.placeholder.com/80x80/220044/ffffff?text=?'}" class="cast-img">
+                                <div class="cast-name">${c.name}</div>
+                                <div class="cast-role">${c.character}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>`;
+            }
+
             const aiRes = await fetch(API_INTEL, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -774,6 +732,8 @@
                         </div>
                         <div style="font-size:22px; color:var(--ink); font-weight:900; font-style:italic; margin-bottom:30px; border-left: 5px solid var(--accent-secondary); padding-left:20px; line-height:1.2;">"${aiIntel.tagline_ai}"</div>
                         
+                        ${castHtml}
+
                         <div style="margin-bottom:40px;">
                             <h3 style="font-size:13px; color:var(--ink-muted); letter-spacing:2px; font-weight:900;">CULTURAL IMPACT</h3>
                             <p style="font-size:15px; color:var(--ink); line-height:1.7; font-weight:500;">${aiIntel.cultural_impact}</p>
