@@ -8,119 +8,35 @@
     <style>
         /* --- VIBRANT THEME VARIABLES --- */
         :root {
-            /* == NEON NIGHTS (Dark Theme Default) == */
-            --bg-paper: #140028; /* Deep Grape bg */
-            --bg-panel: #220044; /* Richer purple panel */
-            --ink: #ffffff;
-            --ink-muted: #d1c4e9; /* Light lavender */
-            --border: #4a148c; /* Vibrant purple border */
-            --accent: #ff00cc; /* HOT PINK! */
-            --accent-secondary: #00e5ff; /* NEON CYAN! */
-            --card-bg: rgba(255, 255, 255, 0.07);
-            --shadow-card: 0 15px 35px rgba(255, 0, 204, 0.4); /* Pink glow shadow */
-            --graffiti-opacity: 0.15;
-            --graffiti-color: #ffffff;
-            --grain-opacity: 0.04;
-            --imdb-yellow: #ffd700;
-
-            --font-head: 'Montserrat', sans-serif;
-            --font-body: 'Poppins', sans-serif;
-            --font-graffiti: 'Permanent Marker', cursive;
+            --bg-paper: #140028; --bg-panel: #220044; --ink: #ffffff; --ink-muted: #d1c4e9;
+            --border: #4a148c; --accent: #ff00cc; --accent-secondary: #00e5ff;
+            --card-bg: rgba(255, 255, 255, 0.07); --shadow-card: 0 15px 35px rgba(255, 0, 204, 0.4);
+            --graffiti-opacity: 0.15; --graffiti-color: #ffffff; --grain-opacity: 0.04; --imdb-yellow: #ffd700;
+            --font-head: 'Montserrat', sans-serif; --font-body: 'Poppins', sans-serif; --font-graffiti: 'Permanent Marker', cursive;
         }
-
-        /* == TECHNICOLOR DAYDREAM (Light Theme Overrides) == */
         [data-theme="light"] {
-            --bg-paper: #fffbea; /* Creamy yellow bg */
-            --bg-panel: #f0faff; /* Light mint/sky panel */
-            --ink: #1a1a2e; /* Deep dark blue text */
-            --ink-muted: #5c5c8a;
-            --border: #afeeee; /* Pale turquoise border */
-            --accent: #00bcd4; /* BRIGHT TEAL! */
-            --accent-secondary: #ff4081; /* POP CORAL! */
-            --card-bg: #ffffff;
-            --shadow-card: 8px 8px 0px rgba(0, 188, 212, 0.3); /* Fun hard shadow */
-            --graffiti-opacity: 0.08;
-            --graffiti-color: #000000;
-            --grain-opacity: 0.02;
-            --imdb-yellow: #f5c518;
+            --bg-paper: #fffbea; --bg-panel: #f0faff; --ink: #1a1a2e; --ink-muted: #5c5c8a;
+            --border: #afeeee; --accent: #00bcd4; --accent-secondary: #ff4081; --card-bg: #ffffff;
+            --shadow-card: 8px 8px 0px rgba(0, 188, 212, 0.3); --graffiti-opacity: 0.08; --graffiti-color: #000000;
+            --grain-opacity: 0.02; --imdb-yellow: #f5c518;
         }
-
         * { box-sizing: border-box; }
         body { 
-            background-color: var(--bg-paper); 
-            color: var(--ink); 
-            font-family: var(--font-body); 
-            margin: 0; padding: 0; 
-            height: 100vh; 
-            display: flex; flex-direction: column; 
-            overflow: hidden; 
-            transition: background-color 0.5s ease, color 0.5s ease;
+            background-color: var(--bg-paper); color: var(--ink); font-family: var(--font-body); margin: 0; padding: 0; 
+            height: 100vh; display: flex; flex-direction: column; overflow: hidden; transition: 0.5s;
             background-image: radial-gradient(circle at 10% 20%, var(--bg-panel) 0%, transparent 20%), radial-gradient(circle at 90% 80%, var(--bg-panel) 0%, transparent 20%);
         }
-
-        /* --- FUN BACKGROUND GRAPHICS --- */
-        .film-grain {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 1;
-            opacity: var(--grain-opacity);
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-            animation: grainMove 2s steps(4) infinite;
-        }
-
-        .graffiti-wall {
-            position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
-            pointer-events: none; z-index: 0;
-            opacity: var(--graffiti-opacity);
-            display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 60px;
-            transform: rotate(-10deg) scale(1.2);
-            animation: drift 60s linear infinite;
-        }
-        .graffiti-text {
-            font-family: var(--font-graffiti);
-            font-size: 90px;
-            color: var(--graffiti-color);
-            line-height: 1;
-            user-select: none;
-            text-transform: uppercase;
-            text-shadow: 3px 3px 0px var(--accent-secondary);
-        }
-
-        @keyframes grainMove { 0% { transform: translate(0,0) } 100% { transform: translate(-5%, -5%) } }
-        @keyframes drift { 0% { transform: rotate(-10deg) translate(0,0); } 50% { transform: rotate(-8deg) translate(-2%, 2%); } 100% { transform: rotate(-10deg) translate(0,0); } }
-
-        /* --- HEADER --- */
-        .masthead { 
-            height: 80px; border-bottom: 2px solid var(--border); 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 0 60px; background: var(--bg-paper); z-index: 50; flex-shrink: 0; 
-            position: relative; transition: 0.5s; box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
+        .masthead { height: 80px; border-bottom: 2px solid var(--border); display: flex; justify-content: space-between; align-items: center; padding: 0 60px; background: var(--bg-paper); z-index: 50; flex-shrink: 0; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
         .logo { font-family: var(--font-head); font-weight: 900; font-size: 28px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink); cursor: default; }
         .logo span { color: var(--accent); font-style: italic; text-shadow: 2px 2px 0px var(--accent-secondary); }
-        
         .mode-toggle { display: flex; gap: 30px; background: var(--bg-panel); padding: 10px 20px; border-radius: 30px; border: 2px solid var(--border); }
         .mode-btn { background: transparent; border: none; color: var(--ink-muted); font-family: var(--font-head); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; padding: 8px 16px; transition:0.3s; border-radius: 20px; }
         .mode-btn:hover { color: var(--accent); background: rgba(255,255,255,0.1); transform: translateY(-2px); }
         .mode-btn.active { background: var(--accent); color: #fff; box-shadow: 3px 3px 0px var(--accent-secondary); transform: translateY(-2px); }
-
-        .theme-switch {
-            background: var(--bg-panel); border: 2px solid var(--accent); color: var(--accent);
-            width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55); font-size: 22px;
-            box-shadow: 3px 3px 0px var(--accent-secondary);
-        }
-        .theme-switch:hover { transform: rotate(180deg) scale(1.1); background: var(--accent); color: #fff; }
-
-        /* --- SIDEBAR --- */
+        .theme-switch { background: var(--bg-panel); border: 2px solid var(--accent); color: var(--accent); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.4s; font-size: 22px; box-shadow: 3px 3px 0px var(--accent-secondary); }
         .editorial-layout { display: flex; flex: 1; overflow: hidden; position: relative; z-index: 10; }
-        .research-sidebar { 
-            width: 400px; background: var(--bg-panel); padding: 35px; 
-            overflow-y: auto; display: flex; flex-direction: column; border-right: 2px solid var(--border); 
-            transition: 0.5s; box-shadow: 5px 0 20px rgba(0,0,0,0.05);
-        }
+        .research-sidebar { width: 400px; background: var(--bg-panel); padding: 35px; overflow-y: auto; display: flex; flex-direction: column; border-right: 2px solid var(--border); transition: 0.5s; box-shadow: 5px 0 20px rgba(0,0,0,0.05); }
         .sidebar-title { font-family: var(--font-head); font-weight: 900; font-size: 14px; letter-spacing: 1px; color: var(--accent-secondary); border-bottom: 2px dashed var(--border); padding-bottom: 15px; margin-bottom: 25px; text-align: center; text-transform: uppercase; }
-        
-        /* FUN ACCORDION */
         details { margin-bottom: 20px; border: 2px solid var(--border); border-radius: 12px; background: var(--bg-paper); transition: 0.3s; overflow: hidden; }
         details:hover { border-color: var(--accent); transform: scale(1.01); }
         details[open] { border-color: var(--accent); box-shadow: 3px 3px 0px var(--accent-secondary); }
@@ -128,138 +44,50 @@
         summary:after { content: "▼"; font-size: 12px; color: var(--accent); transition: 0.3s; }
         details[open] summary:after { transform: rotate(180deg); content: "▲"; }
         .accordion-content { padding: 20px; }
-
-        /* INPUTS & CONTROLS */
         input, select, textarea { width: 100%; background: var(--bg-paper); color: var(--ink); border: 2px solid var(--border); padding: 14px; font-family: var(--font-body); font-weight: 600; font-size: 14px; border-radius: 8px; transition: 0.3s; margin-bottom: 15px; }
         input:focus, select:focus, textarea:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 15px var(--accent); transform: scale(1.02); }
-        
         .toggle-row { display: flex; border: 2px solid var(--border); border-radius: 30px; overflow: hidden; margin-bottom: 15px; background: var(--bg-paper); }
         .toggle-opt { flex: 1; background: transparent; border: none; padding: 12px; color: var(--ink-muted); font-family: var(--font-head); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: 0.3s; }
         .toggle-opt.active { background: var(--accent); color: #fff; }
-
         .genre-grid { gap: 10px; }
         .genre-pill { font-family: var(--font-head); font-weight: 700; font-size: 11px; padding: 8px 12px; border-radius: 20px; border: 2px solid var(--border); cursor: pointer; transition: 0.3s; background: var(--bg-paper); color: var(--ink-muted); text-align: center; text-transform: uppercase; }
         .genre-pill:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-3px) rotate(-2deg); }
         .genre-pill.selected { background: linear-gradient(135deg, var(--accent), var(--accent-secondary)); color: #fff; border-color: transparent; box-shadow: 3px 3px 10px rgba(0,0,0,0.3); transform: translateY(-3px) scale(1.05); }
-
         .btn-archive, .btn-decrypt { width: 100%; padding: 16px; background: linear-gradient(45deg, var(--accent), var(--accent-secondary)); color: #fff; border: none; font-family: var(--font-head); font-weight: 900; font-size: 14px; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; margin-top: 20px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-radius: 8px; box-shadow: 5px 5px 0px rgba(0,0,0,0.2); }
         .btn-archive:hover, .btn-decrypt:hover { transform: translateY(-4px) scale(1.02); box-shadow: 8px 8px 0px rgba(0,0,0,0.3); filter: brightness(1.1); }
-
-        /* --- VIBE CHECK (MOOD) BOX --- */
-        .mood-box {
-            background: rgba(255, 0, 204, 0.05);
-            border: 2px dashed var(--accent);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 30px;
-            position: relative;
-        }
-        .mood-box::before {
-            content: "✨ AI MAGIC";
-            position: absolute; top: -12px; left: 20px;
-            background: var(--bg-panel);
-            color: var(--accent);
-            font-family: var(--font-head); font-weight: 900; font-size: 10px;
-            padding: 2px 10px; border: 1px solid var(--accent); border-radius: 10px;
-        }
-        .mood-label {
-            font-family: var(--font-head); font-weight: 900; font-size: 16px; 
-            color: var(--ink); margin-bottom: 10px; display: block;
-            text-shadow: 2px 2px 0px var(--border);
-        }
-
-        /* --- MAIN CONTENT --- */
+        .mood-box { background: rgba(255, 0, 204, 0.05); border: 2px dashed var(--accent); border-radius: 12px; padding: 20px; margin-bottom: 30px; position: relative; }
+        .mood-box::before { content: "✨ AI MAGIC"; position: absolute; top: -12px; left: 20px; background: var(--bg-panel); color: var(--accent); font-family: var(--font-head); font-weight: 900; font-size: 10px; padding: 2px 10px; border: 1px solid var(--accent); border-radius: 10px; }
+        .mood-label { font-family: var(--font-head); font-weight: 900; font-size: 16px; color: var(--ink); margin-bottom: 10px; display: block; text-shadow: 2px 2px 0px var(--border); }
         .canvas { flex: 1; padding: 60px 80px; overflow-y: auto; background: transparent; position: relative; }
-        .section-header { font-family: var(--font-head); font-weight: 900; font-size: 60px; margin-bottom: 10px; color: var(--ink); text-transform: uppercase; letter-spacing: -2px; 
-            background: linear-gradient(to right, var(--accent), var(--accent-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: fadeInUp 0.8s ease; }
+        .section-header { font-family: var(--font-head); font-weight: 900; font-size: 60px; margin-bottom: 10px; color: var(--ink); text-transform: uppercase; letter-spacing: -2px; background: linear-gradient(to right, var(--accent), var(--accent-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: fadeInUp 0.8s ease; }
         .section-sub { font-family: var(--font-head); font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; color: var(--ink-muted); margin-bottom: 60px; border-left: 5px solid var(--accent-secondary); padding-left: 20px; animation: fadeInUp 1s ease; }
-        
-        /* FUN CARDS */
         .exhibit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 60px 40px; }
-        .exhibit-card { 
-            cursor: pointer; display: flex; flex-direction: column; 
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            background: var(--card-bg);
-            padding: 15px; border-radius: 16px; border: 2px solid var(--border);
-            opacity: 0; animation: popIn 0.6s forwards;
-            position: relative;
-        }
-        .exhibit-card:nth-child(odd) { transform: rotate(-1deg); }
-        .exhibit-card:nth-child(even) { transform: rotate(1deg); }
-
-        .exhibit-card:hover { 
-            transform: translateY(-15px) scale(1.05) rotate(0deg); 
-            border-color: var(--accent);
-            box-shadow: var(--shadow-card);
-            z-index: 10;
-        }
-        
+        .exhibit-card { cursor: pointer; display: flex; flex-direction: column; transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); background: var(--card-bg); padding: 15px; border-radius: 16px; border: 2px solid var(--border); opacity: 0; animation: popIn 0.6s forwards; position: relative; }
+        .exhibit-card:hover { transform: translateY(-15px) scale(1.05); border-color: var(--accent); box-shadow: var(--shadow-card); z-index: 10; }
         .poster-frame { width: 100%; aspect-ratio: 2/3; position: relative; background: #111; margin-bottom: 15px; overflow: hidden; border-radius: 10px; box-shadow: inset 0 0 20px rgba(0,0,0,0.2); }
         .poster-frame img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
         .exhibit-card:hover .poster-frame img { transform: scale(1.1); }
-        
         .film-title { font-family: var(--font-head); font-weight: 900; font-size: 18px; line-height: 1.2; color: var(--ink); margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .film-meta-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--ink-muted); font-weight: 700; }
         .star-icon { color: var(--imdb-yellow); font-size: 14px; filter: drop-shadow(0 0 5px var(--imdb-yellow)); }
         .ai-score { color: #fff; background: var(--accent); padding: 4px 8px; border-radius: 10px; font-size: 10px; font-weight: 900; margin-top: 10px; text-transform: uppercase; letter-spacing: 1px; display: inline-block; box-shadow: 3px 3px 0px var(--accent-secondary); }
-
         @keyframes popIn { from { opacity: 0; transform: scale(0.8) translateY(30px); } to { opacity: 1; transform: scale(1) translateY(0); } }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- UPDATED MODAL STYLES (BIGGER & BETTER) --- */
+        
+        /* UPDATED MODAL (PERFECT LOOK) */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; display: none; justify-content: center; align-items: center; opacity: 0; transition: 0.3s; backdrop-filter: blur(8px); }
         .modal-overlay.active { opacity: 1; pointer-events: all; }
-        
-        .modal-card { 
-            background: linear-gradient(145deg, #1a0b2e, #110520);
-            width: 90%; max-width: 850px; /* Much wider for the big card look */
-            border-radius: 20px; 
-            border: 2px solid var(--accent); /* Neon Pink Border */
-            padding: 40px; 
-            position: relative; 
-            transform: translateY(20px); 
-            transition: 0.3s; 
-            box-shadow: 0 0 40px rgba(255, 0, 204, 0.3); /* Premium Glow */
-            max-height: 90vh; overflow-y: auto; 
-        }
+        .modal-card { background: linear-gradient(145deg, #1a0b2e, #110520); width: 90%; max-width: 850px; border-radius: 20px; border: 2px solid var(--accent); padding: 40px; position: relative; transform: translateY(20px); transition: 0.3s; box-shadow: 0 0 40px rgba(255, 0, 204, 0.3); max-height: 90vh; overflow-y: auto; }
         .modal-overlay.active .modal-card { transform: translateY(0); }
-        
         .modal-close { position: absolute; top: 20px; right: 25px; font-size: 35px; cursor: pointer; color: var(--ink-muted); transition: 0.2s; line-height: 1; z-index: 10; }
         .modal-close:hover { color: var(--accent); transform: scale(1.2); }
-        
         .modal-content-flex { display: flex; gap: 40px; align-items: flex-start; }
-        
-        /* BIGGER POSTER */
-        .modal-poster { 
-            width: 300px; /* Significantly larger */
-            aspect-ratio: 2/3; 
-            object-fit: cover; 
-            border-radius: 12px; 
-            border: 2px solid var(--border); 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-            flex-shrink: 0; 
-        }
-        
+        .modal-poster { width: 300px; aspect-ratio: 2/3; object-fit: cover; border-radius: 12px; border: 2px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.5); flex-shrink: 0; }
         .modal-details { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-        
         .modal-title { font-family: var(--font-head); font-weight: 900; font-size: 42px; color: var(--ink); margin-bottom: 10px; line-height: 1.1; text-transform: uppercase; letter-spacing: -1px; text-shadow: 2px 2px 0px var(--accent-secondary); }
         .modal-meta { color: var(--accent-secondary); font-size: 14px; font-weight: 700; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; }
         .modal-overview { font-size: 15px; line-height: 1.8; color: var(--ink); margin-bottom: 30px; font-weight: 500; opacity: 0.9; }
         
-        /* INTEL & CAST STYLES */
-        #dossier-content { max-width: 1000px; margin: 0 auto; padding-top: 40px; animation: fadeInUp 0.8s ease; }
-        .dossier-header-title { font-family: var(--font-head); font-weight: 900; font-size: 56px; line-height: 1; color: var(--ink); text-shadow: 3px 3px 0px var(--accent-secondary); }
-        .intel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; background: var(--bg-panel); padding: 30px; border: 3px solid var(--border); border-radius: 20px; margin-top: 40px; box-shadow: 8px 8px 0px rgba(0,0,0,0.1); }
-        .intel-item div:first-child { font-family: var(--font-head); font-weight: 700; font-size: 11px; color: var(--ink-muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
-        .intel-item div:last-child { font-size: 16px; color: var(--accent); font-weight: 700; }
-
-        .spoiler-container { position: relative; cursor: pointer; border: 3px dashed var(--accent); padding: 20px; border-radius: 16px; transition: 0.3s; background: var(--bg-paper); overflow: hidden; }
-        .spoiler-container:hover { background: var(--bg-panel); transform: scale(1.02); }
-        .spoiler-text { filter: blur(15px); transition: filter 0.8s ease, opacity 0.5s; user-select: none; opacity: 0.7; color: var(--ink); font-weight: 600; }
-        .spoiler-text.revealed { filter: blur(0); user-select: text; opacity: 1; }
-        .spoiler-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; background: rgba(0,0,0,0.1); }
-        
-        /* NEW CAST STYLES */
         .cast-grid { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 10px; }
         .cast-card { flex: 0 0 90px; text-align: center; }
         .cast-img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent); margin-bottom: 10px; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
@@ -267,38 +95,20 @@
         .cast-name { font-family: var(--font-head); font-weight: 700; font-size: 11px; color: #fff; margin-bottom: 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
         .cast-role { font-family: var(--font-body); font-size: 10px; color: var(--ink-muted); font-style: italic; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 
+        #dossier-content { max-width: 1000px; margin: 0 auto; padding-top: 40px; animation: fadeInUp 0.8s ease; }
+        .dossier-header-title { font-family: var(--font-head); font-weight: 900; font-size: 56px; line-height: 1; color: var(--ink); text-shadow: 3px 3px 0px var(--accent-secondary); }
+        .intel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; background: var(--bg-panel); padding: 30px; border: 3px solid var(--border); border-radius: 20px; margin-top: 40px; box-shadow: 8px 8px 0px rgba(0,0,0,0.1); }
+        .intel-item div:first-child { font-family: var(--font-head); font-weight: 700; font-size: 11px; color: var(--ink-muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+        .intel-item div:last-child { font-size: 16px; color: var(--accent); font-weight: 700; }
+        .spoiler-container { position: relative; cursor: pointer; border: 3px dashed var(--accent); padding: 20px; border-radius: 16px; transition: 0.3s; background: var(--bg-paper); overflow: hidden; }
+        .spoiler-text { filter: blur(15px); transition: filter 0.8s ease, opacity 0.5s; user-select: none; opacity: 0.7; color: var(--ink); font-weight: 600; }
+        .spoiler-text.revealed { filter: blur(0); user-select: text; opacity: 1; }
+        .spoiler-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; background: rgba(0,0,0,0.1); }
         .btn-load-more { padding: 15px 50px; background: var(--bg-panel); color: var(--ink); border: 3px solid var(--accent); font-family: var(--font-head); font-weight: 900; font-size: 12px; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; transition: 0.3s; border-radius: 30px; box-shadow: 5px 5px 0px var(--accent-secondary); display: block; margin: 40px auto; }
         .btn-load-more:hover { background: var(--accent); color: #fff; transform: translateY(-3px) scale(1.05); box-shadow: 8px 8px 0px var(--accent-secondary); }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 12px; }
-        ::-webkit-scrollbar-track { background: var(--bg-paper); }
-        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; border: 3px solid var(--bg-paper); }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
-
-        /* --- SNOW EFFECT --- */
-        .snowflake {
-            position: fixed;
-            top: -20px;
-            color: #fff;
-            user-select: none;
-            pointer-events: none;
-            z-index: 9999;
-            text-shadow: 0 0 5px #00ffff;
-            animation-name: fall;
-            animation-timing-function: linear;
-        }
-        @keyframes fall {
-            to { transform: translateY(110vh) rotate(360deg); }
-        }
-        
-        /* Mobile Modal Fix */
-        @media (max-width: 768px) {
-            .modal-content-flex { flex-direction: column; align-items: center; text-align: center; }
-            .modal-poster { width: 220px; margin-bottom: 25px; }
-            .modal-title { font-size: 32px; }
-            .cast-grid { justify-content: center; }
-        }
+        .snowflake { position: fixed; top: -20px; color: #fff; user-select: none; pointer-events: none; z-index: 9999; text-shadow: 0 0 5px #00ffff; animation-name: fall; animation-timing-function: linear; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+        @media (max-width: 768px) { .modal-content-flex { flex-direction: column; align-items: center; text-align: center; } .modal-poster { width: 220px; margin-bottom: 25px; } .modal-title { font-size: 32px; } .cast-grid { justify-content: center; } }
     </style>
 </head>
 <body data-theme="dark">
@@ -340,13 +150,11 @@
             <div id="sidebar-controls">
                 
                 <div id="input-filter">
-                    
                     <div class="mood-box">
                         <span class="mood-label">✨ VIBE CHECK</span>
                         <textarea id="browse-mood" class="ai-input" placeholder="How are you feeling? (e.g. I need something cozy...)" style="height:80px; margin-bottom:10px; font-size:12px;"></textarea>
                         <button class="btn-archive" onclick="runMoodSearch()" style="margin-top:0; font-size:10px; padding:10px;">Find My Vibe with Filters</button>
                     </div>
-
                     <details open>
                         <summary>Title Type</summary>
                         <div class="accordion-content">
@@ -428,9 +236,7 @@
             </div>
 
             <div id="view-dossier" style="display:none;">
-                <div id="dossier-content" style="text-align:center; padding-top:100px; color:var(--ink-muted); font-weight:700; font-size:20px;">
-                    Use the sidebar to grab a file!
-                </div>
+                <div id="dossier-content" style="text-align:center; padding-top:100px; color:var(--ink-muted); font-weight:700; font-size:20px;">Use the sidebar to grab a file!</div>
             </div>
         </div>
     </div>
@@ -472,8 +278,7 @@
 
     function checkSnowDate() {
         const d = new Date();
-        const isSeason = (d.getMonth() === 11) || (d.getMonth() === 0 && d.getDate() <= 2);
-        if (isSeason) document.getElementById('btn-snow').style.display = 'flex';
+        if ((d.getMonth() === 11) || (d.getMonth() === 0 && d.getDate() <= 2)) { document.getElementById('btn-snow').style.display = 'flex'; }
     }
 
     function toggleSnow() {
@@ -517,6 +322,28 @@
         }
     }
 
+    // --- HELPER FOR DATES ---
+    function getFormattedDate(item, type) {
+        if (!item) return 'N/A';
+        // For Movies, simple year
+        if (type === 'movie') return (item.release_date || 'N/A').split('-')[0];
+        
+        // For TV, handle logic (Using details if available, else simple fallback)
+        const start = (item.first_air_date || '').split('-')[0];
+        if (!start) return 'N/A';
+        
+        // If we have full details and status
+        if (item.status === 'Returning Series' || item.in_production === true) {
+            return `${start}-Present`;
+        } else if (item.status === 'Ended' || item.status === 'Canceled') {
+            const end = (item.last_air_date || '').split('-')[0];
+            return (end && end !== start) ? `${start}-${end}` : start;
+        }
+        
+        // Fallback for search results where status might be missing
+        return start;
+    }
+
     async function runMoodSearch() {
         const mood = document.getElementById('browse-mood').value;
         if(!mood) { alert("Please type a mood first!"); return; }
@@ -548,22 +375,31 @@
             if (!res.ok) throw new Error("AI Server Error");
             const aiData = await res.json();
             const promises = aiData.map(async (item) => {
+                // Fetch Details for Smart Date
                 const s = await fetch(`${BASE_URL}/search/${browseType}?api_key=${TMDB_KEY}&query=${encodeURIComponent(item.title)}`);
                 const d = await s.json();
-                if(d.results?.[0]) { d.results[0].match_score = item.score; return d.results[0]; }
+                if(d.results?.[0]) {
+                    const baseItem = d.results[0];
+                    // Fetch full details to get status/end date
+                    const detailRes = await fetch(`${BASE_URL}/${browseType}/${baseItem.id}?api_key=${TMDB_KEY}`);
+                    const detailedItem = await detailRes.json();
+                    detailedItem.ai_reason = item.reason;
+                    detailedItem.match_score = item.score;
+                    return detailedItem;
+                }
             });
             const final = (await Promise.all(promises)).filter(x=>x);
             grid.innerHTML = ''; renderGrid(final, true);
-        } catch (e) {
-            console.error(e); grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--accent-secondary);font-weight:bold;">Vibe Check Failed. Server Error.</div>`;
-        }
+        } catch (e) { console.error(e); grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;">Vibe Check Failed.</div>`; }
     }
 
     function resetAndRunBrowse() { currentPage = 1; document.getElementById('grid-container').innerHTML = ''; runBrowseSearch(); }
 
     async function runBrowseSearch() {
-        if (isFetching) return; isFetching = true;
-        const grid = document.getElementById('grid-container'); const loadMoreBtn = document.getElementById('btn-load-more');
+        if (isFetching) return;
+        isFetching = true;
+        const grid = document.getElementById('grid-container');
+        const loadMoreBtn = document.getElementById('btn-load-more');
         loadMoreBtn.innerHTML = "Loading Fun Stuff...";
         if (currentPage === 1) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;font-weight:900;color:var(--accent);">ACCESSING DATABASE...</div>';
         
@@ -585,41 +421,68 @@
                 if(yearEnd) url += `&first_air_date.lte=${yearEnd}-12-31`;
             }
 
-            const res = await fetch(url); const data = await res.json();
+            const res = await fetch(url);
+            const data = await res.json();
+            
+            // FETCH FULL DETAILS for each item to show correct dates (Parallel Fetch)
+            const detailPromises = data.results.map(async (item) => {
+                const detailRes = await fetch(`${BASE_URL}/${browseType}/${item.id}?api_key=${TMDB_KEY}`);
+                return await detailRes.json();
+            });
+            const detailedResults = await Promise.all(detailPromises);
+
             if (currentPage === 1) grid.innerHTML = ''; 
-            renderGrid(data.results || []);
+            renderGrid(detailedResults || []);
+            
             loadMoreBtn.innerHTML = "Load More Titles";
             loadMoreBtn.style.display = data.page < data.total_pages ? 'inline-block' : 'none';
+
         } catch (e) { console.error(e); } finally { isFetching = false; }
     }
 
     function resetAndRunCurate() { currentPage = 1; document.getElementById('grid-container').innerHTML = ''; runCurateSearch(); }
 
     async function runCurateSearch(isLoadMore = false) {
-        if (isFetching) return; isFetching = true;
-        const grid = document.getElementById('grid-container'); const loadMoreBtn = document.getElementById('btn-load-more');
+        if (isFetching) return;
+        isFetching = true;
+        const grid = document.getElementById('grid-container');
+        const loadMoreBtn = document.getElementById('btn-load-more');
+        
         if (!isLoadMore) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;font-weight:900;color:var(--accent);">AI CURATOR IS THINKING...</div>'; loadMoreBtn.style.display = 'none'; curatedTitles = []; } 
         else { loadMoreBtn.innerHTML = "AI IS FINDING MORE..."; }
 
         try {
-            const ref = document.getElementById('ref-search').value; const prompt = document.getElementById('ai-context').value;
+            const ref = document.getElementById('ref-search').value;
+            const prompt = document.getElementById('ai-context').value;
+
             const res = await fetch(API_SEARCH, {
                 method: 'POST', headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ refTitle: ref, userPrompt: prompt, type: curateType, exclude: curatedTitles })
             });
             const aiData = await res.json();
+
             const promises = aiData.map(async (item) => {
                 const s = await fetch(`${BASE_URL}/search/${curateType}?api_key=${TMDB_KEY}&query=${encodeURIComponent(item.title)}`);
                 const d = await s.json();
-                if(d.results?.[0]) { d.results[0].ai_reason = item.reason; d.results[0].match_score = item.score; curatedTitles.push(item.title); return d.results[0]; }
+                if(d.results?.[0]) {
+                    const baseItem = d.results[0];
+                    const detailRes = await fetch(`${BASE_URL}/${curateType}/${baseItem.id}?api_key=${TMDB_KEY}`);
+                    const detailedItem = await detailRes.json();
+                    detailedItem.ai_reason = item.reason;
+                    detailedItem.match_score = item.score;
+                    curatedTitles.push(item.title);
+                    return detailedItem;
+                }
             });
+            
             const final = (await Promise.all(promises)).filter(x=>x);
             if (!isLoadMore) grid.innerHTML = '';
             renderGrid(final, true);
+
             if (final.length > 0) { loadMoreBtn.style.display = 'block'; loadMoreBtn.innerHTML = "Load More Similar Titles"; } 
             else if (isLoadMore) { loadMoreBtn.innerHTML = "No more matches found."; }
-        } catch (e) { console.error(e); if(!isLoadMore) grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;">Error connecting to AI.</div>`; } 
-        finally { isFetching = false; }
+
+        } catch (e) { console.error(e); } finally { isFetching = false; }
     }
 
     function loadMore() {
@@ -634,36 +497,35 @@
         list.forEach((m, index) => {
             if(!m.poster_path) return;
             const title = m.title || m.name;
-            const date = m.release_date || m.first_air_date;
-            const year = date ? date.split('-')[0] : 'N/A';
+            const dateStr = getFormattedDate(m, (m.name ? 'tv' : 'movie')); // Use helper
             const rating = m.vote_average ? m.vote_average.toFixed(1) : 'NR';
-            const card = document.createElement('div'); card.className = 'exhibit-card'; card.style.animationDelay = `${index * 0.1}s`;
             
-            // CLICK TO OPEN QUICK VIEW MODAL
+            const card = document.createElement('div'); card.className = 'exhibit-card';
+            card.style.animationDelay = `${index * 0.1}s`;
             card.onclick = () => openQuickView(m);
 
             card.innerHTML = `
                 <div class="poster-frame"><img src="${IMG_URL + m.poster_path}" loading="lazy"></div>
                 <div class="film-title" title="${title}">${title}</div>
-                <div class="film-meta-row"><span>${year}</span><span class="meta-rating"><span class="star-icon">★</span> ${rating}</span></div>
+                <div class="film-meta-row"><span>${dateStr}</span><span class="meta-rating"><span class="star-icon">★</span> ${rating}</span></div>
                 ${isAi ? `<div class="ai-score">MATCH: ${m.match_score}%</div>` : ''}
             `;
             grid.appendChild(card);
         });
     }
 
-    // --- QUICK VIEW MODAL ---
     async function openQuickView(m) {
         const modal = document.getElementById('quick-view-modal');
         const content = document.getElementById('modal-content');
         const title = m.title || m.name;
-        const date = (m.release_date || m.first_air_date || 'N/A').split('-')[0];
+        // Use smart date helper
+        const dateStr = getFormattedDate(m, (m.name ? 'tv' : 'movie'));
         const poster = m.poster_path ? IMG_URL + m.poster_path : '';
         const overview = m.overview || "No synopsis available.";
         
         let castHtml = '';
         try {
-            const type = m.media_type || (currentMode === 'filter' ? browseType : curateType);
+            const type = m.name ? 'tv' : 'movie';
             const castRes = await fetch(`${BASE_URL}/${type}/${m.id}/credits?api_key=${TMDB_KEY}`);
             const castData = await castRes.json();
             const topCast = castData.cast ? castData.cast.slice(0, 5) : [];
@@ -686,7 +548,7 @@
                 <img src="${poster}" class="modal-poster">
                 <div class="modal-details">
                     <div class="modal-title">${title}</div>
-                    <div class="modal-meta">${date} • ${m.vote_average} ★</div>
+                    <div class="modal-meta">${dateStr} • ${m.vote_average.toFixed(1)} ★</div>
                     <div class="modal-overview">${overview}</div>
                     ${castHtml}
                 </div>
@@ -703,7 +565,6 @@
         setTimeout(() => modal.style.display = 'none', 300);
     }
 
-    // --- INTEL LOGIC ---
     async function runKnowledgeSearch() {
         const query = document.getElementById('know-search').value;
         const container = document.getElementById('dossier-content');
@@ -713,13 +574,18 @@
             const sRes = await fetch(`${BASE_URL}/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(query)}`);
             const sData = await sRes.json();
             if(!sData.results?.length) { container.innerHTML = "Record not found."; return; }
-            const basic = sData.results[0];
+            
+            // Basic search result
+            let basic = sData.results[0];
             const type = basic.media_type === 'tv' ? 'tv' : 'movie';
             const title = basic.title || basic.name;
 
-            const castRes = await fetch(`${BASE_URL}/${type}/${basic.id}/credits?api_key=${TMDB_KEY}`);
-            const castData = await castRes.json();
-            const topCast = castData.cast.slice(0, 6);
+            // FETCH FULL DETAILS for Knowledge Page
+            const detailRes = await fetch(`${BASE_URL}/${type}/${basic.id}?api_key=${TMDB_KEY}&append_to_response=credits`);
+            const detailed = await detailRes.json();
+            const dateStr = getFormattedDate(detailed, type); // Use smart date
+            const topCast = detailed.credits?.cast?.slice(0, 6) || [];
+
             let castHtml = '';
             if(topCast.length > 0) {
                 castHtml = `<div style="margin-bottom:40px;"><h3 style="font-size:13px; color:var(--ink-muted); letter-spacing:2px; font-weight:900; margin-bottom:15px;">TOP BILLING</h3><div class="cast-grid">${topCast.map(c => `<div class="cast-card"><img src="${c.profile_path ? IMG_URL + c.profile_path : 'https://via.placeholder.com/80x80/220044/ffffff?text=?'}" class="cast-img"><div class="cast-name">${c.name}</div><div class="cast-role">${c.character}</div></div>`).join('')}</div></div>`;
@@ -735,7 +601,7 @@
                     <img src="${IMG_URL + basic.poster_path}" style="width:320px; border-radius:16px; border:3px solid var(--border); box-shadow:var(--shadow-card); transform:rotate(-2deg);">
                     <div style="flex:1;">
                         <h1 class="dossier-header-title">${title}</h1>
-                        <div style="color:var(--accent); font-weight:700; font-size:13px; letter-spacing:1px; margin:10px 0 30px; text-transform:uppercase;">${(basic.release_date||basic.first_air_date||'').split('-')[0]} • ${type.toUpperCase()} • <span class="star-icon">★</span> ${basic.vote_average.toFixed(1)}/10</div>
+                        <div style="color:var(--accent); font-weight:700; font-size:13px; letter-spacing:1px; margin:10px 0 30px; text-transform:uppercase;">${dateStr} • ${type.toUpperCase()} • <span class="star-icon">★</span> ${basic.vote_average.toFixed(1)}/10</div>
                         <div style="font-size:22px; color:var(--ink); font-weight:900; font-style:italic; margin-bottom:30px; border-left: 5px solid var(--accent-secondary); padding-left:20px; line-height:1.2;">"${aiIntel.tagline_ai}"</div>
                         ${castHtml}
                         <div style="margin-bottom:40px;"><h3 style="font-size:13px; color:var(--ink-muted); letter-spacing:2px; font-weight:900;">CULTURAL IMPACT</h3><p style="font-size:15px; color:var(--ink); line-height:1.7; font-weight:500;">${aiIntel.cultural_impact}</p></div>
