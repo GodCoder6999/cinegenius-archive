@@ -206,30 +206,47 @@
         @keyframes popIn { from { opacity: 0; transform: scale(0.8) translateY(30px); } to { opacity: 1; transform: scale(1) translateY(0); } }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* MODAL STYLES */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; display: none; justify-content: center; align-items: center; opacity: 0; transition: 0.3s; backdrop-filter: blur(5px); }
+        /* --- UPDATED MODAL STYLES (BIGGER & BETTER) --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; display: none; justify-content: center; align-items: center; opacity: 0; transition: 0.3s; backdrop-filter: blur(8px); }
         .modal-overlay.active { opacity: 1; pointer-events: all; }
-        .modal-card { background: var(--bg-panel); width: 90%; max-width: 600px; border-radius: 16px; border: 2px solid var(--accent); padding: 30px; position: relative; transform: translateY(20px); transition: 0.3s; box-shadow: 0 0 50px rgba(255,0,204,0.3); max-height: 90vh; overflow-y: auto; }
+        
+        .modal-card { 
+            background: linear-gradient(145deg, #1a0b2e, #110520);
+            width: 90%; max-width: 850px; /* Much wider for the big card look */
+            border-radius: 20px; 
+            border: 2px solid var(--accent); /* Neon Pink Border */
+            padding: 40px; 
+            position: relative; 
+            transform: translateY(20px); 
+            transition: 0.3s; 
+            box-shadow: 0 0 40px rgba(255, 0, 204, 0.3); /* Premium Glow */
+            max-height: 90vh; overflow-y: auto; 
+        }
         .modal-overlay.active .modal-card { transform: translateY(0); }
-        .modal-close { position: absolute; top: 15px; right: 20px; font-size: 30px; cursor: pointer; color: var(--ink-muted); transition: 0.2s; line-height: 1; }
+        
+        .modal-close { position: absolute; top: 20px; right: 25px; font-size: 35px; cursor: pointer; color: var(--ink-muted); transition: 0.2s; line-height: 1; z-index: 10; }
         .modal-close:hover { color: var(--accent); transform: scale(1.2); }
         
-        .modal-content-flex { display: flex; gap: 25px; align-items: flex-start; }
-        .modal-poster { width: 160px; border-radius: 12px; border: 2px solid var(--border); box-shadow: var(--shadow-card); flex-shrink: 0; }
-        .modal-details { flex: 1; }
-        .modal-title { font-family: var(--font-head); font-weight: 900; font-size: 28px; color: var(--ink); margin-bottom: 5px; line-height: 1.1; text-transform: uppercase; }
-        .modal-meta { color: var(--accent-secondary); font-size: 13px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
-        .modal-overview { font-size: 14px; line-height: 1.6; color: var(--ink-muted); margin-bottom: 20px; }
+        .modal-content-flex { display: flex; gap: 40px; align-items: flex-start; }
         
-        /* NEW CAST STYLES */
-        .cast-grid { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 15px; margin-top: 20px; }
-        .cast-card { flex: 0 0 90px; text-align: center; }
-        .cast-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); margin-bottom: 8px; transition: 0.3s; }
-        .cast-card:hover .cast-img { transform: scale(1.1); border-color: var(--accent-secondary); }
-        .cast-name { font-family: var(--font-head); font-weight: 700; font-size: 10px; color: var(--ink); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-        .cast-role { font-family: var(--font-body); font-size: 9px; color: var(--ink-muted); font-style: italic; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-
-        /* INTEL STYLES */
+        /* BIGGER POSTER */
+        .modal-poster { 
+            width: 300px; /* Significantly larger */
+            aspect-ratio: 2/3; 
+            object-fit: cover; 
+            border-radius: 12px; 
+            border: 2px solid var(--border); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            flex-shrink: 0; 
+        }
+        
+        .modal-details { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        
+        .modal-title { font-family: var(--font-head); font-weight: 900; font-size: 42px; color: var(--ink); margin-bottom: 10px; line-height: 1.1; text-transform: uppercase; letter-spacing: -1px; text-shadow: 2px 2px 0px var(--accent-secondary); }
+        .modal-meta { color: var(--accent-secondary); font-size: 14px; font-weight: 700; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; }
+        .modal-overview { font-size: 15px; line-height: 1.8; color: var(--ink); margin-bottom: 30px; font-weight: 500; opacity: 0.9; }
+        
+        /* INTEL & CAST STYLES */
         #dossier-content { max-width: 1000px; margin: 0 auto; padding-top: 40px; animation: fadeInUp 0.8s ease; }
         .dossier-header-title { font-family: var(--font-head); font-weight: 900; font-size: 56px; line-height: 1; color: var(--ink); text-shadow: 3px 3px 0px var(--accent-secondary); }
         .intel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; background: var(--bg-panel); padding: 30px; border: 3px solid var(--border); border-radius: 20px; margin-top: 40px; box-shadow: 8px 8px 0px rgba(0,0,0,0.1); }
@@ -242,6 +259,14 @@
         .spoiler-text.revealed { filter: blur(0); user-select: text; opacity: 1; }
         .spoiler-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; background: rgba(0,0,0,0.1); }
         
+        /* NEW CAST STYLES */
+        .cast-grid { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 10px; }
+        .cast-card { flex: 0 0 90px; text-align: center; }
+        .cast-img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent); margin-bottom: 10px; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .cast-card:hover .cast-img { transform: scale(1.1); border-color: var(--accent-secondary); }
+        .cast-name { font-family: var(--font-head); font-weight: 700; font-size: 11px; color: #fff; margin-bottom: 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        .cast-role { font-family: var(--font-body); font-size: 10px; color: var(--ink-muted); font-style: italic; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
         .btn-load-more { padding: 15px 50px; background: var(--bg-panel); color: var(--ink); border: 3px solid var(--accent); font-family: var(--font-head); font-weight: 900; font-size: 12px; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; transition: 0.3s; border-radius: 30px; box-shadow: 5px 5px 0px var(--accent-secondary); display: block; margin: 40px auto; }
         .btn-load-more:hover { background: var(--accent); color: #fff; transform: translateY(-3px) scale(1.05); box-shadow: 8px 8px 0px var(--accent-secondary); }
 
@@ -268,9 +293,11 @@
         }
         
         /* Mobile Modal Fix */
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             .modal-content-flex { flex-direction: column; align-items: center; text-align: center; }
-            .modal-poster { width: 200px; margin-bottom: 20px; }
+            .modal-poster { width: 220px; margin-bottom: 25px; }
+            .modal-title { font-size: 32px; }
+            .cast-grid { justify-content: center; }
         }
     </style>
 </head>
@@ -396,12 +423,8 @@
                     <h1 class="section-header">The Collection</h1>
                     <div class="section-sub" id="main-subtitle">Current Exhibition: Advanced Filter</div>
                 </div>
-                
                 <div id="grid-container" class="exhibit-grid"></div>
-                
-                <div class="load-more-container">
-                    <button id="btn-load-more" class="btn-load-more" onclick="loadMore()" style="display:none;">Load More Titles</button>
-                </div>
+                <button id="btn-load-more" class="btn-load-more" onclick="loadMore()" style="display:none;">Load More Titles</button>
             </div>
 
             <div id="view-dossier" style="display:none;">
@@ -426,90 +449,49 @@
     const API_SEARCH = "https://cinegenius-archive.vercel.app/api/smart-search";
     const API_INTEL = "https://cinegenius-archive.vercel.app/api/intel-brief";
 
-    let currentMode = 'filter'; 
-    let browseType = 'movie'; 
-    let curateType = 'movie'; 
-    let currentPage = 1;
-    let isFetching = false;
-    let curatedTitles = []; // Keeps track of what AI has shown
-    let snowInterval;
+    let currentMode = 'filter', browseType = 'movie', curateType = 'movie', currentPage = 1, isFetching = false, curatedTitles = [], snowInterval;
 
     function toggleTheme() {
         const body = document.body;
         const btn = document.querySelector('.theme-switch');
         const current = body.getAttribute('data-theme');
-        
-        if (current === 'dark') {
-            body.setAttribute('data-theme', 'light');
-            btn.innerHTML = '☾'; 
-        } else {
-            body.setAttribute('data-theme', 'dark');
-            btn.innerHTML = '☀'; 
-        }
+        if (current === 'dark') { body.setAttribute('data-theme', 'light'); btn.innerHTML = '☾'; } 
+        else { body.setAttribute('data-theme', 'dark'); btn.innerHTML = '☀'; }
     }
 
     window.onload = () => {
-        const g = [
-            {id:28,n:"Action"}, {id:878,n:"Sci-Fi"}, {id:27,n:"Horror"}, {id:35,n:"Comedy"},
-            {id:18,n:"Drama"}, {id:53,n:"Thriller"}, {id:12,n:"Adventure"}, {id:9648,n:"Mystery"},
-            {id:10749,n:"Romance"}, {id:14,n:"Fantasy"}, {id:80,n:"Crime"}, {id:16,n:"Animation"}
-        ];
+        const g = [ {id:28,n:"Action"}, {id:878,n:"Sci-Fi"}, {id:27,n:"Horror"}, {id:35,n:"Comedy"}, {id:18,n:"Drama"}, {id:53,n:"Thriller"}, {id:12,n:"Adventure"}, {id:9648,n:"Mystery"}, {id:10749,n:"Romance"}, {id:14,n:"Fantasy"}, {id:80,n:"Crime"}, {id:16,n:"Animation"} ];
         const c = document.getElementById('genre-container');
         if(c) g.forEach(x => { 
             let d = document.createElement('div'); d.className='genre-pill'; d.innerText=x.n; d.dataset.id = x.id;
             d.onclick=()=>{d.classList.toggle('selected');}; c.appendChild(d); 
         });
-        
-        // Check for Season Logic on Load
         checkSnowDate();
-        
         resetAndRunBrowse();
     };
 
     function checkSnowDate() {
         const d = new Date();
         const isSeason = (d.getMonth() === 11) || (d.getMonth() === 0 && d.getDate() <= 2);
-        
-        if (isSeason) {
-            document.getElementById('btn-snow').style.display = 'flex';
-        }
+        if (isSeason) document.getElementById('btn-snow').style.display = 'flex';
     }
 
     function toggleSnow() {
         const btn = document.getElementById('btn-snow');
-        
         if (btn.classList.contains('active')) {
-            // STOP SNOW
-            btn.classList.remove('active');
-            btn.style.background = 'var(--bg-panel)';
-            clearInterval(snowInterval);
-            document.querySelectorAll('.snowflake').forEach(el => el.remove());
+            btn.classList.remove('active'); btn.style.background = 'var(--bg-panel)';
+            clearInterval(snowInterval); document.querySelectorAll('.snowflake').forEach(el => el.remove());
         } else {
-            // START SNOW
-            btn.classList.add('active');
-            btn.style.background = 'var(--accent)';
-            snowInterval = setInterval(createSnowflake, 150); // New flake every 150ms
+            btn.classList.add('active'); btn.style.background = 'var(--accent)';
+            snowInterval = setInterval(createSnowflake, 150);
         }
     }
 
     function createSnowflake() {
-        const snow = document.createElement('div');
-        snow.classList.add('snowflake');
-        snow.innerText = '❄';
-        
-        // Randomize appearance
-        snow.style.left = Math.random() * 100 + 'vw';
-        snow.style.opacity = Math.random() * 0.7 + 0.3;
-        snow.style.fontSize = Math.random() * 20 + 10 + 'px';
-        
-        // Randomize speed (2s to 5s fall time)
-        const duration = Math.random() * 3 + 2;
-        snow.style.animationDuration = duration + 's';
-        
-        document.body.appendChild(snow);
-        
-        // Cleanup after animation
-        setTimeout(() => { snow.remove(); }, duration * 1000);
+        const s = document.createElement('div'); s.className = 'snowflake'; s.innerText = '❄';
+        s.style.left = Math.random() * 100 + 'vw'; s.style.opacity = Math.random() * 0.7 + 0.3; s.style.fontSize = Math.random() * 20 + 10 + 'px';
+        const dur = Math.random() * 3 + 2; s.style.animationDuration = dur + 's';
+        document.body.appendChild(s); setTimeout(() => s.remove(), dur * 1000);
     }
 
     function switchMode(mode) {
@@ -522,7 +504,6 @@
         document.getElementById('input-filter').style.display = mode === 'filter' ? 'block' : 'none';
         document.getElementById('input-search').style.display = mode === 'search' ? 'block' : 'none';
         document.getElementById('input-dossier').style.display = mode === 'knowledge' ? 'block' : 'none';
-        
         document.getElementById('view-collection').style.display = mode !== 'knowledge' ? 'block' : 'none';
         document.getElementById('view-dossier').style.display = mode === 'knowledge' ? 'block' : 'none';
         document.getElementById('btn-load-more').style.display = 'none';
@@ -536,84 +517,54 @@
         }
     }
 
-    // --- NEW: SMART VIBE CHECK (MOOD + FILTERS) ---
     async function runMoodSearch() {
         const mood = document.getElementById('browse-mood').value;
         if(!mood) { alert("Please type a mood first!"); return; }
-
-        // 1. Gather Filter Data
+        
         const genrePills = document.querySelectorAll('.genre-pill.selected');
         const genreNames = Array.from(genrePills).map(p => p.innerText).join(", ");
-        
         const yearStart = document.getElementById('year-start').value;
         const yearEnd = document.getElementById('year-end').value;
-        
         const rateMin = document.getElementById('rate-min').value;
         const rateMax = document.getElementById('rate-max').value;
         
-        // 2. Build the "Prompt Payload" for the AI
         let filterContext = `\n\nCRITICAL CONSTRAINTS (You MUST follow these):`;
         let hasFilters = false;
-
         if (genreNames) { filterContext += `\n- Genre MUST be one of: ${genreNames}`; hasFilters = true; }
         if (yearStart || yearEnd) { filterContext += `\n- Release Year MUST be between: ${yearStart||'Any'} and ${yearEnd||'Any'}`; hasFilters = true; }
         if (rateMin || rateMax) { filterContext += `\n- Rating MUST be between: ${rateMin||0} and ${rateMax||10}`; hasFilters = true; }
-        
         const fullPrompt = hasFilters ? `${mood} ${filterContext}` : mood;
 
-        // 3. UI Updates
         const grid = document.getElementById('grid-container');
-        const loadMoreBtn = document.getElementById('btn-load-more');
-        loadMoreBtn.style.display = 'none';
+        document.getElementById('btn-load-more').style.display = 'none';
         grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;font-weight:900;color:var(--accent);">AI IS FILTERING...</div>';
         document.getElementById('main-subtitle').innerText = "Vibe: " + mood;
 
         try {
             const res = await fetch(API_SEARCH, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                // Sending "General Recommendation" as refTitle tells the AI it's a mood search
+                method: 'POST', headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ refTitle: "General Recommendation", userPrompt: fullPrompt, type: browseType })
             });
-
             if (!res.ok) throw new Error("AI Server Error");
             const aiData = await res.json();
-
-            // Fetch metadata
             const promises = aiData.map(async (item) => {
                 const s = await fetch(`${BASE_URL}/search/${browseType}?api_key=${TMDB_KEY}&query=${encodeURIComponent(item.title)}`);
                 const d = await s.json();
-                if(d.results?.[0]) {
-                    d.results[0].ai_reason = item.reason;
-                    d.results[0].match_score = item.score;
-                    return d.results[0];
-                }
+                if(d.results?.[0]) { d.results[0].match_score = item.score; return d.results[0]; }
             });
-            
             const final = (await Promise.all(promises)).filter(x=>x);
-            grid.innerHTML = '';
-            renderGrid(final, true);
-
+            grid.innerHTML = ''; renderGrid(final, true);
         } catch (e) {
-            console.error(e);
-            grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--accent-secondary);font-weight:bold;">Vibe Check Failed. Server Error.</div>`;
+            console.error(e); grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--accent-secondary);font-weight:bold;">Vibe Check Failed. Server Error.</div>`;
         }
     }
 
-    // --- 1. BROWSE LOGIC (Standard API) ---
-    function resetAndRunBrowse() {
-        currentPage = 1;
-        document.getElementById('grid-container').innerHTML = '';
-        runBrowseSearch();
-    }
+    function resetAndRunBrowse() { currentPage = 1; document.getElementById('grid-container').innerHTML = ''; runBrowseSearch(); }
 
     async function runBrowseSearch() {
-        if (isFetching) return;
-        isFetching = true;
-        const grid = document.getElementById('grid-container');
-        const loadMoreBtn = document.getElementById('btn-load-more');
+        if (isFetching) return; isFetching = true;
+        const grid = document.getElementById('grid-container'); const loadMoreBtn = document.getElementById('btn-load-more');
         loadMoreBtn.innerHTML = "Loading Fun Stuff...";
-        
         if (currentPage === 1) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;font-weight:900;color:var(--accent);">ACCESSING DATABASE...</div>';
         
         try {
@@ -626,7 +577,6 @@
             let url = `${BASE_URL}/discover/${browseType}?api_key=${TMDB_KEY}&sort_by=${sort}&page=${currentPage}`;
             if(selectedGenres) url += `&with_genres=${selectedGenres}`;
             if(rateMin) url += `&vote_average.gte=${rateMin}`;
-            
             if(browseType === 'movie') {
                 if(yearStart) url += `&primary_release_date.gte=${yearStart}-01-01`;
                 if(yearEnd) url += `&primary_release_date.lte=${yearEnd}-12-31`;
@@ -635,105 +585,51 @@
                 if(yearEnd) url += `&first_air_date.lte=${yearEnd}-12-31`;
             }
 
-            const res = await fetch(url);
-            const data = await res.json();
-            
+            const res = await fetch(url); const data = await res.json();
             if (currentPage === 1) grid.innerHTML = ''; 
             renderGrid(data.results || []);
-            
             loadMoreBtn.innerHTML = "Load More Titles";
-            if (data.page < data.total_pages) {
-                loadMoreBtn.style.display = 'inline-block';
-            } else {
-                loadMoreBtn.style.display = 'none';
-            }
-
+            loadMoreBtn.style.display = data.page < data.total_pages ? 'inline-block' : 'none';
         } catch (e) { console.error(e); } finally { isFetching = false; }
     }
 
-    // --- 2. CURATE LOGIC ---
-    function resetAndRunCurate() {
-        currentPage = 1;
-        document.getElementById('grid-container').innerHTML = '';
-        runCurateSearch();
-    }
+    function resetAndRunCurate() { currentPage = 1; document.getElementById('grid-container').innerHTML = ''; runCurateSearch(); }
 
     async function runCurateSearch(isLoadMore = false) {
-        if (isFetching) return;
-        isFetching = true;
-        
-        const grid = document.getElementById('grid-container');
-        const loadMoreBtn = document.getElementById('btn-load-more');
-        
-        if (!isLoadMore) {
-            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;font-weight:900;color:var(--accent);">AI CURATOR IS THINKING...</div>';
-            curatedTitles = []; // Clear list for new search
-        } else {
-            loadMoreBtn.innerHTML = "AI IS FINDING MORE...";
-        }
+        if (isFetching) return; isFetching = true;
+        const grid = document.getElementById('grid-container'); const loadMoreBtn = document.getElementById('btn-load-more');
+        if (!isLoadMore) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;font-weight:900;color:var(--accent);">AI CURATOR IS THINKING...</div>'; loadMoreBtn.style.display = 'none'; curatedTitles = []; } 
+        else { loadMoreBtn.innerHTML = "AI IS FINDING MORE..."; }
 
         try {
-            const ref = document.getElementById('ref-search').value;
-            const prompt = document.getElementById('ai-context').value;
-
+            const ref = document.getElementById('ref-search').value; const prompt = document.getElementById('ai-context').value;
             const res = await fetch(API_SEARCH, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ 
-                    refTitle: ref, 
-                    userPrompt: prompt, 
-                    type: curateType,
-                    exclude: curatedTitles // Send current list to backend
-                })
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ refTitle: ref, userPrompt: prompt, type: curateType, exclude: curatedTitles })
             });
-
             const aiData = await res.json();
-
             const promises = aiData.map(async (item) => {
                 const s = await fetch(`${BASE_URL}/search/${curateType}?api_key=${TMDB_KEY}&query=${encodeURIComponent(item.title)}`);
                 const d = await s.json();
-                if(d.results?.[0]) {
-                    d.results[0].ai_reason = item.reason;
-                    d.results[0].match_score = item.score;
-                    curatedTitles.push(item.title); // Track title to avoid duplicates
-                    return d.results[0];
-                }
+                if(d.results?.[0]) { d.results[0].ai_reason = item.reason; d.results[0].match_score = item.score; curatedTitles.push(item.title); return d.results[0]; }
             });
-            
             const final = (await Promise.all(promises)).filter(x=>x);
-            
             if (!isLoadMore) grid.innerHTML = '';
             renderGrid(final, true);
-
-            // UI Adjustments
-            loadMoreBtn.style.display = 'block';
-            loadMoreBtn.innerHTML = "Load More Curated Titles";
-            document.getElementById('main-subtitle').innerText = "Current Exhibition: AI Analysis";
-
-        } catch (e) { 
-            console.error(e); 
-        } finally { 
-            isFetching = false; 
-        }
+            if (final.length > 0) { loadMoreBtn.style.display = 'block'; loadMoreBtn.innerHTML = "Load More Similar Titles"; } 
+            else if (isLoadMore) { loadMoreBtn.innerHTML = "No more matches found."; }
+        } catch (e) { console.error(e); if(!isLoadMore) grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;">Error connecting to AI.</div>`; } 
+        finally { isFetching = false; }
     }
 
-    // Update the loadMore function to distinguish between Filter and Curate
     function loadMore() {
-        currentPage++;
-        if (currentMode === 'filter') {
-            runBrowseSearch();
-        } else if (currentMode === 'search') {
-            runCurateSearch(true); // Call the AI again
-        }
+        if(currentMode === 'filter') { currentPage++; runBrowseSearch(); } 
+        else if (currentMode === 'search') { runCurateSearch(true); }
     }
 
-    // --- RENDER GRID ---
     function renderGrid(list, isAi=false) {
         const grid = document.getElementById('grid-container');
-        if(list.length === 0 && currentPage === 1) {
-            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;font-weight:700;color:var(--ink-muted);">No records found. Adjust filters!</div>';
-            return;
-        }
+        if(list.length === 0 && currentPage === 1) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;font-weight:700;color:var(--ink-muted);">No records found. Adjust filters!</div>'; return; }
 
         list.forEach((m, index) => {
             if(!m.poster_path) return;
@@ -741,9 +637,7 @@
             const date = m.release_date || m.first_air_date;
             const year = date ? date.split('-')[0] : 'N/A';
             const rating = m.vote_average ? m.vote_average.toFixed(1) : 'NR';
-            
-            const card = document.createElement('div'); card.className = 'exhibit-card';
-            card.style.animationDelay = `${index * 0.1}s`;
+            const card = document.createElement('div'); card.className = 'exhibit-card'; card.style.animationDelay = `${index * 0.1}s`;
             
             // CLICK TO OPEN QUICK VIEW MODAL
             card.onclick = () => openQuickView(m);
@@ -751,10 +645,7 @@
             card.innerHTML = `
                 <div class="poster-frame"><img src="${IMG_URL + m.poster_path}" loading="lazy"></div>
                 <div class="film-title" title="${title}">${title}</div>
-                <div class="film-meta-row">
-                    <span>${year}</span>
-                    <span class="meta-rating"><span class="star-icon">★</span> ${rating}</span>
-                </div>
+                <div class="film-meta-row"><span>${year}</span><span class="meta-rating"><span class="star-icon">★</span> ${rating}</span></div>
                 ${isAi ? `<div class="ai-score">MATCH: ${m.match_score}%</div>` : ''}
             `;
             grid.appendChild(card);
@@ -770,7 +661,6 @@
         const poster = m.poster_path ? IMG_URL + m.poster_path : '';
         const overview = m.overview || "No synopsis available.";
         
-        // Fetch Cast for Modal
         let castHtml = '';
         try {
             const type = m.media_type || (currentMode === 'filter' ? browseType : curateType);
@@ -779,7 +669,7 @@
             const topCast = castData.cast ? castData.cast.slice(0, 5) : [];
             
             if(topCast.length > 0) {
-                castHtml = `<div style="margin-top:20px;"><div style="font-weight:700; color:var(--accent); font-size:11px; margin-bottom:10px; text-transform:uppercase; letter-spacing:1px;">Starring</div><div class="cast-grid">
+                castHtml = `<div style="margin-top:20px;"><div style="font-weight:900; color:var(--accent); font-size:12px; margin-bottom:12px; text-transform:uppercase; letter-spacing:2px;">STARRING</div><div class="cast-grid">
                     ${topCast.map(c => `
                         <div class="cast-card">
                             <img src="${c.profile_path ? IMG_URL + c.profile_path : 'https://via.placeholder.com/80x80/220044/ffffff?text=?'}" class="cast-img">
@@ -813,91 +703,44 @@
         setTimeout(() => modal.style.display = 'none', 300);
     }
 
-    // --- 3. INTEL LOGIC ---
+    // --- INTEL LOGIC ---
     async function runKnowledgeSearch() {
         const query = document.getElementById('know-search').value;
         const container = document.getElementById('dossier-content');
         if(!query) return;
-
         container.innerHTML = `<div style="text-align:center; padding:100px; color:var(--accent); font-weight:900; font-size:24px;">DECRYPTING ARCHIVES...</div>`;
-
         try {
             const sRes = await fetch(`${BASE_URL}/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(query)}`);
             const sData = await sRes.json();
-            
             if(!sData.results?.length) { container.innerHTML = "Record not found."; return; }
             const basic = sData.results[0];
             const type = basic.media_type === 'tv' ? 'tv' : 'movie';
             const title = basic.title || basic.name;
 
-            // Fetch CAST for Intel Page as well
             const castRes = await fetch(`${BASE_URL}/${type}/${basic.id}/credits?api_key=${TMDB_KEY}`);
             const castData = await castRes.json();
             const topCast = castData.cast.slice(0, 6);
-            
             let castHtml = '';
             if(topCast.length > 0) {
-                castHtml = `<div style="margin-bottom:40px;">
-                    <h3 style="font-size:13px; color:var(--ink-muted); letter-spacing:2px; font-weight:900; margin-bottom:15px;">TOP BILLING</h3>
-                    <div class="cast-grid">
-                        ${topCast.map(c => `
-                            <div class="cast-card">
-                                <img src="${c.profile_path ? IMG_URL + c.profile_path : 'https://via.placeholder.com/80x80/220044/ffffff?text=?'}" class="cast-img">
-                                <div class="cast-name">${c.name}</div>
-                                <div class="cast-role">${c.character}</div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>`;
+                castHtml = `<div style="margin-bottom:40px;"><h3 style="font-size:13px; color:var(--ink-muted); letter-spacing:2px; font-weight:900; margin-bottom:15px;">TOP BILLING</h3><div class="cast-grid">${topCast.map(c => `<div class="cast-card"><img src="${c.profile_path ? IMG_URL + c.profile_path : 'https://via.placeholder.com/80x80/220044/ffffff?text=?'}" class="cast-img"><div class="cast-name">${c.name}</div><div class="cast-role">${c.character}</div></div>`).join('')}</div></div>`;
             }
 
-            const aiRes = await fetch(API_INTEL, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ title: title, type: type })
-            });
-
+            const aiRes = await fetch(API_INTEL, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ title: title, type: type }) });
             let aiIntel = aiRes.ok ? await aiRes.json() : { tagline_ai: "Analysis unavailable.", plot_twist: "Classified", cultural_impact: "Unknown", budget_est: "N/A", revenue_est: "N/A", status_verdict: "Unverified" };
 
-            window.revealSpoiler = function(el) {
-                const container = el.closest('.spoiler-container');
-                const text = container.querySelector('.spoiler-text');
-                const overlay = container.querySelector('.spoiler-overlay');
-                text.classList.add('revealed');
-                overlay.style.display = 'none';
-            }
+            window.revealSpoiler = function(el) { const container = el.closest('.spoiler-container'); const text = container.querySelector('.spoiler-text'); const overlay = container.querySelector('.spoiler-overlay'); text.classList.add('revealed'); overlay.style.display = 'none'; }
 
             container.innerHTML = `
                 <div style="display:flex; gap:50px; align-items:flex-start;">
                     <img src="${IMG_URL + basic.poster_path}" style="width:320px; border-radius:16px; border:3px solid var(--border); box-shadow:var(--shadow-card); transform:rotate(-2deg);">
                     <div style="flex:1;">
                         <h1 class="dossier-header-title">${title}</h1>
-                        <div style="color:var(--accent); font-weight:700; font-size:13px; letter-spacing:1px; margin:10px 0 30px; text-transform:uppercase;">
-                            ${(basic.release_date||basic.first_air_date||'').split('-')[0]} • ${type.toUpperCase()} • <span class="star-icon">★</span> ${basic.vote_average.toFixed(1)}/10
-                        </div>
+                        <div style="color:var(--accent); font-weight:700; font-size:13px; letter-spacing:1px; margin:10px 0 30px; text-transform:uppercase;">${(basic.release_date||basic.first_air_date||'').split('-')[0]} • ${type.toUpperCase()} • <span class="star-icon">★</span> ${basic.vote_average.toFixed(1)}/10</div>
                         <div style="font-size:22px; color:var(--ink); font-weight:900; font-style:italic; margin-bottom:30px; border-left: 5px solid var(--accent-secondary); padding-left:20px; line-height:1.2;">"${aiIntel.tagline_ai}"</div>
-                        
                         ${castHtml}
-
-                        <div style="margin-bottom:40px;">
-                            <h3 style="font-size:13px; color:var(--ink-muted); letter-spacing:2px; font-weight:900;">CULTURAL IMPACT</h3>
-                            <p style="font-size:15px; color:var(--ink); line-height:1.7; font-weight:500;">${aiIntel.cultural_impact}</p>
-                        </div>
-                        
-                        <div style="margin-bottom:40px;">
-                            <h3 style="font-size:13px; color:var(--accent-secondary); letter-spacing:2px; font-weight:900;">KEY PLOT TWIST (SPOILER)</h3>
-                            <div class="spoiler-container" onclick="revealSpoiler(this)">
-                                <div class="spoiler-overlay"><button class="btn-decrypt">Tap to Reveal</button></div>
-                                <p class="spoiler-text" style="font-size:16px; line-height:1.7; margin:0;">${aiIntel.plot_twist}</p>
-                            </div>
-                        </div>
-
-                        <div class="intel-grid">
-                            <div class="intel-item"><div>BUDGET (EST)</div><div>${aiIntel.budget_est}</div></div>
-                            <div class="intel-item"><div>REVENUE (EST)</div><div>${aiIntel.revenue_est}</div></div>
-                            <div class="intel-item"><div>STATUS VERDICT</div><div>${aiIntel.status_verdict}</div></div>
-                            <div class="intel-item"><div>POPULARITY INDEX</div><div>${basic.popularity.toFixed(0)}</div></div>
-                        </div>
+                        <div style="margin-bottom:40px;"><h3 style="font-size:13px; color:var(--ink-muted); letter-spacing:2px; font-weight:900;">CULTURAL IMPACT</h3><p style="font-size:15px; color:var(--ink); line-height:1.7; font-weight:500;">${aiIntel.cultural_impact}</p></div>
+                        <div style="margin-bottom:40px;"><h3 style="font-size:13px; color:var(--accent-secondary); letter-spacing:2px; font-weight:900;">KEY PLOT TWIST (SPOILER)</h3><div class="spoiler-container" onclick="revealSpoiler(this)"><div class="spoiler-overlay"><button class="btn-decrypt">Tap to Reveal</button></div><p class="spoiler-text" style="font-size:16px; line-height:1.7; margin:0;">${aiIntel.plot_twist}</p></div></div>
+                        <div class="intel-grid"><div class="intel-item"><div>BUDGET (EST)</div><div>${aiIntel.budget_est}</div></div><div class="intel-item"><div>REVENUE (EST)</div><div>${aiIntel.revenue_est}</div></div><div class="intel-item"><div>STATUS VERDICT</div><div>${aiIntel.status_verdict}</div></div><div class="intel-item"><div>POPULARITY INDEX</div><div>${basic.popularity.toFixed(0)}</div></div></div>
                     </div>
                 </div>`;
         } catch (e) { console.error(e); }
@@ -905,24 +748,17 @@
 
     function setBrowseType(t) { 
         browseType = t; 
-        document.getElementById('b-btn-movie').classList.remove('active');
-        document.getElementById('b-btn-tv').classList.remove('active');
+        document.getElementById('b-btn-movie').classList.remove('active'); document.getElementById('b-btn-tv').classList.remove('active');
         document.getElementById(t==='movie'?'b-btn-movie':'b-btn-tv').classList.add('active');
         resetAndRunBrowse();
     }
     
     function setCurateType(t) { 
         curateType = t; 
-        document.getElementById('c-btn-movie').classList.remove('active');
-        document.getElementById('c-btn-tv').classList.remove('active');
+        document.getElementById('c-btn-movie').classList.remove('active'); document.getElementById('c-btn-tv').classList.remove('active');
         document.getElementById(t==='movie'?'c-btn-movie':'c-btn-tv').classList.add('active');
-
         const input = document.getElementById('ref-search');
-        if (t === 'movie') {
-            input.placeholder = "e.g. Inception";
-        } else {
-            input.placeholder = "e.g. Stranger Things";
-        }
+        if (t === 'movie') { input.placeholder = "e.g. Inception"; } else { input.placeholder = "e.g. Stranger Things"; }
     }
 </script>
 </body>
