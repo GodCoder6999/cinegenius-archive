@@ -18,6 +18,8 @@
             --accent-secondary: #00e5ff; /* NEON CYAN! */
             --card-bg: rgba(255, 255, 255, 0.07);
             --shadow-card: 0 15px 35px rgba(255, 0, 204, 0.4); /* Pink glow shadow */
+            --graffiti-opacity: 0.15;
+            --graffiti-color: #ffffff;
             --grain-opacity: 0.04;
             --imdb-yellow: #ffd700;
 
@@ -37,6 +39,8 @@
             --accent-secondary: #ff4081; /* POP CORAL! */
             --card-bg: #ffffff;
             --shadow-card: 8px 8px 0px rgba(0, 188, 212, 0.3); /* Fun hard shadow */
+            --graffiti-opacity: 0.08;
+            --graffiti-color: #000000;
             --grain-opacity: 0.02;
             --imdb-yellow: #f5c518;
         }
@@ -230,6 +234,11 @@
         .cast-name { font-family: var(--font-head); font-weight: 700; font-size: 11px; color: #fff; margin-bottom: 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
         .cast-role { font-family: var(--font-body); font-size: 10px; color: var(--ink-muted); font-style: italic; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 
+        /* STREAMING STYLES */
+        .stream-grid { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 10px; }
+        .stream-logo { width: 45px; height: 45px; border-radius: 10px; object-fit: cover; border: 2px solid var(--border); transition: 0.3s; }
+        .stream-logo:hover { transform: scale(1.1); border-color: var(--accent); }
+
         /* INTEL STYLES */
         #dossier-content { max-width: 1000px; margin: 0 auto; padding-top: 40px; animation: fadeInUp 0.8s ease; }
         .dossier-header-title { font-family: var(--font-head); font-weight: 900; font-size: 56px; line-height: 1; color: var(--ink); text-shadow: 3px 3px 0px var(--accent-secondary); }
@@ -419,28 +428,17 @@
         const body = document.body;
         const btn = document.querySelector('.theme-switch');
         const current = body.getAttribute('data-theme');
-        
-        if (current === 'dark') {
-            body.setAttribute('data-theme', 'light');
-            btn.innerHTML = '☾'; 
-        } else {
-            body.setAttribute('data-theme', 'dark');
-            btn.innerHTML = '☀'; 
-        }
+        if (current === 'dark') { body.setAttribute('data-theme', 'light'); btn.innerHTML = '☾'; } 
+        else { body.setAttribute('data-theme', 'dark'); btn.innerHTML = '☀'; }
     }
 
     window.onload = () => {
-        const g = [
-            {id:28,n:"Action"}, {id:878,n:"Sci-Fi"}, {id:27,n:"Horror"}, {id:35,n:"Comedy"},
-            {id:18,n:"Drama"}, {id:53,n:"Thriller"}, {id:12,n:"Adventure"}, {id:9648,n:"Mystery"},
-            {id:10749,n:"Romance"}, {id:14,n:"Fantasy"}, {id:80,n:"Crime"}, {id:16,n:"Animation"}
-        ];
+        const g = [ {id:28,n:"Action"}, {id:878,n:"Sci-Fi"}, {id:27,n:"Horror"}, {id:35,n:"Comedy"}, {id:18,n:"Drama"}, {id:53,n:"Thriller"}, {id:12,n:"Adventure"}, {id:9648,n:"Mystery"}, {id:10749,n:"Romance"}, {id:14,n:"Fantasy"}, {id:80,n:"Crime"}, {id:16,n:"Animation"} ];
         const c = document.getElementById('genre-container');
         if(c) g.forEach(x => { 
             let d = document.createElement('div'); d.className='genre-pill'; d.innerText=x.n; d.dataset.id = x.id;
             d.onclick=()=>{d.classList.toggle('selected');}; c.appendChild(d); 
         });
-        
         checkSnowDate();
         resetAndRunBrowse();
     };
@@ -448,38 +446,25 @@
     function checkSnowDate() {
         const d = new Date();
         const isSeason = (d.getMonth() === 11) || (d.getMonth() === 0 && d.getDate() <= 2);
-        
-        if (isSeason) {
-            document.getElementById('btn-snow').style.display = 'flex';
-        }
+        if (isSeason) document.getElementById('btn-snow').style.display = 'flex';
     }
 
     function toggleSnow() {
         const btn = document.getElementById('btn-snow');
-        
         if (btn.classList.contains('active')) {
-            btn.classList.remove('active');
-            btn.style.background = 'var(--bg-panel)';
-            clearInterval(snowInterval);
-            document.querySelectorAll('.snowflake').forEach(el => el.remove());
+            btn.classList.remove('active'); btn.style.background = 'var(--bg-panel)';
+            clearInterval(snowInterval); document.querySelectorAll('.snowflake').forEach(el => el.remove());
         } else {
-            btn.classList.add('active');
-            btn.style.background = 'var(--accent)';
+            btn.classList.add('active'); btn.style.background = 'var(--accent)';
             snowInterval = setInterval(createSnowflake, 150);
         }
     }
 
     function createSnowflake() {
-        const snow = document.createElement('div');
-        snow.classList.add('snowflake');
-        snow.innerText = '❄';
-        snow.style.left = Math.random() * 100 + 'vw';
-        snow.style.opacity = Math.random() * 0.7 + 0.3;
-        snow.style.fontSize = Math.random() * 20 + 10 + 'px';
-        const dur = Math.random() * 3 + 2;
-        snow.style.animationDuration = dur + 's';
-        document.body.appendChild(snow);
-        setTimeout(() => { snow.remove(); }, duration * 1000);
+        const s = document.createElement('div'); s.className = 'snowflake'; s.innerText = '❄';
+        s.style.left = Math.random() * 100 + 'vw'; s.style.opacity = Math.random() * 0.7 + 0.3; s.style.fontSize = Math.random() * 20 + 10 + 'px';
+        const dur = Math.random() * 3 + 2; s.style.animationDuration = dur + 's';
+        document.body.appendChild(s); setTimeout(() => s.remove(), dur * 1000);
     }
 
     function switchMode(mode) {
@@ -502,6 +487,8 @@
         } else if (mode === 'search') {
             document.getElementById('main-subtitle').innerText = "Current Exhibition: AI Analysis";
             document.getElementById('grid-container').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--ink-muted);font-weight:700;">Ready for Curation. Select Format & Reference.</div>';
+        } else if (mode === 'knowledge') {
+            document.getElementById('dossier-content').innerHTML = `<div style="text-align:center; padding-top:100px; color:var(--ink-muted); font-weight:700; font-size:20px;">Use the sidebar to grab a file!</div>`;
         }
     }
 
@@ -509,10 +496,8 @@
     function getFormattedDate(item, type) {
         if (!item) return 'N/A';
         if (type === 'movie') return (item.release_date || 'N/A').split('-')[0];
-        
         const start = (item.first_air_date || '').split('-')[0];
         if (!start) return 'N/A';
-        
         if (item.status === 'Returning Series' || item.in_production === true) {
             return `${start}-Present`;
         } else if (item.status === 'Ended' || item.status === 'Canceled') {
@@ -547,14 +532,11 @@
 
         try {
             const res = await fetch(API_SEARCH, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                method: 'POST', headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ refTitle: "General Recommendation", userPrompt: fullPrompt, type: browseType })
             });
-
             if (!res.ok) throw new Error("AI Server Error");
             const aiData = await res.json();
-
             const promises = aiData.map(async (item) => {
                 const s = await fetch(`${BASE_URL}/search/${browseType}?api_key=${TMDB_KEY}&query=${encodeURIComponent(item.title)}`);
                 const d = await s.json();
@@ -567,14 +549,10 @@
                     return detailedItem;
                 }
             });
-            
             const final = (await Promise.all(promises)).filter(x=>x);
-            grid.innerHTML = '';
-            renderGrid(final, true);
-
+            grid.innerHTML = ''; renderGrid(final, true);
         } catch (e) {
-            console.error(e);
-            grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--accent-secondary);font-weight:bold;">Vibe Check Failed. Server Error.</div>`;
+            console.error(e); grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--accent-secondary);font-weight:bold;">Vibe Check Failed. Server Error.</div>`;
         }
     }
 
@@ -590,7 +568,6 @@
         const grid = document.getElementById('grid-container');
         const loadMoreBtn = document.getElementById('btn-load-more');
         loadMoreBtn.innerHTML = "Loading Fun Stuff...";
-        
         if (currentPage === 1) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;font-weight:900;color:var(--accent);">ACCESSING DATABASE...</div>';
         
         try {
@@ -603,7 +580,6 @@
             let url = `${BASE_URL}/discover/${browseType}?api_key=${TMDB_KEY}&sort_by=${sort}&page=${currentPage}`;
             if(selectedGenres) url += `&with_genres=${selectedGenres}`;
             if(rateMin) url += `&vote_average.gte=${rateMin}`;
-            
             if(browseType === 'movie') {
                 if(yearStart) url += `&primary_release_date.gte=${yearStart}-01-01`;
                 if(yearEnd) url += `&primary_release_date.lte=${yearEnd}-12-31`;
@@ -639,7 +615,6 @@
     async function runCurateSearch(isLoadMore = false) {
         if (isFetching) return;
         isFetching = true;
-        
         const grid = document.getElementById('grid-container');
         const loadMoreBtn = document.getElementById('btn-load-more');
         
@@ -726,7 +701,15 @@
             const card = document.createElement('div'); card.className = 'exhibit-card';
             card.style.animationDelay = `${index * 0.1}s`;
             
-            card.onclick = () => openQuickView(m);
+            card.onclick = () => {
+                if(currentMode === 'knowledge') {
+                    // In knowledge mode (search results), clicking opens the full detail page
+                    openFullIntelPage(m);
+                } else {
+                    // In browse/curate mode, open popup
+                    openQuickView(m);
+                }
+            };
 
             card.innerHTML = `
                 <div class="poster-frame"><img src="${IMG_URL + m.poster_path}" loading="lazy"></div>
@@ -748,26 +731,32 @@
         const dateStr = getFormattedDate(m, (m.name ? 'tv' : 'movie'));
         const poster = m.poster_path ? IMG_URL + m.poster_path : '';
         const overview = m.overview || "No synopsis available.";
+        const type = m.name ? 'tv' : 'movie';
         
         let castHtml = '';
+        let streamHtml = '';
+
         try {
-            const type = m.name ? 'tv' : 'movie';
+            // CAST
             const castRes = await fetch(`${BASE_URL}/${type}/${m.id}/credits?api_key=${TMDB_KEY}`);
             const castData = await castRes.json();
             const topCast = castData.cast ? castData.cast.slice(0, 5) : [];
-            
             if(topCast.length > 0) {
                 castHtml = `<div style="margin-top:20px;"><div style="font-weight:900; color:var(--accent); font-size:12px; margin-bottom:12px; text-transform:uppercase; letter-spacing:2px;">STARRING</div><div class="cast-grid">
-                    ${topCast.map(c => `
-                        <div class="cast-card">
-                            <img src="${c.profile_path ? IMG_URL + c.profile_path : 'https://via.placeholder.com/80x80/220044/ffffff?text=?'}" class="cast-img">
-                            <div class="cast-name">${c.name}</div>
-                            <div class="cast-role">${c.character}</div>
-                        </div>
-                    `).join('')}
+                    ${topCast.map(c => `<div class="cast-card"><img src="${c.profile_path ? IMG_URL + c.profile_path : 'https://via.placeholder.com/80x80/220044/ffffff?text=?'}" class="cast-img"><div class="cast-name">${c.name}</div><div class="cast-role">${c.character}</div></div>`).join('')}
                 </div></div>`;
             }
-        } catch(e) { console.log("Cast fetch failed", e); }
+
+            // STREAMING (JustWatch)
+            const watchRes = await fetch(`${BASE_URL}/${type}/${m.id}/watch/providers?api_key=${TMDB_KEY}`);
+            const watchData = await watchRes.json();
+            const usProviders = watchData.results?.US?.flatrate || watchData.results?.US?.buy || [];
+            if(usProviders.length > 0) {
+                streamHtml = `<div style="margin-top:20px;"><div style="font-weight:900; color:var(--accent-secondary); font-size:12px; margin-bottom:12px; text-transform:uppercase; letter-spacing:2px;">WHERE TO WATCH</div><div class="stream-grid">
+                    ${usProviders.slice(0, 5).map(p => `<img src="${IMG_URL + p.logo_path}" class="stream-logo" title="${p.provider_name}">`).join('')}
+                </div></div>`;
+            }
+        } catch(e) { console.log("Details fetch failed", e); }
 
         content.innerHTML = `
             <div class="modal-content-flex">
@@ -777,6 +766,7 @@
                     <div class="modal-meta">${dateStr} • ${m.vote_average.toFixed(1)} ★</div>
                     <div class="modal-overview">${overview}</div>
                     ${castHtml}
+                    ${streamHtml}
                 </div>
             </div>
         `;
@@ -791,90 +781,95 @@
         setTimeout(() => modal.style.display = 'none', 300);
     }
 
+    // --- INTEL LOGIC (UPDATED: Search List -> Click -> Full Page) ---
     async function runKnowledgeSearch() {
         const query = document.getElementById('know-search').value;
-        const container = document.getElementById('dossier-content');
-        if(!query) return;
-
-        container.innerHTML = `<div style="text-align:center; padding:100px; color:var(--accent); font-weight:900; font-size:24px;">DECRYPTING ARCHIVES...</div>`;
+        const container = document.getElementById('dossier-content'); // We'll hijack the main grid instead
+        
+        // Switch view to grid for results
+        document.getElementById('view-collection').style.display = 'block';
+        document.getElementById('view-dossier').style.display = 'none';
+        
+        const grid = document.getElementById('grid-container');
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;font-weight:700;color:var(--accent);">SEARCHING ARCHIVES...</div>';
 
         try {
             const sRes = await fetch(`${BASE_URL}/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(query)}`);
             const sData = await sRes.json();
             
-            if(!sData.results?.length) { container.innerHTML = "Record not found."; return; }
-            const basic = sData.results[0];
-            const type = basic.media_type === 'tv' ? 'tv' : 'movie';
-            const title = basic.title || basic.name;
+            if(!sData.results?.length) { 
+                grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;">No results found.</div>'; 
+                return; 
+            }
 
-            const detailRes = await fetch(`${BASE_URL}/${type}/${basic.id}?api_key=${TMDB_KEY}&append_to_response=credits`);
-            const detailed = await detailRes.json();
-            const dateStr = getFormattedDate(detailed, type);
-            const topCast = detailed.credits?.cast?.slice(0, 6) || [];
+            // Fetch details for correct dates
+            const detailPromises = sData.results.map(async (item) => {
+                if(item.media_type === 'person') return null; // Skip people
+                const type = item.media_type || (item.title ? 'movie' : 'tv');
+                const detailRes = await fetch(`${BASE_URL}/${type}/${item.id}?api_key=${TMDB_KEY}`);
+                return await detailRes.json();
+            });
             
+            const detailedResults = (await Promise.all(detailPromises)).filter(x=>x);
+            
+            // Render grid. The renderGrid function checks currentMode to decide click action
+            renderGrid(detailedResults); 
+
+        } catch (e) { console.error(e); }
+    }
+
+    async function openFullIntelPage(m) {
+        // HIDE GRID, SHOW DOSSIER
+        document.getElementById('view-collection').style.display = 'none';
+        document.getElementById('view-dossier').style.display = 'block';
+        const container = document.getElementById('dossier-content');
+        
+        container.innerHTML = `<div style="text-align:center; padding:100px; color:var(--accent); font-weight:900; font-size:24px;">DECRYPTING FILE...</div>`;
+
+        try {
+            const type = m.title ? 'movie' : 'tv';
+            const title = m.title || m.name;
+
+            // Fetch CAST & STREAMING
+            const creditsRes = await fetch(`${BASE_URL}/${type}/${m.id}/credits?api_key=${TMDB_KEY}`);
+            const creditsData = await creditsRes.json();
+            const topCast = creditsData.cast.slice(0, 6);
+            
+            const watchRes = await fetch(`${BASE_URL}/${type}/${m.id}/watch/providers?api_key=${TMDB_KEY}`);
+            const watchData = await watchRes.json();
+            const usProviders = watchData.results?.US?.flatrate || watchData.results?.US?.buy || [];
+
             let castHtml = '';
             if(topCast.length > 0) {
-                castHtml = `<div style="margin-bottom:40px;">
-                    <h3 style="font-size:13px; color:var(--ink-muted); letter-spacing:2px; font-weight:900; margin-bottom:15px;">TOP BILLING</h3>
-                    <div class="cast-grid">
-                        ${topCast.map(c => `
-                            <div class="cast-card">
-                                <img src="${c.profile_path ? IMG_URL + c.profile_path : 'https://via.placeholder.com/80x80/220044/ffffff?text=?'}" class="cast-img">
-                                <div class="cast-name">${c.name}</div>
-                                <div class="cast-role">${c.character}</div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>`;
+                castHtml = `<div style="margin-bottom:40px;"><h3 style="font-size:13px; color:var(--ink-muted); letter-spacing:2px; font-weight:900; margin-bottom:15px;">TOP BILLING</h3><div class="cast-grid">${topCast.map(c => `<div class="cast-card"><img src="${c.profile_path ? IMG_URL + c.profile_path : 'https://via.placeholder.com/80x80/220044/ffffff?text=?'}" class="cast-img"><div class="cast-name">${c.name}</div><div class="cast-role">${c.character}</div></div>`).join('')}</div></div>`;
             }
 
-            const aiRes = await fetch(API_INTEL, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ title: title, type: type })
-            });
+            let streamHtml = '';
+            if(usProviders.length > 0) {
+                streamHtml = `<div style="margin-bottom:40px;"><h3 style="font-size:13px; color:var(--accent-secondary); letter-spacing:2px; font-weight:900; margin-bottom:15px;">WHERE TO WATCH</h3><div class="stream-grid">${usProviders.slice(0,5).map(p => `<img src="${IMG_URL + p.logo_path}" class="stream-logo" title="${p.provider_name}">`).join('')}</div></div>`;
+            }
 
+            const aiRes = await fetch(API_INTEL, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ title: title, type: type }) });
             let aiIntel = aiRes.ok ? await aiRes.json() : { tagline_ai: "Analysis unavailable.", plot_twist: "Classified", cultural_impact: "Unknown", budget_est: "N/A", revenue_est: "N/A", status_verdict: "Unverified" };
 
-            window.revealSpoiler = function(el) {
-                const container = el.closest('.spoiler-container');
-                const text = container.querySelector('.spoiler-text');
-                const overlay = container.querySelector('.spoiler-overlay');
-                text.classList.add('revealed');
-                overlay.style.display = 'none';
-            }
+            window.revealSpoiler = function(el) { const container = el.closest('.spoiler-container'); const text = container.querySelector('.spoiler-text'); const overlay = container.querySelector('.spoiler-overlay'); text.classList.add('revealed'); overlay.style.display = 'none'; }
+
+            const dateStr = getFormattedDate(m, type);
 
             container.innerHTML = `
                 <div style="display:flex; gap:50px; align-items:flex-start;">
-                    <img src="${IMG_URL + basic.poster_path}" style="width:320px; border-radius:16px; border:3px solid var(--border); box-shadow:var(--shadow-card); transform:rotate(-2deg);">
+                    <img src="${IMG_URL + m.poster_path}" style="width:320px; border-radius:16px; border:3px solid var(--border); box-shadow:var(--shadow-card); transform:rotate(-2deg);">
                     <div style="flex:1;">
                         <h1 class="dossier-header-title">${title}</h1>
-                        <div style="color:var(--accent); font-weight:700; font-size:13px; letter-spacing:1px; margin:10px 0 30px; text-transform:uppercase;">
-                            ${dateStr} • ${type.toUpperCase()} • <span class="star-icon">★</span> ${basic.vote_average.toFixed(1)}/10
-                        </div>
+                        <div style="color:var(--accent); font-weight:700; font-size:13px; letter-spacing:1px; margin:10px 0 30px; text-transform:uppercase;">${dateStr} • ${type.toUpperCase()} • <span class="star-icon">★</span> ${m.vote_average.toFixed(1)}/10</div>
                         <div style="font-size:22px; color:var(--ink); font-weight:900; font-style:italic; margin-bottom:30px; border-left: 5px solid var(--accent-secondary); padding-left:20px; line-height:1.2;">"${aiIntel.tagline_ai}"</div>
                         
                         ${castHtml}
+                        ${streamHtml}
 
-                        <div style="margin-bottom:40px;">
-                            <h3 style="font-size:13px; color:var(--ink-muted); letter-spacing:2px; font-weight:900;">CULTURAL IMPACT</h3>
-                            <p style="font-size:15px; color:var(--ink); line-height:1.7; font-weight:500;">${aiIntel.cultural_impact}</p>
-                        </div>
-                        
-                        <div style="margin-bottom:40px;">
-                            <h3 style="font-size:13px; color:var(--accent-secondary); letter-spacing:2px; font-weight:900;">KEY PLOT TWIST (SPOILER)</h3>
-                            <div class="spoiler-container" onclick="revealSpoiler(this)">
-                                <div class="spoiler-overlay"><button class="btn-decrypt">Tap to Reveal</button></div>
-                                <p class="spoiler-text" style="font-size:16px; line-height:1.7; margin:0;">${aiIntel.plot_twist}</p>
-                            </div>
-                        </div>
-
-                        <div class="intel-grid">
-                            <div class="intel-item"><div>BUDGET (EST)</div><div>${aiIntel.budget_est}</div></div>
-                            <div class="intel-item"><div>REVENUE (EST)</div><div>${aiIntel.revenue_est}</div></div>
-                            <div class="intel-item"><div>STATUS VERDICT</div><div>${aiIntel.status_verdict}</div></div>
-                            <div class="intel-item"><div>POPULARITY INDEX</div><div>${basic.popularity.toFixed(0)}</div></div>
-                        </div>
+                        <div style="margin-bottom:40px;"><h3 style="font-size:13px; color:var(--ink-muted); letter-spacing:2px; font-weight:900;">CULTURAL IMPACT</h3><p style="font-size:15px; color:var(--ink); line-height:1.7; font-weight:500;">${aiIntel.cultural_impact}</p></div>
+                        <div style="margin-bottom:40px;"><h3 style="font-size:13px; color:var(--accent-secondary); letter-spacing:2px; font-weight:900;">KEY PLOT TWIST (SPOILER)</h3><div class="spoiler-container" onclick="revealSpoiler(this)"><div class="spoiler-overlay"><button class="btn-decrypt">Tap to Reveal</button></div><p class="spoiler-text" style="font-size:16px; line-height:1.7; margin:0;">${aiIntel.plot_twist}</p></div></div>
+                        <div class="intel-grid"><div class="intel-item"><div>BUDGET (EST)</div><div>${aiIntel.budget_est}</div></div><div class="intel-item"><div>REVENUE (EST)</div><div>${aiIntel.revenue_est}</div></div><div class="intel-item"><div>STATUS VERDICT</div><div>${aiIntel.status_verdict}</div></div><div class="intel-item"><div>POPULARITY INDEX</div><div>${m.popularity.toFixed(0)}</div></div></div>
                     </div>
                 </div>`;
         } catch (e) { console.error(e); }
@@ -882,24 +877,17 @@
 
     function setBrowseType(t) { 
         browseType = t; 
-        document.getElementById('b-btn-movie').classList.remove('active');
-        document.getElementById('b-btn-tv').classList.remove('active');
+        document.getElementById('b-btn-movie').classList.remove('active'); document.getElementById('b-btn-tv').classList.remove('active');
         document.getElementById(t==='movie'?'b-btn-movie':'b-btn-tv').classList.add('active');
         resetAndRunBrowse();
     }
     
     function setCurateType(t) { 
         curateType = t; 
-        document.getElementById('c-btn-movie').classList.remove('active');
-        document.getElementById('c-btn-tv').classList.remove('active');
+        document.getElementById('c-btn-movie').classList.remove('active'); document.getElementById('c-btn-tv').classList.remove('active');
         document.getElementById(t==='movie'?'c-btn-movie':'c-btn-tv').classList.add('active');
-
         const input = document.getElementById('ref-search');
-        if (t === 'movie') {
-            input.placeholder = "e.g. Inception";
-        } else {
-            input.placeholder = "e.g. Stranger Things";
-        }
+        if (t === 'movie') { input.placeholder = "e.g. Inception"; } else { input.placeholder = "e.g. Stranger Things"; }
     }
 </script>
 </body>
