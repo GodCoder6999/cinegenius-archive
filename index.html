@@ -67,7 +67,26 @@
             animation: grainMove 2s steps(4) infinite;
         }
 
+        .graffiti-wall {
+            position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
+            pointer-events: none; z-index: 0;
+            opacity: var(--graffiti-opacity);
+            display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 60px;
+            transform: rotate(-10deg) scale(1.2);
+            animation: drift 60s linear infinite;
+        }
+        .graffiti-text {
+            font-family: var(--font-graffiti);
+            font-size: 90px;
+            color: var(--graffiti-color);
+            line-height: 1;
+            user-select: none;
+            text-transform: uppercase;
+            text-shadow: 3px 3px 0px var(--accent-secondary);
+        }
+
         @keyframes grainMove { 0% { transform: translate(0,0) } 100% { transform: translate(-5%, -5%) } }
+        @keyframes drift { 0% { transform: rotate(-10deg) translate(0,0); } 50% { transform: rotate(-8deg) translate(-2%, 2%); } 100% { transform: rotate(-10deg) translate(0,0); } }
 
         /* --- HEADER --- */
         .masthead { 
@@ -187,7 +206,7 @@
         @keyframes popIn { from { opacity: 0; transform: scale(0.8) translateY(30px); } to { opacity: 1; transform: scale(1) translateY(0); } }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- UPDATED MODAL STYLES (BIGGER & BETTER) --- */
+        /* --- UPDATED MODAL STYLES --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; display: none; justify-content: center; align-items: center; opacity: 0; transition: 0.3s; backdrop-filter: blur(8px); }
         .modal-overlay.active { opacity: 1; pointer-events: all; }
         
@@ -227,17 +246,17 @@
         .modal-overview { font-size: 15px; line-height: 1.8; color: var(--ink); margin-bottom: 30px; font-weight: 500; opacity: 0.9; }
         
         /* CAST STYLES */
-        .cast-grid { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 10px; }
+        .cast-grid { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 10px; margin-bottom:20px; }
         .cast-card { flex: 0 0 90px; text-align: center; }
         .cast-img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent); margin-bottom: 10px; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         .cast-card:hover .cast-img { transform: scale(1.1); border-color: var(--accent-secondary); }
         .cast-name { font-family: var(--font-head); font-weight: 700; font-size: 11px; color: #fff; margin-bottom: 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
         .cast-role { font-family: var(--font-body); font-size: 10px; color: var(--ink-muted); font-style: italic; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 
-        /* STREAMING STYLES */
+        /* STREAMING STYLES (NEW) */
         .stream-grid { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 10px; }
-        .stream-logo { width: 45px; height: 45px; border-radius: 10px; object-fit: cover; border: 2px solid var(--border); transition: 0.3s; }
-        .stream-logo:hover { transform: scale(1.1); border-color: var(--accent); }
+        .stream-logo { width: 50px; height: 50px; border-radius: 12px; object-fit: cover; border: 2px solid var(--border); transition: 0.3s; cursor: pointer; }
+        .stream-logo:hover { transform: scale(1.1) rotate(5deg); border-color: var(--accent); box-shadow: 0 0 10px var(--accent); }
 
         /* INTEL STYLES */
         #dossier-content { max-width: 1000px; margin: 0 auto; padding-top: 40px; animation: fadeInUp 0.8s ease; }
@@ -252,6 +271,10 @@
         .spoiler-text.revealed { filter: blur(0); user-select: text; opacity: 1; }
         .spoiler-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 10; pointer-events: none; background: rgba(0,0,0,0.1); }
         
+        /* BACK BUTTON */
+        .btn-back { position: absolute; top: 30px; left: 60px; background: transparent; border: 2px solid var(--accent); color: var(--accent); padding: 10px 20px; border-radius: 30px; font-weight: 700; cursor: pointer; transition: 0.3s; font-family: var(--font-head); display: none; z-index: 99; }
+        .btn-back:hover { background: var(--accent); color: #fff; transform: translateX(-5px); }
+
         .btn-load-more { padding: 15px 50px; background: var(--bg-panel); color: var(--ink); border: 3px solid var(--accent); font-family: var(--font-head); font-weight: 900; font-size: 12px; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; transition: 0.3s; border-radius: 30px; box-shadow: 5px 5px 0px var(--accent-secondary); display: block; margin: 40px auto; }
         .btn-load-more:hover { background: var(--accent); color: #fff; transform: translateY(-3px) scale(1.05); box-shadow: 8px 8px 0px var(--accent-secondary); }
 
@@ -283,6 +306,7 @@
             .modal-poster { width: 220px; margin-bottom: 25px; }
             .modal-title { font-size: 32px; }
             .cast-grid { justify-content: center; }
+            .btn-back { top: 20px; left: 20px; padding: 8px 15px; font-size: 12px; }
         }
     </style>
 </head>
@@ -387,6 +411,7 @@
         </aside>
 
         <div class="canvas" id="main-canvas">
+            <button class="btn-back" id="btn-back" onclick="goBack()">← BACK TO COLLECTION</button>
             <div id="view-collection">
                 <div id="header-dynamic">
                     <h1 class="section-header">The Collection</h1>
@@ -423,6 +448,7 @@
     const API_INTEL = "https://cinegenius-archive.vercel.app/api/intel-brief";
 
     let currentMode = 'filter', browseType = 'movie', curateType = 'movie', currentPage = 1, isFetching = false, curatedTitles = [], snowInterval;
+    let previousMode = 'filter'; // Track where we came from
 
     function toggleTheme() {
         const body = document.body;
@@ -468,7 +494,12 @@
     }
 
     function switchMode(mode) {
+        // Don't switch if clicking the same mode
+        if (currentMode === mode && mode !== 'knowledge') return; 
+        
+        if (mode !== 'knowledge') previousMode = mode; // Remember the main grid view
         currentMode = mode;
+
         document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
         if(mode==='filter') document.getElementById('btn-browse').classList.add('active');
         if(mode==='search') document.getElementById('btn-search').classList.add('active');
@@ -477,19 +508,35 @@
         document.getElementById('input-filter').style.display = mode === 'filter' ? 'block' : 'none';
         document.getElementById('input-search').style.display = mode === 'search' ? 'block' : 'none';
         document.getElementById('input-dossier').style.display = mode === 'knowledge' ? 'block' : 'none';
-        document.getElementById('view-collection').style.display = mode !== 'knowledge' ? 'block' : 'none';
-        document.getElementById('view-dossier').style.display = mode === 'knowledge' ? 'block' : 'none';
-        document.getElementById('btn-load-more').style.display = 'none';
+        
+        // View Handling
+        const isDossier = (mode === 'knowledge' && document.getElementById('view-dossier').style.display === 'block');
+        
+        if (!isDossier) {
+            document.getElementById('view-collection').style.display = 'block';
+            document.getElementById('view-dossier').style.display = 'none';
+            document.getElementById('btn-back').style.display = 'none';
+        }
 
         if(mode === 'filter') {
             document.getElementById('main-subtitle').innerText = "Current Exhibition: Advanced Filter";
-            resetAndRunBrowse();
+            if (document.getElementById('grid-container').innerHTML === '') resetAndRunBrowse();
         } else if (mode === 'search') {
             document.getElementById('main-subtitle').innerText = "Current Exhibition: AI Analysis";
-            document.getElementById('grid-container').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--ink-muted);font-weight:700;">Ready for Curation. Select Format & Reference.</div>';
+            if (document.getElementById('grid-container').innerHTML === '') document.getElementById('grid-container').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--ink-muted);font-weight:700;">Ready for Curation. Select Format & Reference.</div>';
         } else if (mode === 'knowledge') {
-            document.getElementById('dossier-content').innerHTML = `<div style="text-align:center; padding-top:100px; color:var(--ink-muted); font-weight:700; font-size:20px;">Use the sidebar to grab a file!</div>`;
+            // Do nothing, wait for search
         }
+    }
+
+    function goBack() {
+        document.getElementById('view-dossier').style.display = 'none';
+        document.getElementById('view-collection').style.display = 'block';
+        document.getElementById('btn-back').style.display = 'none';
+        
+        // Restore controls based on previous mode
+        if (previousMode === 'filter') switchMode('filter');
+        else if (previousMode === 'search') switchMode('search');
     }
 
     // --- HELPER FOR DATES ---
@@ -505,6 +552,30 @@
             return (end && end !== start) ? `${start}-${end}` : start;
         }
         return start;
+    }
+
+    // --- FETCH STREAMING ---
+    async function getStreamingHtml(type, id) {
+        try {
+            const res = await fetch(`${BASE_URL}/${type}/${id}/watch/providers?api_key=${TMDB_KEY}`);
+            const data = await res.json();
+            // Check Flatrate, Rent, and Buy for US
+            const providers = data.results?.US?.flatrate || data.results?.US?.rent || data.results?.US?.buy || [];
+            
+            if (providers.length > 0) {
+                // Deduplicate providers by ID
+                const uniqueProviders = [...new Map(providers.map(item => [item.provider_id, item])).values()];
+                return `<div style="margin-top:20px;">
+                    <div style="font-weight:900; color:var(--accent-secondary); font-size:12px; margin-bottom:12px; text-transform:uppercase; letter-spacing:2px;">WHERE TO WATCH</div>
+                    <div class="stream-grid">
+                        ${uniqueProviders.slice(0, 5).map(p => `
+                            <img src="${IMG_URL + p.logo_path}" class="stream-logo" title="${p.provider_name}">
+                        `).join('')}
+                    </div>
+                </div>`;
+            }
+            return `<div style="margin-top:20px; font-size:12px; color:var(--ink-muted);">No streaming options found.</div>`;
+        } catch (e) { return ''; }
     }
 
     async function runMoodSearch() {
@@ -556,11 +627,7 @@
         }
     }
 
-    function resetAndRunBrowse() {
-        currentPage = 1;
-        document.getElementById('grid-container').innerHTML = '';
-        runBrowseSearch();
-    }
+    function resetAndRunBrowse() { currentPage = 1; document.getElementById('grid-container').innerHTML = ''; runBrowseSearch(); }
 
     async function runBrowseSearch() {
         if (isFetching) return;
@@ -606,11 +673,7 @@
         } catch (e) { console.error(e); } finally { isFetching = false; }
     }
 
-    function resetAndRunCurate() {
-        currentPage = 1;
-        document.getElementById('grid-container').innerHTML = '';
-        runCurateSearch();
-    }
+    function resetAndRunCurate() { currentPage = 1; document.getElementById('grid-container').innerHTML = ''; runCurateSearch(); }
 
     async function runCurateSearch(isLoadMore = false) {
         if (isFetching) return;
@@ -633,14 +696,8 @@
             const res = await fetch(API_SEARCH, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ 
-                    refTitle: ref, 
-                    userPrompt: prompt, 
-                    type: curateType,
-                    exclude: curatedTitles 
-                })
+                body: JSON.stringify({ refTitle: ref, userPrompt: prompt, type: curateType, exclude: curatedTitles })
             });
-
             const aiData = await res.json();
 
             const promises = aiData.map(async (item) => {
@@ -658,7 +715,6 @@
             });
             
             const final = (await Promise.all(promises)).filter(x=>x);
-            
             if (!isLoadMore) grid.innerHTML = '';
             renderGrid(final, true);
 
@@ -669,28 +725,17 @@
                 loadMoreBtn.innerHTML = "No more matches found.";
             }
 
-        } catch (e) { 
-            console.error(e); 
-        } finally { 
-            isFetching = false; 
-        }
+        } catch (e) { console.error(e); } finally { isFetching = false; }
     }
 
     function loadMore() {
-        if(currentMode === 'filter') {
-            currentPage++;
-            runBrowseSearch();
-        } else if (currentMode === 'search') {
-            runCurateSearch(true); 
-        }
+        if(currentMode === 'filter') { currentPage++; runBrowseSearch(); } 
+        else if (currentMode === 'search') { runCurateSearch(true); }
     }
 
     function renderGrid(list, isAi=false) {
         const grid = document.getElementById('grid-container');
-        if(list.length === 0 && currentPage === 1) {
-            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;font-weight:700;color:var(--ink-muted);">No records found. Adjust filters!</div>';
-            return;
-        }
+        if(list.length === 0 && currentPage === 1) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;font-weight:700;color:var(--ink-muted);">No records found. Adjust filters!</div>'; return; }
 
         list.forEach((m, index) => {
             if(!m.poster_path) return;
@@ -703,10 +748,8 @@
             
             card.onclick = () => {
                 if(currentMode === 'knowledge') {
-                    // In knowledge mode (search results), clicking opens the full detail page
                     openFullIntelPage(m);
                 } else {
-                    // In browse/curate mode, open popup
                     openQuickView(m);
                 }
             };
@@ -728,10 +771,10 @@
         const modal = document.getElementById('quick-view-modal');
         const content = document.getElementById('modal-content');
         const title = m.title || m.name;
-        const dateStr = getFormattedDate(m, (m.name ? 'tv' : 'movie'));
+        const type = m.name ? 'tv' : 'movie';
+        const dateStr = getFormattedDate(m, type);
         const poster = m.poster_path ? IMG_URL + m.poster_path : '';
         const overview = m.overview || "No synopsis available.";
-        const type = m.name ? 'tv' : 'movie';
         
         let castHtml = '';
         let streamHtml = '';
@@ -747,15 +790,9 @@
                 </div></div>`;
             }
 
-            // STREAMING (JustWatch)
-            const watchRes = await fetch(`${BASE_URL}/${type}/${m.id}/watch/providers?api_key=${TMDB_KEY}`);
-            const watchData = await watchRes.json();
-            const usProviders = watchData.results?.US?.flatrate || watchData.results?.US?.buy || [];
-            if(usProviders.length > 0) {
-                streamHtml = `<div style="margin-top:20px;"><div style="font-weight:900; color:var(--accent-secondary); font-size:12px; margin-bottom:12px; text-transform:uppercase; letter-spacing:2px;">WHERE TO WATCH</div><div class="stream-grid">
-                    ${usProviders.slice(0, 5).map(p => `<img src="${IMG_URL + p.logo_path}" class="stream-logo" title="${p.provider_name}">`).join('')}
-                </div></div>`;
-            }
+            // STREAMING
+            streamHtml = await getStreamingHtml(type, m.id);
+
         } catch(e) { console.log("Details fetch failed", e); }
 
         content.innerHTML = `
@@ -781,12 +818,11 @@
         setTimeout(() => modal.style.display = 'none', 300);
     }
 
-    // --- INTEL LOGIC (UPDATED: Search List -> Click -> Full Page) ---
     async function runKnowledgeSearch() {
         const query = document.getElementById('know-search').value;
-        const container = document.getElementById('dossier-content'); // We'll hijack the main grid instead
+        const container = document.getElementById('dossier-content');
         
-        // Switch view to grid for results
+        // Ensure we are showing the grid for results
         document.getElementById('view-collection').style.display = 'block';
         document.getElementById('view-dossier').style.display = 'none';
         
@@ -802,52 +838,41 @@
                 return; 
             }
 
-            // Fetch details for correct dates
             const detailPromises = sData.results.map(async (item) => {
-                if(item.media_type === 'person') return null; // Skip people
+                if(item.media_type === 'person') return null;
                 const type = item.media_type || (item.title ? 'movie' : 'tv');
                 const detailRes = await fetch(`${BASE_URL}/${type}/${item.id}?api_key=${TMDB_KEY}`);
                 return await detailRes.json();
             });
             
             const detailedResults = (await Promise.all(detailPromises)).filter(x=>x);
-            
-            // Render grid. The renderGrid function checks currentMode to decide click action
             renderGrid(detailedResults); 
 
         } catch (e) { console.error(e); }
     }
 
     async function openFullIntelPage(m) {
-        // HIDE GRID, SHOW DOSSIER
         document.getElementById('view-collection').style.display = 'none';
         document.getElementById('view-dossier').style.display = 'block';
-        const container = document.getElementById('dossier-content');
+        document.getElementById('btn-back').style.display = 'block'; // SHOW BACK BUTTON
         
+        const container = document.getElementById('dossier-content');
         container.innerHTML = `<div style="text-align:center; padding:100px; color:var(--accent); font-weight:900; font-size:24px;">DECRYPTING FILE...</div>`;
 
         try {
             const type = m.title ? 'movie' : 'tv';
             const title = m.title || m.name;
 
-            // Fetch CAST & STREAMING
             const creditsRes = await fetch(`${BASE_URL}/${type}/${m.id}/credits?api_key=${TMDB_KEY}`);
             const creditsData = await creditsRes.json();
             const topCast = creditsData.cast.slice(0, 6);
             
-            const watchRes = await fetch(`${BASE_URL}/${type}/${m.id}/watch/providers?api_key=${TMDB_KEY}`);
-            const watchData = await watchRes.json();
-            const usProviders = watchData.results?.US?.flatrate || watchData.results?.US?.buy || [];
-
             let castHtml = '';
             if(topCast.length > 0) {
                 castHtml = `<div style="margin-bottom:40px;"><h3 style="font-size:13px; color:var(--ink-muted); letter-spacing:2px; font-weight:900; margin-bottom:15px;">TOP BILLING</h3><div class="cast-grid">${topCast.map(c => `<div class="cast-card"><img src="${c.profile_path ? IMG_URL + c.profile_path : 'https://via.placeholder.com/80x80/220044/ffffff?text=?'}" class="cast-img"><div class="cast-name">${c.name}</div><div class="cast-role">${c.character}</div></div>`).join('')}</div></div>`;
             }
 
-            let streamHtml = '';
-            if(usProviders.length > 0) {
-                streamHtml = `<div style="margin-bottom:40px;"><h3 style="font-size:13px; color:var(--accent-secondary); letter-spacing:2px; font-weight:900; margin-bottom:15px;">WHERE TO WATCH</h3><div class="stream-grid">${usProviders.slice(0,5).map(p => `<img src="${IMG_URL + p.logo_path}" class="stream-logo" title="${p.provider_name}">`).join('')}</div></div>`;
-            }
+            const streamHtml = await getStreamingHtml(type, m.id);
 
             const aiRes = await fetch(API_INTEL, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ title: title, type: type }) });
             let aiIntel = aiRes.ok ? await aiRes.json() : { tagline_ai: "Analysis unavailable.", plot_twist: "Classified", cultural_impact: "Unknown", budget_est: "N/A", revenue_est: "N/A", status_verdict: "Unverified" };
