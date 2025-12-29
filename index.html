@@ -539,19 +539,33 @@
         else if (previousMode === 'search') switchMode('search');
     }
 
-    // --- HELPER FOR DATES ---
-    function getFormattedDate(item, type) {
+    // --- HELPER FOR METADATA (DATES & SEASONS) ---
+    function getMetaInfo(item) {
         if (!item) return 'N/A';
-        if (type === 'movie') return (item.release_date || 'N/A').split('-')[0];
-        const start = (item.first_air_date || '').split('-')[0];
-        if (!start) return 'N/A';
-        if (item.status === 'Returning Series' || item.in_production === true) {
-            return `${start}-Present`;
-        } else if (item.status === 'Ended' || item.status === 'Canceled') {
-            const end = (item.last_air_date || '').split('-')[0];
-            return (end && end !== start) ? `${start}-${end}` : start;
+        const type = item.title ? 'movie' : 'tv';
+        let dateStr = 'N/A';
+        
+        if (type === 'movie') {
+            dateStr = (item.release_date || 'N/A').split('-')[0];
+        } else {
+            const start = (item.first_air_date || '').split('-')[0];
+            if (item.status === 'Returning Series' || item.in_production === true) {
+                dateStr = `${start}-Present`;
+            } else if (item.status === 'Ended' || item.status === 'Canceled') {
+                const end = (item.last_air_date || '').split('-')[0];
+                dateStr = (end && end !== start) ? `${start}-${end}` : start;
+            } else {
+                dateStr = start;
+            }
         }
-        return start;
+
+        // ADD SEASON COUNT
+        if (type === 'tv' && item.number_of_seasons) {
+            const s = item.number_of_seasons;
+            dateStr += ` • ${s} Season${s > 1 ? 's' : ''}`;
+        }
+
+        return dateStr;
     }
 
     // --- FETCH STREAMING ---
@@ -560,7 +574,11 @@
             const res = await fetch(`${BASE_URL}/${type}/${id}/watch/providers?api_key=${TMDB_KEY}`);
             const data = await res.json();
             // Check Flatrate, Rent, and Buy for US
-            const providers = data.results?.US?.flatrate || data.results?.US?.rent || data.results?.US?.buy || [];
+            const providers = [
+                ...(data.results?.US?.flatrate || []),
+                ...(data.results?.US?.rent || []),
+                ...(data.results?.US?.buy || [])
+            ];
             
             if (providers.length > 0) {
                 // Deduplicate providers by ID
@@ -627,7 +645,11 @@
         }
     }
 
-    function resetAndRunBrowse() { currentPage = 1; document.getElementById('grid-container').innerHTML = ''; runBrowseSearch(); }
+    function resetAndRunBrowse() {
+        currentPage = 1;
+        document.getElementById('grid-container').innerHTML = '';
+        runBrowseSearch();
+    }
 
     async function runBrowseSearch() {
         if (isFetching) return;
@@ -673,7 +695,11 @@
         } catch (e) { console.error(e); } finally { isFetching = false; }
     }
 
-    function resetAndRunCurate() { currentPage = 1; document.getElementById('grid-container').innerHTML = ''; runCurateSearch(); }
+    function resetAndRunCurate() {
+        currentPage = 1;
+        document.getElementById('grid-container').innerHTML = '';
+        runCurateSearch();
+    }
 
     async function runCurateSearch(isLoadMore = false) {
         if (isFetching) return;
@@ -696,8 +722,14 @@
             const res = await fetch(API_SEARCH, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ refTitle: ref, userPrompt: prompt, type: curateType, exclude: curatedTitles })
+                body: JSON.stringify({ 
+                    refTitle: ref, 
+                    userPrompt: prompt, 
+                    type: curateType,
+                    exclude: curatedTitles 
+                })
             });
+
             const aiData = await res.json();
 
             const promises = aiData.map(async (item) => {
@@ -715,6 +747,7 @@
             });
             
             const final = (await Promise.all(promises)).filter(x=>x);
+            
             if (!isLoadMore) grid.innerHTML = '';
             renderGrid(final, true);
 
@@ -725,22 +758,33 @@
                 loadMoreBtn.innerHTML = "No more matches found.";
             }
 
-        } catch (e) { console.error(e); } finally { isFetching = false; }
+        } catch (e) { 
+            console.error(e); 
+        } finally { 
+            isFetching = false; 
+        }
     }
 
     function loadMore() {
-        if(currentMode === 'filter') { currentPage++; runBrowseSearch(); } 
-        else if (currentMode === 'search') { runCurateSearch(true); }
+        if(currentMode === 'filter') {
+            currentPage++;
+            runBrowseSearch();
+        } else if (currentMode === 'search') {
+            runCurateSearch(true); 
+        }
     }
 
     function renderGrid(list, isAi=false) {
         const grid = document.getElementById('grid-container');
-        if(list.length === 0 && currentPage === 1) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;font-weight:700;color:var(--ink-muted);">No records found. Adjust filters!</div>'; return; }
+        if(list.length === 0 && currentPage === 1) {
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;font-weight:700;color:var(--ink-muted);">No records found. Adjust filters!</div>';
+            return;
+        }
 
         list.forEach((m, index) => {
             if(!m.poster_path) return;
             const title = m.title || m.name;
-            const dateStr = getFormattedDate(m, (m.name ? 'tv' : 'movie'));
+            const metaInfo = getMetaInfo(m);
             const rating = m.vote_average ? m.vote_average.toFixed(1) : 'NR';
             
             const card = document.createElement('div'); card.className = 'exhibit-card';
@@ -758,7 +802,7 @@
                 <div class="poster-frame"><img src="${IMG_URL + m.poster_path}" loading="lazy"></div>
                 <div class="film-title" title="${title}">${title}</div>
                 <div class="film-meta-row">
-                    <span>${dateStr}</span>
+                    <span>${metaInfo}</span>
                     <span class="meta-rating"><span class="star-icon">★</span> ${rating}</span>
                 </div>
                 ${isAi ? `<div class="ai-score">MATCH: ${m.match_score}%</div>` : ''}
@@ -771,10 +815,10 @@
         const modal = document.getElementById('quick-view-modal');
         const content = document.getElementById('modal-content');
         const title = m.title || m.name;
-        const type = m.name ? 'tv' : 'movie';
-        const dateStr = getFormattedDate(m, type);
+        const metaInfo = getMetaInfo(m);
         const poster = m.poster_path ? IMG_URL + m.poster_path : '';
         const overview = m.overview || "No synopsis available.";
+        const type = m.name ? 'tv' : 'movie';
         
         let castHtml = '';
         let streamHtml = '';
@@ -800,7 +844,7 @@
                 <img src="${poster}" class="modal-poster">
                 <div class="modal-details">
                     <div class="modal-title">${title}</div>
-                    <div class="modal-meta">${dateStr} • ${m.vote_average.toFixed(1)} ★</div>
+                    <div class="modal-meta">${metaInfo} • ${m.vote_average.toFixed(1)} ★</div>
                     <div class="modal-overview">${overview}</div>
                     ${castHtml}
                     ${streamHtml}
@@ -818,6 +862,7 @@
         setTimeout(() => modal.style.display = 'none', 300);
     }
 
+    // --- INTEL LOGIC (UPDATED: Search List -> Click -> Full Page) ---
     async function runKnowledgeSearch() {
         const query = document.getElementById('know-search').value;
         const container = document.getElementById('dossier-content');
@@ -879,14 +924,14 @@
 
             window.revealSpoiler = function(el) { const container = el.closest('.spoiler-container'); const text = container.querySelector('.spoiler-text'); const overlay = container.querySelector('.spoiler-overlay'); text.classList.add('revealed'); overlay.style.display = 'none'; }
 
-            const dateStr = getFormattedDate(m, type);
+            const metaInfo = getMetaInfo(m);
 
             container.innerHTML = `
                 <div style="display:flex; gap:50px; align-items:flex-start;">
                     <img src="${IMG_URL + m.poster_path}" style="width:320px; border-radius:16px; border:3px solid var(--border); box-shadow:var(--shadow-card); transform:rotate(-2deg);">
                     <div style="flex:1;">
                         <h1 class="dossier-header-title">${title}</h1>
-                        <div style="color:var(--accent); font-weight:700; font-size:13px; letter-spacing:1px; margin:10px 0 30px; text-transform:uppercase;">${dateStr} • ${type.toUpperCase()} • <span class="star-icon">★</span> ${m.vote_average.toFixed(1)}/10</div>
+                        <div style="color:var(--accent); font-weight:700; font-size:13px; letter-spacing:1px; margin:10px 0 30px; text-transform:uppercase;">${metaInfo} • ${type.toUpperCase()} • <span class="star-icon">★</span> ${m.vote_average.toFixed(1)}/10</div>
                         <div style="font-size:22px; color:var(--ink); font-weight:900; font-style:italic; margin-bottom:30px; border-left: 5px solid var(--accent-secondary); padding-left:20px; line-height:1.2;">"${aiIntel.tagline_ai}"</div>
                         
                         ${castHtml}
