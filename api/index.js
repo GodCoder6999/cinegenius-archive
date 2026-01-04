@@ -6,70 +6,92 @@ const axios = require('axios');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Enable CORS so your frontend can talk to this backend
-app.use(cors());
+// 1. Permissive CORS (Essential for Vercel/Frontend communication)
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 
-// Load API Key from Vercel Environment Variables
 const GROQ_API_KEY = process.env.GROQ_API_KEY; 
-const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
+const GROQ_URL = "[https://api.groq.com/openai/v1/chat/completions](https://api.groq.com/openai/v1/chat/completions)";
 
-// Helper function to clean AI response into valid JSON
+// 2. BULLETPROOF JSON PARSER (The Fix)
 function cleanJSON(text) {
+    console.log("Raw AI Response:", text); // Log this to Vercel logs for debugging
     try {
-        const arrayMatch = text.match(/\[[\s\S]*\]/);
-        if (arrayMatch) return JSON.parse(arrayMatch[0]);
-        const objectMatch = text.match(/\{[\s\S]*\}/);
-        if (objectMatch) return JSON.parse(objectMatch[0]);
-        throw new Error("No JSON structure found");
+        // Step A: Strip Markdown code blocks (```json ... ```)
+        let clean = text.replace(/```json/g, '').replace(/```/g, '').trim();
+
+        // Step B: Find the actual JSON array or object
+        const firstSquare = clean.indexOf('[');
+        const lastSquare = clean.lastIndexOf(']');
+        const firstCurly = clean.indexOf('{');
+        const lastCurly = clean.lastIndexOf('}');
+
+        // Prioritize Arrays (for lists of movies)
+        if (firstSquare !== -1 && lastSquare !== -1) {
+            return JSON.parse(clean.substring(firstSquare, lastSquare + 1));
+        }
+        // Fallback to Objects (for single movie details)
+        if (firstCurly !== -1 && lastCurly !== -1) {
+            return JSON.parse(clean.substring(firstCurly, lastCurly + 1));
+        }
+
+        // Final attempt: Parse as is
+        return JSON.parse(clean);
     } catch (e) { 
-        console.error("❌ JSON Parse Failed:", text);
-        return []; 
+        console.error("❌ JSON Parse Failed:", e.message);
+        return []; // Return empty array to prevent frontend crash
     }
 }
 
-// --- ROUTE 1: SMART CURATE (Handles "Load More" Logic) ---
+// --- ROUTE 1: SMART SEARCH (Curate/Dream) ---
 app.post('/api/smart-search', async (req, res) => {
     try {
+        if (!GROQ_API_KEY) {
+            console.error("❌ Server Error: Missing GROQ_API_KEY");
+            return res.status(500).json({ error: "Server Configuration Error" });
+        }
+
         const { refTitle, userPrompt, type, exclude = [] } = req.body; 
         
-        // 1. Build the exclusion instruction if titles are passed
+        // Build exclusion string
         const excludeString = exclude.length > 0 
-            ? `\n\nCRITICAL INSTRUCTION: Do NOT recommend any of these titles (they are already shown): ${exclude.join(', ')}.` 
+            ? `\n\nIMPORTANT: Do NOT recommend these specific titles: ${exclude.join(', ')}.` 
             : '';
 
-        // 2. Prepare the AI Payload
         const payload = {
             model: "llama-3.3-70b-versatile",
             messages: [
                 {
                     role: "system",
                     content: `You are a film curator. Recommend 12 ${type === 'tv' ? 'Series' : 'Movies'}. 
-                    STRICT JSON format only. 
-                    Output Array: [ { "title": "Exact Title", "reason": "Short punchy reason", "score": 85 } ].
-                    ${excludeString}` // <--- This prevents duplicates
+                    STRICT INSTRUCTION: Output ONLY valid JSON. Do not write intro text. Do not use Markdown blocks.
+                    Format: [ { "title": "Exact Title", "reason": "Short reason", "score": 85 } ]
+                    ${excludeString}`
                 },
-                { role: "user", content: `Reference: "${refTitle}". User Notes: "${userPrompt}".` }
+                { role: "user", content: `Ref: "${refTitle}". User Note: "${userPrompt}".` }
             ],
-            temperature: 0.7 // Slightly higher creativity for "Load More" requests
+            temperature: 0.5 // Lower temp = more stable JSON
         };
 
-        // 3. Call Groq AI
         const response = await axios.post(GROQ_URL, payload, { 
             headers: { "Authorization": `Bearer ${GROQ_API_KEY}` } 
         });
 
-        // 4. Return Clean Data
         const data = cleanJSON(response.data.choices[0].message.content);
         res.json(data);
 
     } catch (error) {
-        console.error("AI Error:", error.message);
-        res.json([]); // Return empty array on error to prevent crash
+        console.error("❌ API Route Error:", error.message);
+        res.json([]); 
     }
 });
 
-// --- ROUTE 2: INTEL BRIEF (Analysis) ---
+// --- ROUTE 2: INTEL BRIEF ---
 app.post('/api/intel-brief', async (req, res) => {
     try {
         const { title, type } = req.body;
@@ -78,29 +100,32 @@ app.post('/api/intel-brief', async (req, res) => {
             messages: [
                 {
                     role: "system",
-                    content: `You are a classified archivist. Return a SINGLE JSON object. Plot twist fully revealed. 
+                    content: `You are a film archivist. Output ONLY valid JSON. No Markdown.
                     Format: { "plot_twist": "...", "cultural_impact": "...", "budget_est": "...", "revenue_est": "...", "status_verdict": "Hit/Flop/Cult", "tagline_ai": "..." }`
                 },
                 { role: "user", content: `Analyze: "${title}" (${type})` }
             ],
             temperature: 0.3
         };
+
         const response = await axios.post(GROQ_URL, payload, { 
             headers: { "Authorization": `Bearer ${GROQ_API_KEY}` } 
         });
+
         const data = cleanJSON(response.data.choices[0].message.content);
         res.json(data);
+
     } catch (error) {
+        console.error("❌ Intel Error:", error.message);
         res.json({ plot_twist: "Data Redacted (Error)", tagline_ai: "System Offline" });
     }
 });
 
-// Start Server (Local Development Only)
+// Start Server (For Local Testing)
 if (process.env.NODE_ENV !== 'production') {
     app.listen(PORT, () => {
-        console.log(`🚀 Smart Server running locally at http://localhost:${PORT}`);
+        console.log(`🚀 Backend running locally on port ${PORT}`);
     });
 }
 
-// Export for Vercel
 module.exports = app;
