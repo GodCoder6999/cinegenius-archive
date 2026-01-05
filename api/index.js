@@ -16,11 +16,11 @@ app.use(cors({
 app.use(express.json());
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY; 
-const GROQ_URL = "[https://api.groq.com/openai/v1/chat/completions](https://api.groq.com/openai/v1/chat/completions)";
+const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 
-// 2. BULLETPROOF JSON PARSER (The Fix)
+// 2. BULLETPROOF JSON PARSER (The Fix for "Hanging")
 function cleanJSON(text) {
-    console.log("Raw AI Response:", text); // Log this to Vercel logs for debugging
+    console.log("Raw AI Response:", text); // Logs to Vercel for debugging
     try {
         // Step A: Strip Markdown code blocks (```json ... ```)
         let clean = text.replace(/```json/g, '').replace(/```/g, '').trim();
@@ -64,7 +64,8 @@ app.post('/api/smart-search', async (req, res) => {
             : '';
 
         const payload = {
-            model: "llama-3.3-70b-versatile",
+            // SWITCHED TO FASTER MODEL TO PREVENT 10s TIMEOUT
+            model: "mixtral-8x7b-32768", 
             messages: [
                 {
                     role: "system",
@@ -75,7 +76,7 @@ app.post('/api/smart-search', async (req, res) => {
                 },
                 { role: "user", content: `Ref: "${refTitle}". User Note: "${userPrompt}".` }
             ],
-            temperature: 0.5 // Lower temp = more stable JSON
+            temperature: 0.5 
         };
 
         const response = await axios.post(GROQ_URL, payload, { 
@@ -96,7 +97,7 @@ app.post('/api/intel-brief', async (req, res) => {
     try {
         const { title, type } = req.body;
         const payload = {
-            model: "llama-3.3-70b-versatile",
+            model: "mixtral-8x7b-32768", // Faster model
             messages: [
                 {
                     role: "system",
