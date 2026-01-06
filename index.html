@@ -64,12 +64,23 @@
         .exhibit-card:hover .poster-img { transform: scale(1.05); }
         
         .rating-badge { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.85); color: #ffd700; font-weight: 800; font-size: 11px; padding: 4px 8px; border-radius: 6px; backdrop-filter: blur(4px); border: 1px solid rgba(255,215,0,0.3); z-index: 5; }
-        
+        .match-badge { position: absolute; top: 10px; left: 10px; background: #00e676; color: #000; font-weight: 900; font-size: 10px; padding: 4px 8px; border-radius: 4px; z-index: 5; text-transform: uppercase; box-shadow: 0 0 10px #00e676; }
+
         .card-info { padding: 15px; }
         .film-title { font-family: var(--font-head); font-weight: 800; font-size: 14px; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .film-meta { font-size: 11px; color: var(--ink-muted); display: flex; justify-content: space-between; }
+        .film-meta { font-size: 11px; color: var(--ink-muted); display: flex; justify-content: space-between; align-items: center; }
+        .meta-year { font-weight: 700; color: var(--accent-secondary); }
         
-        .loader-container { padding: 60px; text-align: center; display: none; }
+        /* NEW CLAPPERBOARD LOADER */
+        .loader-container { padding: 80px 0; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        .clapperboard { width: 60px; height: 60px; position: relative; margin-bottom: 20px; }
+        .clapper-top { width: 60px; height: 12px; background: repeating-linear-gradient(45deg, var(--bg-panel) 0, var(--bg-panel) 8px, var(--ink) 8px, var(--ink) 16px); border-radius: 4px; position: absolute; top: 0; left: 0; transform-origin: bottom left; animation: snap 1.2s infinite; border: 1px solid var(--accent); }
+        .clapper-bottom { width: 60px; height: 40px; background: var(--bg-panel); border: 2px solid var(--ink); border-radius: 4px; position: absolute; bottom: 0; left: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 0 15px var(--accent); }
+        .clapper-bottom::before { content:''; width:100%; height:8px; background: repeating-linear-gradient(45deg, var(--bg-panel) 0, var(--bg-panel) 8px, var(--ink) 8px, var(--ink) 16px); position: absolute; top: 0; border-bottom: 1px solid var(--accent); }
+        @keyframes snap { 0% { transform: rotate(0deg); } 20% { transform: rotate(-30deg); } 40% { transform: rotate(0deg); } 100% { transform: rotate(0deg); } }
+        .loading-text { font-family: var(--font-head); font-weight: 900; font-size: 12px; letter-spacing: 3px; color: var(--accent); animation: pulse 1.5s infinite; text-transform: uppercase; }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+
         .btn-load-more { display: block; margin: 40px auto; background: transparent; border: 2px solid var(--accent); color: var(--ink); padding: 12px 40px; border-radius: 30px; font-weight: 700; cursor: pointer; transition: 0.3s; letter-spacing: 1px; }
         .btn-load-more:hover { background: var(--accent); color: #fff; }
 
@@ -80,12 +91,10 @@
         .dossier-data { flex: 1; }
         .dossier-title { font-family: var(--font-head); font-weight: 900; font-size: 48px; line-height: 1; margin-bottom: 10px; }
         .dossier-tagline { font-size: 18px; color: var(--accent); font-style: italic; margin-bottom: 30px; border-left: 4px solid var(--accent-secondary); padding-left: 15px; }
-        
         .intel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
         .intel-box { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; border: 1px solid var(--border); }
         .intel-label { font-size: 10px; color: var(--accent-secondary); text-transform: uppercase; letter-spacing: 2px; font-weight: 700; margin-bottom: 5px; }
         .intel-value { font-size: 18px; font-weight: 700; color: #fff; }
-        
         .spoiler-section { position: relative; margin-top: 30px; cursor: pointer; }
         .spoiler-blur { filter: blur(12px); transition: 0.5s; user-select: none; }
         .spoiler-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 10; }
@@ -159,18 +168,25 @@
                 <span class="range-label" style="color:var(--accent); font-weight:900;">STEP 1: SEARCH DATABASE</span>
                 <input type="text" id="know-search" placeholder="Enter Exact Title...">
                 <button class="btn-action" onclick="runKnowledgeSearch()">Find Matches</button>
-                <div style="font-size:10px; margin-top:15px; color:var(--ink-muted); line-height:1.5;">Search for a movie first. Then click on it to access the classified dossier file.</div>
             </div>
         </aside>
 
         <div class="canvas">
-            <button class="btn-back" id="btn-back" onclick="goBack()" style="display:none; margin-bottom:20px; background:none; border:1px solid var(--accent); color:var(--accent); padding:5px 15px; border-radius:15px; cursor:pointer;">← Return to Search</button>
+            <button class="btn-back" id="btn-back" onclick="goBack()" style="display:none; margin-bottom:20px; background:none; border:1px solid var(--accent); color:var(--accent); padding:5px 15px; border-radius:15px; cursor:pointer;">← Return</button>
             
             <div id="view-collection">
                 <h1 class="section-title">The Collection</h1>
                 <div class="section-subtitle">EXPLORE THE ARCHIVES</div>
                 <div id="grid-container" class="exhibit-grid"></div>
-                <div id="loading-spinner" class="loader-container">Searching Database...</div>
+                
+                <div id="loading-spinner" class="loader-container">
+                    <div class="clapperboard">
+                        <div class="clapper-top"></div>
+                        <div class="clapper-bottom"></div>
+                    </div>
+                    <div class="loading-text">SCENE LOADING...</div>
+                </div>
+                
                 <button id="btn-load-more" class="btn-load-more" onclick="loadMore()" style="display:none;">LOAD MORE</button>
             </div>
 
@@ -226,9 +242,9 @@
     function setCurateType(t) { curateType = t; updateToggle('c', t); document.getElementById('ref-search').placeholder = t === 'movie' ? 'e.g. Inception' : 'e.g. Stranger Things'; }
     function setDescribeType(t) { describeType = t; updateToggle('d', t); }
     function updateToggle(p, t) { document.getElementById(p+'-btn-movie').classList.remove('active'); document.getElementById(p+'-btn-tv').classList.remove('active'); document.getElementById(p+'-btn-'+t).classList.add('active'); }
-    function showLoading(show) { document.getElementById('loading-spinner').style.display = show ? 'block' : 'none'; if(show) document.getElementById('btn-load-more').style.display = 'none'; }
+    function showLoading(show) { document.getElementById('loading-spinner').style.display = show ? 'flex' : 'none'; if(show) document.getElementById('btn-load-more').style.display = 'none'; }
 
-    // --- MAIN SEARCH LOGIC ---
+    // --- SEARCH LOGIC ---
     function resetAndRunBrowse() { currentPage=1; document.getElementById('grid-container').innerHTML=''; runBrowseSearch(); }
     async function runBrowseSearch() {
         if(isFetching) return; isFetching=true; showLoading(true);
@@ -263,101 +279,89 @@
             const promises = aiData.map(async (item) => {
                 const s = await fetch(`${BASE_URL}/search/${body.type}?api_key=${TMDB_KEY}&query=${encodeURIComponent(item.title)}`);
                 const d = await s.json();
-                if(d.results?.[0]) { const full = await fetch(`${BASE_URL}/${body.type}/${d.results[0].id}?api_key=${TMDB_KEY}`).then(r=>r.json()); full.ai_reason=item.reason; curatedTitles.push(item.title); return full; }
+                if(d.results?.[0]) { const full = await fetch(`${BASE_URL}/${body.type}/${d.results[0].id}?api_key=${TMDB_KEY}`).then(r=>r.json()); full.ai_reason=item.reason; full.ai_score=item.score; curatedTitles.push(item.title); return full; }
             });
             const final = (await Promise.all(promises)).filter(x=>x);
             renderGrid(final, body.type, true); showLoading(false); document.getElementById('btn-load-more').style.display='block';
         } catch(e) { console.error(e); showLoading(false); } finally { isFetching=false; }
     }
 
+    // --- RENDER GRID WITH SMART DATES ---
     function renderGrid(list, type, isAi=false) {
         const grid = document.getElementById('grid-container');
         list.forEach(m => {
             if(!m.poster_path) return;
             
-            // --- SMART DATE LOGIC ---
+            // SMART DATE & SEASONS LOGIC
             const startYear = (m.release_date || m.first_air_date || 'N/A').split('-')[0];
             let dateStr = startYear;
-            let seasonsStr = '';
+            let seasonStr = '';
             
             if(type === 'tv' && startYear !== 'N/A') {
-                // Check if it's still running
                 if (m.status === 'Returning Series' || m.in_production === true) {
                     dateStr = `${startYear}-Present`;
                 } else if (m.status === 'Ended' && m.last_air_date) {
                     const endYear = m.last_air_date.split('-')[0];
-                    if(endYear !== startYear) dateStr = `${startYear}-${endYear}`;
+                    dateStr = (endYear !== startYear) ? `${startYear}-${endYear}` : startYear;
                 }
-                // Show Season Count
-                if(m.number_of_seasons) seasonsStr = `${m.number_of_seasons} Seas.`;
+                if(m.number_of_seasons) seasonStr = m.number_of_seasons === 1 ? '1 Season' : `${m.number_of_seasons} Seasons`;
             }
 
+            const displayDate = `(${dateStr})`;
+            
             const div = document.createElement('div'); div.className = 'exhibit-card'; 
             div.onclick = () => { if(currentMode==='knowledge') openDossier(m, type); else openModal(m, type); };
             
             div.innerHTML = `
                 <div class="rating-badge">★ ${m.vote_average.toFixed(1)}</div>
+                ${isAi && m.ai_score ? `<div class="match-badge">${m.ai_score}% MATCH</div>` : ''}
                 <div class="poster-frame"><img src="${IMG_URL+m.poster_path}" class="poster-img"></div>
                 <div class="card-info">
                     <div class="film-title">${m.title||m.name}</div>
                     <div class="film-meta">
-                        <span>${dateStr}</span>
-                        <span>${seasonsStr}</span>
+                        <span class="meta-year">${displayDate}</span>
+                        <span>${seasonStr}</span>
                     </div>
-                    ${isAi?`<div style="font-size:10px; color:var(--accent); margin-top:5px;">${m.ai_reason}</div>`:''}
+                    ${isAi?`<div style="font-size:10px; color:var(--accent); margin-top:5px; line-height:1.2;">${m.ai_reason}</div>`:''}
                 </div>
             `;
             grid.appendChild(div);
         });
     }
 
-    // --- INTEL & DOSSIER LOGIC ---
+    // --- INTEL & DOSSIER ---
     async function runKnowledgeSearch() {
         const q = document.getElementById('know-search').value;
         const grid = document.getElementById('grid-container');
         document.getElementById('view-collection').style.display='block';
         document.getElementById('view-dossier').style.display='none';
-        grid.innerHTML = '<div style="grid-column:1/-1; text-align:center;">SCANNING ARCHIVES...</div>';
-        
-        // Step 1: Search the DB
+        grid.innerHTML = '';
+        showLoading(true);
         const res = await fetch(`${BASE_URL}/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(q)}`);
         const data = await res.json();
-        grid.innerHTML = '';
-        
-        // Filter out people, keep movies/tv with posters
         const filtered = data.results.filter(x => x.media_type!=='person' && x.poster_path);
-        
-        // Fetch full details (needed for date/seasons logic) for the search results
         const detailed = await Promise.all(filtered.map(item => {
              const t = item.media_type || (item.title ? 'movie' : 'tv');
              return fetch(`${BASE_URL}/${t}/${item.id}?api_key=${TMDB_KEY}`).then(r=>r.json());
         }));
-        
-        renderGrid(detailed, 'movie'); // 'movie' type is placeholder, renderGrid logic handles both if object has TV props
+        renderGrid(detailed, 'movie'); showLoading(false);
     }
 
     async function openDossier(m, type) {
-        // Ensure type is correct if coming from mixed search
         if(m.first_air_date) type = 'tv'; else type = 'movie';
-
         document.getElementById('view-collection').style.display='none';
         document.getElementById('view-dossier').style.display='block';
         document.getElementById('btn-back').style.display='block';
-        
         const content = document.getElementById('dossier-content');
-        content.innerHTML = '<div style="text-align:center; padding:100px;">DECRYPTING CLASSIFIED FILE...</div>';
+        content.innerHTML = '<div style="text-align:center; padding:100px;">DECRYPTING FILE...</div>';
         
         try {
-            // Get Money Stats
             const details = await fetch(`${BASE_URL}/${type}/${m.id}?api_key=${TMDB_KEY}`).then(r=>r.json());
             const budget = details.budget ? `$${(details.budget/1000000).toFixed(1)}M` : 'Classified';
             const revenue = details.revenue ? `$${(details.revenue/1000000).toFixed(1)}M` : 'Classified';
-            
-            // Get AI Stats
             const aiRes = await fetch(API_INTEL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({title: m.title||m.name, type: type}) });
             const ai = await aiRes.json();
             
-            // Render Dossier
             content.innerHTML = `
                 <div class="dossier-header">
                     <img src="${IMG_URL + m.poster_path}" class="dossier-poster">
@@ -365,28 +369,21 @@
                         <div class="dossier-title">${m.title||m.name}</div>
                         <div class="dossier-tagline">"${ai.tagline_ai || m.tagline || 'No data found'}"</div>
                         <p style="line-height:1.6; margin-bottom:30px;">${m.overview}</p>
-                        
                         <div class="intel-grid">
                             <div class="intel-box"><div class="intel-label">BUDGET (EST)</div><div class="intel-value">${budget}</div></div>
                             <div class="intel-box"><div class="intel-label">BOX OFFICE</div><div class="intel-value">${revenue}</div></div>
                             <div class="intel-box"><div class="intel-label">STATUS</div><div class="intel-value" style="color:${ai.status_verdict?.includes('Hit')?'#00ff00':'#ff0055'}">${ai.status_verdict || 'Unknown'}</div></div>
                             <div class="intel-box"><div class="intel-label">CULTURAL IMPACT</div><div class="intel-value" style="font-size:14px;">${ai.cultural_impact || 'Minimal'}</div></div>
                         </div>
-
                         <div class="spoiler-section" onclick="this.classList.add('revealed')">
                             <div class="spoiler-overlay"><button class="spoiler-btn">⚠️ REVEAL PLOT TWIST</button></div>
-                            <div class="spoiler-blur">
-                                <h3 style="color:var(--accent);">MAJOR SPOILER WARNING</h3>
-                                <p>${ai.plot_twist || 'No Twist Detected.'}</p>
-                            </div>
+                            <div class="spoiler-blur"><h3 style="color:var(--accent);">MAJOR SPOILER WARNING</h3><p>${ai.plot_twist || 'No Twist Detected.'}</p></div>
                         </div>
                     </div>
-                </div>
-            `;
+                </div>`;
         } catch(e) { console.error(e); content.innerHTML = 'Error loading dossier.'; }
     }
 
-    // UTILS
     function loadMore() { if(currentMode==='filter') { currentPage++; runBrowseSearch(); } else if(currentMode==='search') runCurateSearch(true); else runDescribeSearch(true); }
     function goBack() { document.getElementById('view-dossier').style.display='none'; document.getElementById('view-collection').style.display='block'; document.getElementById('btn-back').style.display='none'; }
     function closeModal() { document.querySelector('.modal-overlay').classList.remove('active'); setTimeout(()=>document.getElementById('quick-view-modal').style.display='none', 300); }
