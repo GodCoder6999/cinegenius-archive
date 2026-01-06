@@ -8,70 +8,48 @@
     <style>
         :root { --bg-paper: #0f001e; --bg-panel: #1a0030; --ink: #ffffff; --ink-muted: #b39ddb; --border: #4a148c; --accent: #d500f9; --accent-secondary: #00e5ff; --card-bg: rgba(255, 255, 255, 0.05); --font-head: 'Montserrat', sans-serif; --font-body: 'Poppins', sans-serif; }
         [data-theme="light"] { --bg-paper: #f8f9fa; --bg-panel: #ffffff; --ink: #1a1a2e; --ink-muted: #5c5c8a; --border: #dee2e6; --accent: #6200ea; --accent-secondary: #00b0ff; --card-bg: #ffffff; }
-        
         * { box-sizing: border-box; }
         body { background-color: var(--bg-paper); color: var(--ink); font-family: var(--font-body); margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        
-        /* HEADER */
         .masthead { height: 70px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; padding: 0 40px; background: rgba(20, 0, 40, 0.95); z-index: 50; }
         .logo { font-family: var(--font-head); font-weight: 900; font-size: 24px; letter-spacing: 1px; text-transform: uppercase; }
         .logo span { color: var(--accent); font-style: italic; text-shadow: 0 0 10px var(--accent); }
-        
         .mode-toggle { display: flex; gap: 5px; background: var(--bg-panel); padding: 5px; border-radius: 30px; border: 1px solid var(--border); }
         .mode-btn { background: transparent; border: none; color: var(--ink-muted); font-family: var(--font-head); font-weight: 700; font-size: 10px; text-transform: uppercase; cursor: pointer; padding: 8px 16px; border-radius: 20px; transition:0.3s; }
         .mode-btn:hover { color: var(--ink); }
         .mode-btn.active { background: var(--accent); color: #fff; box-shadow: 0 0 15px var(--accent); }
-        
         .theme-switch { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; border: 2px solid var(--border); transition: 0.3s; }
-
-        /* LAYOUT */
         .editorial-layout { display: flex; flex: 1; overflow: hidden; }
         .research-sidebar { width: 380px; background: var(--bg-panel); padding: 20px; overflow-y: auto; border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 15px; }
-        
         details { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 10px; }
         details[open] { border-color: var(--accent); }
         summary { padding: 12px; cursor: pointer; font-family: var(--font-head); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-secondary); list-style: none; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); }
         .filter-content { padding: 15px; }
-
-        /* CONTROLS */
         .toggle-row { display: flex; background: var(--bg-paper); border-radius: 6px; padding: 4px; border: 1px solid var(--border); margin-bottom: 15px; }
         .toggle-opt { flex: 1; background: transparent; border: none; padding: 8px; color: var(--ink-muted); font-size: 11px; font-weight: 700; cursor: pointer; border-radius: 4px; transition: 0.3s; }
         .toggle-opt.active { background: var(--accent); color: #fff; }
-        
         input, select, textarea { width: 100%; background: var(--bg-paper); color: var(--ink); border: 1px solid var(--border); padding: 10px; font-family: var(--font-body); font-size: 12px; border-radius: 6px; outline: none; margin-bottom: 10px; }
         .range-group { display: flex; align-items: center; gap: 10px; }
         .range-label { font-size: 10px; color: var(--ink-muted); margin-bottom: 5px; display: block; }
-        
         .btn-action { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--accent), #aa00ff); color: #fff; border: none; font-family: var(--font-head); font-weight: 800; font-size: 12px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; border-radius: 8px; transition: 0.3s; margin-top: 10px; }
         .btn-action:hover { box-shadow: 0 0 15px var(--accent); }
-
         .genre-grid { display: flex; flex-wrap: wrap; gap: 6px; }
         .genre-pill { font-size: 10px; padding: 5px 8px; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; color: var(--ink-muted); transition: 0.2s; background: rgba(255,255,255,0.02); }
         .genre-pill.selected { background: var(--accent); color: #fff; border-color: var(--accent); }
-
-        /* MAIN CANVAS */
         .canvas { flex: 1; padding: 40px; overflow-y: auto; background: radial-gradient(circle at top right, rgba(0, 229, 255, 0.05), transparent 40%); position: relative; }
         .section-title { font-family: var(--font-head); font-weight: 900; font-size: 42px; margin-bottom: 10px; color: var(--ink); text-transform: uppercase; }
         .section-subtitle { font-size: 12px; color: var(--accent-secondary); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 30px; border-left: 3px solid var(--accent); padding-left: 15px; }
-
-        /* CARDS */
         .exhibit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 30px; }
         .exhibit-card { position: relative; background: var(--card-bg); border-radius: 12px; overflow: hidden; transition: 0.4s; border: 1px solid transparent; cursor: pointer; }
         .exhibit-card:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        
         .poster-frame { width: 100%; aspect-ratio: 2/3; position: relative; overflow: hidden; }
         .poster-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
         .exhibit-card:hover .poster-img { transform: scale(1.05); }
-        
         .rating-badge { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.85); color: #ffd700; font-weight: 800; font-size: 11px; padding: 4px 8px; border-radius: 6px; backdrop-filter: blur(4px); border: 1px solid rgba(255,215,0,0.3); z-index: 5; }
         .match-badge { position: absolute; top: 10px; left: 10px; background: #00e676; color: #000; font-weight: 900; font-size: 10px; padding: 4px 8px; border-radius: 4px; z-index: 5; text-transform: uppercase; box-shadow: 0 0 10px #00e676; }
-
         .card-info { padding: 15px; }
         .film-title { font-family: var(--font-head); font-weight: 800; font-size: 14px; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .film-meta { font-size: 11px; color: var(--ink-muted); display: flex; justify-content: space-between; align-items: center; }
         .meta-year { font-weight: 700; color: var(--accent-secondary); }
-        
-        /* NEW CLAPPERBOARD LOADER */
         .loader-container { padding: 80px 0; display: none; flex-direction: column; align-items: center; justify-content: center; }
         .clapperboard { width: 60px; height: 60px; position: relative; margin-bottom: 20px; }
         .clapper-top { width: 60px; height: 12px; background: repeating-linear-gradient(45deg, var(--bg-panel) 0, var(--bg-panel) 8px, var(--ink) 8px, var(--ink) 16px); border-radius: 4px; position: absolute; top: 0; left: 0; transform-origin: bottom left; animation: snap 1.2s infinite; border: 1px solid var(--accent); }
@@ -80,11 +58,8 @@
         @keyframes snap { 0% { transform: rotate(0deg); } 20% { transform: rotate(-30deg); } 40% { transform: rotate(0deg); } 100% { transform: rotate(0deg); } }
         .loading-text { font-family: var(--font-head); font-weight: 900; font-size: 12px; letter-spacing: 3px; color: var(--accent); animation: pulse 1.5s infinite; text-transform: uppercase; }
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-
         .btn-load-more { display: block; margin: 40px auto; background: transparent; border: 2px solid var(--accent); color: var(--ink); padding: 12px 40px; border-radius: 30px; font-weight: 700; cursor: pointer; transition: 0.3s; letter-spacing: 1px; }
         .btn-load-more:hover { background: var(--accent); color: #fff; }
-
-        /* DOSSIER (INTEL PAGE) */
         #dossier-content { max-width: 900px; margin: 0 auto; animation: slideUp 0.6s ease; }
         .dossier-header { display: flex; gap: 40px; margin-bottom: 40px; }
         .dossier-poster { width: 300px; border-radius: 12px; border: 2px solid var(--accent); box-shadow: 0 0 30px rgba(213,0,249,0.2); }
@@ -101,8 +76,6 @@
         .spoiler-btn { background: #ff0055; color: #fff; border: none; padding: 10px 20px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; border-radius: 4px; pointer-events: none; }
         .spoiler-section.revealed .spoiler-blur { filter: blur(0); }
         .spoiler-section.revealed .spoiler-overlay { display: none; }
-
-        /* MODAL */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); opacity: 0; transition: 0.3s; }
         .modal-overlay.active { opacity: 1; pointer-events: all; }
         .modal-card { background: #1a0030; width: 90%; max-width: 900px; border-radius: 20px; border: 1px solid var(--border); display: flex; overflow: hidden; max-height: 90vh; }
@@ -110,7 +83,6 @@
         .modal-poster-img { width: 100%; height: 100%; object-fit: cover; }
         .modal-info { padding: 40px; flex: 1; overflow-y: auto; }
         .close-modal { position: absolute; top: 20px; right: 20px; font-size: 24px; cursor: pointer; }
-        
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         @media (max-width: 800px) { .dossier-header { flex-direction: column; } .dossier-poster { width: 100%; } .modal-card { flex-direction: column; } .modal-poster-area { width: 100%; height: 200px; } .research-sidebar { display: none; } }
     </style>
@@ -178,15 +150,10 @@
                 <h1 class="section-title">The Collection</h1>
                 <div class="section-subtitle">EXPLORE THE ARCHIVES</div>
                 <div id="grid-container" class="exhibit-grid"></div>
-                
                 <div id="loading-spinner" class="loader-container">
-                    <div class="clapperboard">
-                        <div class="clapper-top"></div>
-                        <div class="clapper-bottom"></div>
-                    </div>
+                    <div class="clapperboard"><div class="clapper-top"></div><div class="clapper-bottom"></div></div>
                     <div class="loading-text">SCENE LOADING...</div>
                 </div>
-                
                 <button id="btn-load-more" class="btn-load-more" onclick="loadMore()" style="display:none;">LOAD MORE</button>
             </div>
 
@@ -244,7 +211,24 @@
     function updateToggle(p, t) { document.getElementById(p+'-btn-movie').classList.remove('active'); document.getElementById(p+'-btn-tv').classList.remove('active'); document.getElementById(p+'-btn-'+t).classList.add('active'); }
     function showLoading(show) { document.getElementById('loading-spinner').style.display = show ? 'flex' : 'none'; if(show) document.getElementById('btn-load-more').style.display = 'none'; }
 
-    // --- SEARCH LOGIC ---
+    // --- REUSABLE SMART META LOGIC (Fixes Modal Dates) ---
+    function getSmartMeta(m, type) {
+        const start = (m.release_date || m.first_air_date || 'N/A').split('-')[0];
+        let dateStr = start;
+        let seasonStr = '';
+        
+        if(type === 'tv' && start !== 'N/A') {
+            if (m.status === 'Returning Series' || m.in_production === true) {
+                dateStr = `${start}-Present`;
+            } else if (m.status === 'Ended' && m.last_air_date) {
+                const end = m.last_air_date.split('-')[0];
+                if(end !== start) dateStr = `${start}-${end}`;
+            }
+            if(m.number_of_seasons) seasonStr = m.number_of_seasons === 1 ? '1 Season' : `${m.number_of_seasons} Seasons`;
+        }
+        return { dateStr: `(${dateStr})`, seasonStr };
+    }
+
     function resetAndRunBrowse() { currentPage=1; document.getElementById('grid-container').innerHTML=''; runBrowseSearch(); }
     async function runBrowseSearch() {
         if(isFetching) return; isFetching=true; showLoading(true);
@@ -286,28 +270,11 @@
         } catch(e) { console.error(e); showLoading(false); } finally { isFetching=false; }
     }
 
-    // --- RENDER GRID WITH SMART DATES ---
     function renderGrid(list, type, isAi=false) {
         const grid = document.getElementById('grid-container');
         list.forEach(m => {
             if(!m.poster_path) return;
-            
-            // SMART DATE & SEASONS LOGIC
-            const startYear = (m.release_date || m.first_air_date || 'N/A').split('-')[0];
-            let dateStr = startYear;
-            let seasonStr = '';
-            
-            if(type === 'tv' && startYear !== 'N/A') {
-                if (m.status === 'Returning Series' || m.in_production === true) {
-                    dateStr = `${startYear}-Present`;
-                } else if (m.status === 'Ended' && m.last_air_date) {
-                    const endYear = m.last_air_date.split('-')[0];
-                    dateStr = (endYear !== startYear) ? `${startYear}-${endYear}` : startYear;
-                }
-                if(m.number_of_seasons) seasonStr = m.number_of_seasons === 1 ? '1 Season' : `${m.number_of_seasons} Seasons`;
-            }
-
-            const displayDate = `(${dateStr})`;
+            const meta = getSmartMeta(m, type);
             
             const div = document.createElement('div'); div.className = 'exhibit-card'; 
             div.onclick = () => { if(currentMode==='knowledge') openDossier(m, type); else openModal(m, type); };
@@ -319,8 +286,8 @@
                 <div class="card-info">
                     <div class="film-title">${m.title||m.name}</div>
                     <div class="film-meta">
-                        <span class="meta-year">${displayDate}</span>
-                        <span>${seasonStr}</span>
+                        <span class="meta-year">${meta.dateStr}</span>
+                        <span>${meta.seasonStr}</span>
                     </div>
                     ${isAi?`<div style="font-size:10px; color:var(--accent); margin-top:5px; line-height:1.2;">${m.ai_reason}</div>`:''}
                 </div>
@@ -329,7 +296,6 @@
         });
     }
 
-    // --- INTEL & DOSSIER ---
     async function runKnowledgeSearch() {
         const q = document.getElementById('know-search').value;
         const grid = document.getElementById('grid-container');
@@ -387,14 +353,27 @@
     function loadMore() { if(currentMode==='filter') { currentPage++; runBrowseSearch(); } else if(currentMode==='search') runCurateSearch(true); else runDescribeSearch(true); }
     function goBack() { document.getElementById('view-dossier').style.display='none'; document.getElementById('view-collection').style.display='block'; document.getElementById('btn-back').style.display='none'; }
     function closeModal() { document.querySelector('.modal-overlay').classList.remove('active'); setTimeout(()=>document.getElementById('quick-view-modal').style.display='none', 300); }
+    
     async function openModal(m, type) { 
         if(m.first_air_date) type='tv'; else type='movie';
         const modal = document.getElementById('quick-view-modal');
         const c = document.getElementById('modal-content');
+        
         const cred = await fetch(`${BASE_URL}/${type}/${m.id}/credits?api_key=${TMDB_KEY}`).then(r=>r.json());
         const cast = cred.cast ? cred.cast.slice(0,5).map(a=>a.name).join(', ') : 'N/A';
-        const year = (m.release_date||m.first_air_date||'').split('-')[0];
-        c.innerHTML = `<div class="modal-poster-area"><img src="${IMG_URL+m.poster_path}" class="modal-poster-img"></div><div class="modal-info"><div class="modal-title">${m.title||m.name} <span style="font-size:20px; color:var(--ink-muted);">(${year})</span></div><div style="margin-bottom:20px; color:var(--accent);">★ ${m.vote_average.toFixed(1)} &nbsp;|&nbsp; ${type.toUpperCase()}</div><p style="line-height:1.6; color:var(--ink-muted);">${m.overview}</p><div style="margin-top:20px;"><strong>Cast:</strong> ${cast}</div></div>`;
+        
+        // USE SMART META FOR POPUP TOO
+        const meta = getSmartMeta(m, type);
+
+        c.innerHTML = `
+            <div class="modal-poster-area"><img src="${IMG_URL+m.poster_path}" class="modal-poster-img"></div>
+            <div class="modal-info">
+                <div class="modal-title">${m.title||m.name} <span style="font-size:20px; color:var(--ink-muted);">${meta.dateStr}</span></div>
+                <div style="margin-bottom:20px; color:var(--accent); font-weight:700;">★ ${m.vote_average.toFixed(1)} &nbsp;&nbsp;|&nbsp;&nbsp; ${type.toUpperCase()} &nbsp;&nbsp;|&nbsp;&nbsp; ${meta.seasonStr || 'Feature Film'}</div>
+                <p style="line-height:1.6; color:var(--ink-muted);">${m.overview}</p>
+                <div style="margin-top:20px;"><strong>Cast:</strong> ${cast}</div>
+            </div>
+        `;
         modal.style.display = 'flex'; setTimeout(()=>document.querySelector('.modal-overlay').classList.add('active'), 10);
     }
 </script>
