@@ -25,13 +25,22 @@
         .research-sidebar { width: 400px; background: var(--bg-panel); padding: 35px; overflow-y: auto; border-right: 2px solid var(--border); }
         .sidebar-title { font-family: var(--font-head); font-weight: 900; font-size: 14px; color: var(--accent-secondary); border-bottom: 2px dashed var(--border); padding-bottom: 15px; margin-bottom: 25px; text-transform: uppercase; text-align: center; }
         
-        /* CONTROLS */
+        /* CONTROLS (ACCORDION STYLE) */
+        details { margin-bottom: 20px; border: 2px solid var(--border); border-radius: 12px; background: var(--bg-paper); transition: 0.3s; overflow: hidden; }
+        details[open] { border-color: var(--accent); box-shadow: 3px 3px 0px var(--accent-secondary); }
+        summary { padding: 15px 20px; cursor: pointer; font-family: var(--font-head); font-weight: 700; font-size: 13px; text-transform: uppercase; color: var(--ink); display: flex; justify-content: space-between; align-items: center; list-style: none; background: var(--bg-panel); }
+        .accordion-content { padding: 20px; }
+
         .toggle-row { display: flex; border: 2px solid var(--border); border-radius: 30px; overflow: hidden; margin-bottom: 15px; background: var(--bg-paper); }
         .toggle-opt { flex: 1; background: transparent; border: none; padding: 12px; color: var(--ink-muted); font-family: var(--font-head); font-weight: 700; font-size: 11px; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
         .toggle-opt.active { background: var(--accent); color: #fff; }
         
         input, select, textarea { width: 100%; background: var(--bg-paper); color: var(--ink); border: 2px solid var(--border); padding: 14px; font-family: var(--font-body); font-weight: 600; border-radius: 8px; margin-bottom: 15px; }
         .btn-archive { width: 100%; padding: 16px; background: linear-gradient(45deg, var(--accent), var(--accent-secondary)); color: #fff; border: none; font-family: var(--font-head); font-weight: 900; font-size: 14px; cursor: pointer; text-transform: uppercase; border-radius: 8px; margin-top: 20px; }
+        
+        /* ADVANCED FILTERS */
+        .range-group { display: flex; align-items: center; gap: 10px; }
+        .range-group input { text-align: center; margin-bottom: 0; }
         
         .mood-box { background: rgba(255, 0, 204, 0.05); border: 2px dashed var(--accent); border-radius: 12px; padding: 20px; margin-bottom: 30px; }
         .genre-grid { gap: 10px; display: flex; flex-wrap: wrap; }
@@ -42,7 +51,6 @@
         .canvas { flex: 1; padding: 60px 80px; overflow-y: auto; background: transparent; }
         .section-header { font-family: var(--font-head); font-weight: 900; font-size: 60px; margin-bottom: 10px; color: var(--ink); text-transform: uppercase; letter-spacing: -2px; background: linear-gradient(to right, var(--accent), var(--accent-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        /* GRID */
         .exhibit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 40px; }
         .exhibit-card { cursor: pointer; background: var(--card-bg); padding: 15px; border-radius: 16px; border: 2px solid var(--border); transition: 0.4s; }
         .exhibit-card:hover { transform: translateY(-10px); border-color: var(--accent); }
@@ -51,7 +59,7 @@
         .film-title { font-family: var(--font-head); font-weight: 900; font-size: 18px; color: var(--ink); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
         .ai-score { color: #fff; background: var(--accent); padding: 4px 8px; border-radius: 10px; font-size: 10px; font-weight: 900; margin-top: 5px; display: inline-block; }
 
-        /* DESCRIBE MODE LIST */
+        /* DESCRIBE LIST */
         .describe-list { display: flex; flex-direction: column; gap: 20px; }
         .describe-card { display: flex; gap: 20px; background: var(--bg-panel); border: 2px solid var(--border); padding: 20px; border-radius: 15px; cursor: pointer; transition: 0.3s; }
         .describe-card:hover { border-color: var(--accent); transform: translateX(10px); }
@@ -91,21 +99,58 @@
                     <button class="btn-archive" onclick="runMoodSearch()">Find My Vibe</button>
                 </div>
                 
-                <div style="margin-bottom:10px; font-weight:700; color:var(--accent);">TITLE TYPE</div>
-                <div class="toggle-row">
-                    <button class="toggle-opt active" id="b-btn-movie" onclick="setBrowseType('movie')">Movie</button>
-                    <button class="toggle-opt" id="b-btn-tv" onclick="setBrowseType('tv')">Series</button>
-                </div>
+                <details open>
+                    <summary>TITLE TYPE</summary>
+                    <div class="accordion-content">
+                        <div class="toggle-row">
+                            <button class="toggle-opt active" id="b-btn-movie" onclick="setBrowseType('movie')">Movie</button>
+                            <button class="toggle-opt" id="b-btn-tv" onclick="setBrowseType('tv')">Series</button>
+                        </div>
+                    </div>
+                </details>
 
-                <div style="margin-bottom:10px; font-weight:700; color:var(--accent);">SORT BY</div>
-                <select id="sort-select" onchange="resetAndRunBrowse()">
-                    <option value="popularity.desc">Most Popular</option>
-                    <option value="vote_average.desc">Top Rated</option>
-                    <option value="revenue.desc">Box Office</option>
-                </select>
+                <details open>
+                    <summary>SORT BY</summary>
+                    <div class="accordion-content">
+                        <select id="sort-select">
+                            <option value="popularity.desc">Most Popular</option>
+                            <option value="vote_average.desc">Top Rated</option>
+                            <option value="revenue.desc">Box Office</option>
+                            <option value="primary_release_date.desc">Newest First</option>
+                        </select>
+                    </div>
+                </details>
 
-                <div style="margin-bottom:10px; font-weight:700; color:var(--accent);">GENRES</div>
-                <div id="genre-container" class="genre-grid"></div>
+                <details>
+                    <summary>RELEASE YEAR</summary>
+                    <div class="accordion-content">
+                        <div class="range-group">
+                            <input type="number" id="year-start" placeholder="1980" min="1900" max="2025">
+                            <span>-</span>
+                            <input type="number" id="year-end" placeholder="2025" min="1900" max="2025">
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>RATING (0-10)</summary>
+                    <div class="accordion-content">
+                        <div class="range-group">
+                            <input type="number" id="rate-min" placeholder="0" min="0" max="10">
+                            <span>to</span>
+                            <input type="number" id="rate-max" placeholder="10" min="0" max="10">
+                        </div>
+                    </div>
+                </details>
+
+                <details open>
+                    <summary>GENRES</summary>
+                    <div class="accordion-content">
+                        <div id="genre-container" class="genre-grid"></div>
+                    </div>
+                </details>
+
+                <button class="btn-archive" onclick="resetAndRunBrowse()">Apply All Filters</button>
             </div>
 
             <div id="input-search" style="display:none;">
@@ -170,13 +215,13 @@
 
     // --- SETUP ---
     window.onload = () => {
-        const g = [{id:28,n:"Action"},{id:878,n:"Sci-Fi"},{id:27,n:"Horror"},{id:35,n:"Comedy"},{id:18,n:"Drama"},{id:53,n:"Thriller"},{id:10749,n:"Romance"}];
+        const g = [{id:28,n:"Action"},{id:878,n:"Sci-Fi"},{id:27,n:"Horror"},{id:35,n:"Comedy"},{id:18,n:"Drama"},{id:53,n:"Thriller"},{id:12,n:"Adventure"},{id:9648,n:"Mystery"},{id:10749,n:"Romance"},{id:14,n:"Fantasy"},{id:80,n:"Crime"},{id:16,n:"Animation"}];
         const c = document.getElementById('genre-container');
         g.forEach(x => { 
             let d = document.createElement('div'); d.className='genre-pill'; d.innerText=x.n; d.dataset.id=x.id;
-            d.onclick=()=>{d.classList.toggle('selected'); resetAndRunBrowse();}; c.appendChild(d); 
+            d.onclick=()=>{d.classList.toggle('selected');}; c.appendChild(d); 
         });
-        resetAndRunBrowse(); // THIS will now work because html matches logic
+        resetAndRunBrowse();
     };
 
     function toggleTheme() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme')==='light'?'dark':'light'); }
@@ -228,11 +273,19 @@
         if(currentPage===1) grid.innerHTML = '<div style="text-align:center; padding:50px;">ACCESSING DATABASE...</div>';
         
         try {
-            // FIX: Using variable 'browseType' instead of looking for a dropdown ID
             const sort = document.getElementById('sort-select').value;
             const genres = Array.from(document.querySelectorAll('.genre-pill.selected')).map(el => el.dataset.id).join(',');
+            const yStart = document.getElementById('year-start').value;
+            const yEnd = document.getElementById('year-end').value;
+            const rMin = document.getElementById('rate-min').value;
+            const rMax = document.getElementById('rate-max').value;
+            
             let url = `${BASE_URL}/discover/${browseType}?api_key=${TMDB_KEY}&sort_by=${sort}&page=${currentPage}`;
             if(genres) url += `&with_genres=${genres}`;
+            if(yStart) url += (browseType==='movie' ? `&primary_release_date.gte=${yStart}-01-01` : `&first_air_date.gte=${yStart}-01-01`);
+            if(yEnd) url += (browseType==='movie' ? `&primary_release_date.lte=${yEnd}-12-31` : `&first_air_date.lte=${yEnd}-12-31`);
+            if(rMin) url += `&vote_average.gte=${rMin}`;
+            if(rMax) url += `&vote_average.lte=${rMax}`;
             
             const res = await fetch(url);
             const data = await res.json();
@@ -334,7 +387,20 @@
     async function openModal(m, type) {
         const modal = document.getElementById('quick-view-modal');
         const c = document.getElementById('modal-content');
-        c.innerHTML = `<div style="display:flex; gap:20px;"><img src="${IMG_URL+m.poster_path}" class="modal-poster"><div><h2 style="margin:0;">${m.title||m.name}</h2><p>${m.overview}</p></div></div>`;
+        
+        // Fetch Cast
+        const cred = await fetch(`${BASE_URL}/${type}/${m.id}/credits?api_key=${TMDB_KEY}`).then(r=>r.json());
+        const cast = cred.cast ? cred.cast.slice(0,5).map(x=>x.name).join(', ') : 'Unknown';
+        
+        c.innerHTML = `<div style="display:flex; gap:20px; flex-wrap:wrap; justify-content:center;">
+            <img src="${IMG_URL+m.poster_path}" class="modal-poster">
+            <div style="flex:1; min-width:250px;">
+                <h2 style="margin:0; text-transform:uppercase;">${m.title||m.name}</h2>
+                <div style="color:var(--accent); font-weight:700; margin:10px 0;">${m.vote_average.toFixed(1)} ★ • ${type.toUpperCase()}</div>
+                <p style="line-height:1.6; color:var(--ink);">${m.overview}</p>
+                <div style="font-size:12px; color:var(--ink-muted); margin-top:20px;"><strong>STARRING:</strong> ${cast}</div>
+            </div>
+        </div>`;
         modal.style.display = 'flex';
     }
     function closeModal() { document.getElementById('quick-view-modal').style.display='none'; }
@@ -344,7 +410,7 @@
         const q = document.getElementById('know-search').value;
         const res = await fetch(API_INTEL, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({title:q, type:'movie'})});
         const d = await res.json();
-        alert(d.tagline_ai); // Simple alert for now to test connection
+        alert(`AI REPORT:\n\nTagline: "${d.tagline_ai}"\n\nTwist: ${d.plot_twist}`);
     }
 </script>
 </body>
