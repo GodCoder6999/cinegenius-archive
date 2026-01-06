@@ -8,8 +8,11 @@
     <style>
         :root { --bg-paper: #0f001e; --bg-panel: #1a0030; --ink: #ffffff; --ink-muted: #b39ddb; --border: #4a148c; --accent: #d500f9; --accent-secondary: #00e5ff; --card-bg: rgba(255, 255, 255, 0.05); --font-head: 'Montserrat', sans-serif; --font-body: 'Poppins', sans-serif; }
         [data-theme="light"] { --bg-paper: #f8f9fa; --bg-panel: #ffffff; --ink: #1a1a2e; --ink-muted: #5c5c8a; --border: #dee2e6; --accent: #6200ea; --accent-secondary: #00b0ff; --card-bg: #ffffff; }
+        
         * { box-sizing: border-box; }
         body { background-color: var(--bg-paper); color: var(--ink); font-family: var(--font-body); margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        
+        /* HEADER */
         .masthead { height: 70px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; padding: 0 40px; background: rgba(20, 0, 40, 0.95); z-index: 50; }
         .logo { font-family: var(--font-head); font-weight: 900; font-size: 24px; letter-spacing: 1px; text-transform: uppercase; }
         .logo span { color: var(--accent); font-style: italic; text-shadow: 0 0 10px var(--accent); }
@@ -18,6 +21,8 @@
         .mode-btn:hover { color: var(--ink); }
         .mode-btn.active { background: var(--accent); color: #fff; box-shadow: 0 0 15px var(--accent); }
         .theme-switch { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; border: 2px solid var(--border); transition: 0.3s; }
+
+        /* LAYOUT */
         .editorial-layout { display: flex; flex: 1; overflow: hidden; }
         .research-sidebar { width: 380px; background: var(--bg-panel); padding: 20px; overflow-y: auto; border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 15px; }
         details { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 10px; }
@@ -35,6 +40,8 @@
         .genre-grid { display: flex; flex-wrap: wrap; gap: 6px; }
         .genre-pill { font-size: 10px; padding: 5px 8px; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; color: var(--ink-muted); transition: 0.2s; background: rgba(255,255,255,0.02); }
         .genre-pill.selected { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+        /* CANVAS */
         .canvas { flex: 1; padding: 40px; overflow-y: auto; background: radial-gradient(circle at top right, rgba(0, 229, 255, 0.05), transparent 40%); position: relative; }
         .section-title { font-family: var(--font-head); font-weight: 900; font-size: 42px; margin-bottom: 10px; color: var(--ink); text-transform: uppercase; }
         .section-subtitle { font-size: 12px; color: var(--accent-secondary); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 30px; border-left: 3px solid var(--accent); padding-left: 15px; }
@@ -50,6 +57,8 @@
         .film-title { font-family: var(--font-head); font-weight: 800; font-size: 14px; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .film-meta { font-size: 11px; color: var(--ink-muted); display: flex; justify-content: space-between; align-items: center; }
         .meta-year { font-weight: 700; color: var(--accent-secondary); }
+        
+        /* LOADER */
         .loader-container { padding: 80px 0; display: none; flex-direction: column; align-items: center; justify-content: center; }
         .clapperboard { width: 60px; height: 60px; position: relative; margin-bottom: 20px; }
         .clapper-top { width: 60px; height: 12px; background: repeating-linear-gradient(45deg, var(--bg-panel) 0, var(--bg-panel) 8px, var(--ink) 8px, var(--ink) 16px); border-radius: 4px; position: absolute; top: 0; left: 0; transform-origin: bottom left; animation: snap 1.2s infinite; border: 1px solid var(--accent); }
@@ -60,6 +69,8 @@
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
         .btn-load-more { display: block; margin: 40px auto; background: transparent; border: 2px solid var(--accent); color: var(--ink); padding: 12px 40px; border-radius: 30px; font-weight: 700; cursor: pointer; transition: 0.3s; letter-spacing: 1px; }
         .btn-load-more:hover { background: var(--accent); color: #fff; }
+
+        /* DOSSIER (INTEL PAGE) */
         #dossier-content { max-width: 900px; margin: 0 auto; animation: slideUp 0.6s ease; }
         .dossier-header { display: flex; gap: 40px; margin-bottom: 40px; }
         .dossier-poster { width: 300px; border-radius: 12px; border: 2px solid var(--accent); box-shadow: 0 0 30px rgba(213,0,249,0.2); }
@@ -76,23 +87,75 @@
         .spoiler-btn { background: #ff0055; color: #fff; border: none; padding: 10px 20px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; border-radius: 4px; pointer-events: none; }
         .spoiler-section.revealed .spoiler-blur { filter: blur(0); }
         .spoiler-section.revealed .spoiler-overlay { display: none; }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); opacity: 0; transition: 0.3s; }
-        .modal-overlay.active { opacity: 1; pointer-events: all; }
-        .modal-card { background: #1a0030; width: 90%; max-width: 900px; border-radius: 20px; border: 1px solid var(--border); display: flex; overflow: hidden; max-height: 90vh; }
-        .modal-poster-area { width: 350px; flex-shrink: 0; position:relative; }
-        .modal-poster-img { width: 100%; height: 100%; object-fit: cover; }
-        .modal-info { padding: 40px; flex: 1; overflow-y: auto; }
-        .close-modal { position: absolute; top: 20px; right: 20px; font-size: 24px; cursor: pointer; }
-        
-        .stream-btn { display: inline-flex; align-items: center; gap: 10px; background: #fff; color: #000; padding: 10px 15px; border-radius: 8px; font-weight: 700; font-size: 12px; margin-right: 10px; margin-bottom: 10px; text-decoration: none; transition: 0.2s; border: 2px solid transparent; }
-        .stream-btn:hover { border-color: var(--accent); transform: translateY(-2px); }
-        .stream-btn img { width: 20px; height: 20px; border-radius: 4px; }
-        
-        .intel-btn-modal { width:100%; margin-top:20px; background: rgba(255, 0, 85, 0.1); border: 2px dashed #ff0055; color: #ff0055; padding: 15px; border-radius: 10px; font-family: var(--font-head); font-weight: 900; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .intel-btn-modal:hover { background: #ff0055; color: #fff; }
 
+        /* POPUP MODAL */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; display: none; justify-content: center; align-items: center; backdrop-filter: blur(10px); opacity: 0; transition: 0.3s; }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        
+        .modal-card { 
+            background: var(--bg-paper); 
+            width: 90%; max-width: 950px; 
+            border-radius: 20px; 
+            border: 1px solid var(--border); 
+            display: flex; 
+            overflow: hidden; 
+            max-height: 90vh; 
+            position: relative; 
+            box-shadow: 0 0 80px rgba(0,0,0,0.8); 
+        }
+
+        /* BACKDROP */
+        .modal-backdrop-bg {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background-size: cover; background-position: center;
+            opacity: 0.15; filter: blur(2px) grayscale(50%); z-index: 0;
+        }
+        
+        /* CONTENT WRAPPER */
+        .modal-content-wrapper { position: relative; z-index: 1; display: flex; width: 100%; }
+        
+        .modal-poster-area { width: 320px; flex-shrink: 0; padding: 20px; display: flex; align-items: center; justify-content: center; }
+        .modal-poster-img { width: 100%; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); border: 1px solid var(--border); transform: translateX(-50px); opacity: 0; animation: slideInLeft 0.5s 0.2s forwards ease-out; }
+        
+        .modal-info { padding: 40px; flex: 1; overflow-y: auto; opacity: 0; animation: fadeIn 0.5s 0.4s forwards; }
+        .modal-title { font-family: var(--font-head); font-weight: 900; font-size: 42px; line-height: 1.1; margin-bottom: 10px; text-shadow: 0 0 30px rgba(0,0,0,0.5); }
+        
+        .close-modal { position: absolute; top: 20px; right: 20px; font-size: 30px; cursor: pointer; color: var(--ink-muted); z-index: 10; transition: 0.3s; }
+        .close-modal:hover { color: var(--accent); transform: rotate(90deg); }
+        
+        .stream-btn { 
+            display: inline-flex; align-items: center; gap: 10px; 
+            background: var(--bg-panel); color: var(--ink); border: 1px solid var(--border);
+            padding: 12px 20px; border-radius: 10px; font-weight: 700; font-size: 12px; 
+            margin-right: 10px; margin-bottom: 10px; text-decoration: none; 
+            transition: 0.2s; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .stream-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 0 20px var(--accent); transform: translateY(-2px); }
+        .stream-btn img { width: 24px; height: 24px; border-radius: 4px; }
+        
+        .intel-btn-modal { 
+            width:100%; margin-top:30px; 
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 85, 0.1), transparent);
+            border: 2px solid #ff0055; color: #ff0055; 
+            padding: 18px; border-radius: 12px; 
+            font-family: var(--font-head); font-weight: 900; 
+            cursor: pointer; text-transform: uppercase; letter-spacing: 2px; 
+            transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; 
+        }
+        .intel-btn-modal:hover { background: #ff0055; color: #fff; box-shadow: 0 0 30px rgba(255, 0, 85, 0.4); }
+
+        @keyframes slideInLeft { to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeIn { to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @media (max-width: 800px) { .dossier-header { flex-direction: column; } .dossier-poster { width: 100%; } .modal-card { flex-direction: column; } .modal-poster-area { width: 100%; height: 200px; } .research-sidebar { display: none; } }
+        
+        @media (max-width: 800px) { 
+            .dossier-header { flex-direction: column; } 
+            .dossier-poster { width: 100%; } 
+            .modal-content-wrapper { flex-direction: column; }
+            .modal-poster-area { width: 100%; height: 250px; padding-bottom: 0; }
+            .modal-poster-img { height: 100%; width: auto; transform: translateY(20px); }
+            .research-sidebar { display: none; } 
+        }
     </style>
 </head>
 <body data-theme="dark">
@@ -173,8 +236,8 @@
 
     <div class="modal-overlay" id="quick-view-modal" onclick="closeModal(event)">
         <div class="modal-card" onclick="event.stopPropagation()">
-            <div class="close-modal" onclick="closeModal()">×</div>
-            <div id="modal-content" style="display:flex; width:100%;"></div>
+            <div class="modal-backdrop-bg" id="modal-bg"></div> <div class="close-modal" onclick="closeModal()">×</div>
+            <div class="modal-content-wrapper" id="modal-content"></div>
         </div>
     </div>
 
@@ -182,11 +245,16 @@
     const TMDB_KEY = "09ca3ca71692ba80b848d268502d24ed"; 
     const BASE_URL = 'https://api.themoviedb.org/3';
     const IMG_URL = 'https://image.tmdb.org/t/p/w500';
+    const ORIGINAL_IMG_URL = 'https://image.tmdb.org/t/p/original';
     const API_SEARCH = "/api/smart-search"; 
     const API_INTEL = "/api/intel-brief";
 
     let currentMode = 'filter', browseType = 'movie', curateType = 'movie', describeType = 'movie';
     let currentPage = 1, isFetching = false, curatedTitles = [], previousMode = 'filter';
+    
+    // --- GLOBAL VARIABLE FOR INTEL BUTTON ---
+    let currentModalItem = null; 
+    let currentModalType = 'movie';
 
     window.onload = () => {
         const g = [{id:28,n:"Action"},{id:12,n:"Adventure"},{id:35,n:"Comedy"},{id:80,n:"Crime"},{id:18,n:"Drama"},{id:27,n:"Horror"},{id:878,n:"Sci-Fi"},{id:53,n:"Thriller"}];
@@ -288,6 +356,13 @@
         });
     }
 
+    // --- INTEL BUTTON FIX (USE GLOBAL VAR) ---
+    function triggerIntel() {
+        closeModal();
+        switchMode('knowledge');
+        setTimeout(() => openDossier(currentModalItem, currentModalType), 400); 
+    }
+
     async function runKnowledgeSearch() {
         const q = document.getElementById('know-search').value;
         const grid = document.getElementById('grid-container');
@@ -325,33 +400,73 @@
     function goBack() { document.getElementById('view-dossier').style.display='none'; document.getElementById('view-collection').style.display='block'; document.getElementById('btn-back').style.display='none'; }
     function closeModal() { document.querySelector('.modal-overlay').classList.remove('active'); setTimeout(()=>document.getElementById('quick-view-modal').style.display='none', 300); }
     
-    function switchToIntelFromModal(m, type) {
-        closeModal();
-        switchMode('knowledge');
-        setTimeout(() => openDossier(m, type), 400); // Wait for modal to close
-    }
-
+    // --- UPDATED MODAL WITH GLOBAL INTEL + WATCH OPTIONS ---
     async function openModal(m, type) { 
         if(m.first_air_date) type='tv'; else type='movie';
+        
+        // STORE GLOBAL STATE FOR INTEL BUTTON
+        currentModalItem = m;
+        currentModalType = type;
+
         const modal = document.getElementById('quick-view-modal');
         const c = document.getElementById('modal-content');
+        const bg = document.getElementById('modal-bg');
+        
+        // SET BACKDROP
+        if(m.backdrop_path) {
+            bg.style.backgroundImage = `url(${ORIGINAL_IMG_URL + m.backdrop_path})`;
+        } else {
+            bg.style.backgroundImage = 'none';
+        }
+
         const meta = getSmartMeta(m, type);
         
-        // Fetch Providers
+        // FETCH STREAMING PROVIDERS (CHECKING RENT, BUY, AND FLATRATE)
         const provRes = await fetch(`${BASE_URL}/${type}/${m.id}/watch/providers?api_key=${TMDB_KEY}`);
         const provData = await provRes.json();
-        const providers = provData.results?.IN?.flatrate || provData.results?.US?.flatrate || [];
-        const links = providers.slice(0, 3).map(p => `<a href="${provData.results?.IN?.link || provData.results?.US?.link}" target="_blank" class="stream-btn"><img src="${IMG_URL + p.logo_path}"> Watch on ${p.provider_name}</a>`).join('');
+        
+        // Collect all unique options from Flatrate, Rent, Buy (India or US)
+        const region = provData.results?.IN || provData.results?.US;
+        let allOptions = [];
+        if(region) {
+            if(region.flatrate) allOptions = [...allOptions, ...region.flatrate];
+            if(region.rent) allOptions = [...allOptions, ...region.rent];
+            if(region.buy) allOptions = [...allOptions, ...region.buy];
+        }
+
+        // Deduplicate by provider name
+        const uniqueOptions = [...new Map(allOptions.map(item => [item['provider_name'], item])).values()];
+        
+        let linkHtml = '';
+        if(uniqueOptions.length > 0) {
+            // We have specific logos, show top 3 + link to full list
+            const watchLink = region.link; // TMDB's aggregated link page
+            linkHtml = uniqueOptions.slice(0, 3).map(p => 
+                `<a href="${watchLink}" target="_blank" class="stream-btn">
+                    <img src="${IMG_URL + p.logo_path}"> Watch on ${p.provider_name}
+                 </a>`
+            ).join('') + (uniqueOptions.length > 3 ? `<a href="${watchLink}" target="_blank" class="stream-btn" style="background:transparent; border:1px solid #fff;">+${uniqueOptions.length-3} More</a>` : '');
+        } else {
+            // No data? Fallback to Search
+            const searchUrl = `https://www.google.com/search?q=watch+${encodeURIComponent(m.title||m.name)}`;
+            linkHtml = `<a href="${searchUrl}" target="_blank" class="stream-btn">🔍 Search Streaming Options</a>`;
+        }
 
         c.innerHTML = `
             <div class="modal-poster-area"><img src="${IMG_URL+m.poster_path}" class="modal-poster-img"></div>
             <div class="modal-info">
                 <div class="modal-title">${m.title||m.name} <span style="font-size:20px; color:var(--ink-muted);">${meta.dateStr}</span></div>
-                <div style="margin-bottom:20px; color:var(--accent); font-weight:700;">★ ${m.vote_average.toFixed(1)} &nbsp;&nbsp;|&nbsp;&nbsp; ${type.toUpperCase()} &nbsp;&nbsp;|&nbsp;&nbsp; ${meta.seasonStr || 'Feature Film'}</div>
-                <div style="margin-bottom:20px;">${links}</div>
-                <p style="line-height:1.6; color:var(--ink-muted);">${m.overview}</p>
+                <div style="margin-bottom:25px; color:var(--accent); font-weight:700;">
+                    ★ ${m.vote_average.toFixed(1)} &nbsp;&nbsp;|&nbsp;&nbsp; 
+                    ${type.toUpperCase()} &nbsp;&nbsp;|&nbsp;&nbsp; 
+                    ${meta.seasonStr || 'Feature Film'}
+                </div>
                 
-                <button class="intel-btn-modal" onclick='switchToIntelFromModal(${JSON.stringify(m)}, "${type}")'>
+                <div style="margin-bottom:30px;">${linkHtml}</div>
+                
+                <p style="line-height:1.8; color:var(--ink-muted); font-size:15px; margin-bottom:30px;">${m.overview}</p>
+                
+                <button class="intel-btn-modal" onclick="triggerIntel()">
                     📂 Access Classified Intel Dossier
                 </button>
             </div>
