@@ -79,10 +79,18 @@
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); opacity: 0; transition: 0.3s; }
         .modal-overlay.active { opacity: 1; pointer-events: all; }
         .modal-card { background: #1a0030; width: 90%; max-width: 900px; border-radius: 20px; border: 1px solid var(--border); display: flex; overflow: hidden; max-height: 90vh; }
-        .modal-poster-area { width: 350px; flex-shrink: 0; }
+        .modal-poster-area { width: 350px; flex-shrink: 0; position:relative; }
         .modal-poster-img { width: 100%; height: 100%; object-fit: cover; }
         .modal-info { padding: 40px; flex: 1; overflow-y: auto; }
         .close-modal { position: absolute; top: 20px; right: 20px; font-size: 24px; cursor: pointer; }
+        
+        .stream-btn { display: inline-flex; align-items: center; gap: 10px; background: #fff; color: #000; padding: 10px 15px; border-radius: 8px; font-weight: 700; font-size: 12px; margin-right: 10px; margin-bottom: 10px; text-decoration: none; transition: 0.2s; border: 2px solid transparent; }
+        .stream-btn:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .stream-btn img { width: 20px; height: 20px; border-radius: 4px; }
+        
+        .intel-btn-modal { width:100%; margin-top:20px; background: rgba(255, 0, 85, 0.1); border: 2px dashed #ff0055; color: #ff0055; padding: 15px; border-radius: 10px; font-family: var(--font-head); font-weight: 900; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .intel-btn-modal:hover { background: #ff0055; color: #fff; }
+
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         @media (max-width: 800px) { .dossier-header { flex-direction: column; } .dossier-poster { width: 100%; } .modal-card { flex-direction: column; } .modal-poster-area { width: 100%; height: 200px; } .research-sidebar { display: none; } }
     </style>
@@ -211,12 +219,10 @@
     function updateToggle(p, t) { document.getElementById(p+'-btn-movie').classList.remove('active'); document.getElementById(p+'-btn-tv').classList.remove('active'); document.getElementById(p+'-btn-'+t).classList.add('active'); }
     function showLoading(show) { document.getElementById('loading-spinner').style.display = show ? 'flex' : 'none'; if(show) document.getElementById('btn-load-more').style.display = 'none'; }
 
-    // --- REUSABLE SMART META LOGIC (Fixes Modal Dates) ---
     function getSmartMeta(m, type) {
         const start = (m.release_date || m.first_air_date || 'N/A').split('-')[0];
         let dateStr = start;
         let seasonStr = '';
-        
         if(type === 'tv' && start !== 'N/A') {
             if (m.status === 'Returning Series' || m.in_production === true) {
                 dateStr = `${start}-Present`;
@@ -275,23 +281,9 @@
         list.forEach(m => {
             if(!m.poster_path) return;
             const meta = getSmartMeta(m, type);
-            
             const div = document.createElement('div'); div.className = 'exhibit-card'; 
             div.onclick = () => { if(currentMode==='knowledge') openDossier(m, type); else openModal(m, type); };
-            
-            div.innerHTML = `
-                <div class="rating-badge">★ ${m.vote_average.toFixed(1)}</div>
-                ${isAi && m.ai_score ? `<div class="match-badge">${m.ai_score}% MATCH</div>` : ''}
-                <div class="poster-frame"><img src="${IMG_URL+m.poster_path}" class="poster-img"></div>
-                <div class="card-info">
-                    <div class="film-title">${m.title||m.name}</div>
-                    <div class="film-meta">
-                        <span class="meta-year">${meta.dateStr}</span>
-                        <span>${meta.seasonStr}</span>
-                    </div>
-                    ${isAi?`<div style="font-size:10px; color:var(--accent); margin-top:5px; line-height:1.2;">${m.ai_reason}</div>`:''}
-                </div>
-            `;
+            div.innerHTML = `<div class="rating-badge">★ ${m.vote_average.toFixed(1)}</div>${isAi && m.ai_score ? `<div class="match-badge">${m.ai_score}% MATCH</div>` : ''}<div class="poster-frame"><img src="${IMG_URL+m.poster_path}" class="poster-img"></div><div class="card-info"><div class="film-title">${m.title||m.name}</div><div class="film-meta"><span class="meta-year">${meta.dateStr}</span><span>${meta.seasonStr}</span></div>${isAi?`<div style="font-size:10px; color:var(--accent); margin-top:5px; line-height:1.2;">${m.ai_reason}</div>`:''}</div>`;
             grid.appendChild(div);
         });
     }
@@ -301,8 +293,7 @@
         const grid = document.getElementById('grid-container');
         document.getElementById('view-collection').style.display='block';
         document.getElementById('view-dossier').style.display='none';
-        grid.innerHTML = '';
-        showLoading(true);
+        grid.innerHTML = ''; showLoading(true);
         const res = await fetch(`${BASE_URL}/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(q)}`);
         const data = await res.json();
         const filtered = data.results.filter(x => x.media_type!=='person' && x.poster_path);
@@ -320,33 +311,13 @@
         document.getElementById('btn-back').style.display='block';
         const content = document.getElementById('dossier-content');
         content.innerHTML = '<div style="text-align:center; padding:100px;">DECRYPTING FILE...</div>';
-        
         try {
             const details = await fetch(`${BASE_URL}/${type}/${m.id}?api_key=${TMDB_KEY}`).then(r=>r.json());
             const budget = details.budget ? `$${(details.budget/1000000).toFixed(1)}M` : 'Classified';
             const revenue = details.revenue ? `$${(details.revenue/1000000).toFixed(1)}M` : 'Classified';
             const aiRes = await fetch(API_INTEL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({title: m.title||m.name, type: type}) });
             const ai = await aiRes.json();
-            
-            content.innerHTML = `
-                <div class="dossier-header">
-                    <img src="${IMG_URL + m.poster_path}" class="dossier-poster">
-                    <div class="dossier-data">
-                        <div class="dossier-title">${m.title||m.name}</div>
-                        <div class="dossier-tagline">"${ai.tagline_ai || m.tagline || 'No data found'}"</div>
-                        <p style="line-height:1.6; margin-bottom:30px;">${m.overview}</p>
-                        <div class="intel-grid">
-                            <div class="intel-box"><div class="intel-label">BUDGET (EST)</div><div class="intel-value">${budget}</div></div>
-                            <div class="intel-box"><div class="intel-label">BOX OFFICE</div><div class="intel-value">${revenue}</div></div>
-                            <div class="intel-box"><div class="intel-label">STATUS</div><div class="intel-value" style="color:${ai.status_verdict?.includes('Hit')?'#00ff00':'#ff0055'}">${ai.status_verdict || 'Unknown'}</div></div>
-                            <div class="intel-box"><div class="intel-label">CULTURAL IMPACT</div><div class="intel-value" style="font-size:14px;">${ai.cultural_impact || 'Minimal'}</div></div>
-                        </div>
-                        <div class="spoiler-section" onclick="this.classList.add('revealed')">
-                            <div class="spoiler-overlay"><button class="spoiler-btn">⚠️ REVEAL PLOT TWIST</button></div>
-                            <div class="spoiler-blur"><h3 style="color:var(--accent);">MAJOR SPOILER WARNING</h3><p>${ai.plot_twist || 'No Twist Detected.'}</p></div>
-                        </div>
-                    </div>
-                </div>`;
+            content.innerHTML = `<div class="dossier-header"><img src="${IMG_URL + m.poster_path}" class="dossier-poster"><div class="dossier-data"><div class="dossier-title">${m.title||m.name}</div><div class="dossier-tagline">"${ai.tagline_ai || m.tagline || 'No data found'}"</div><p style="line-height:1.6; margin-bottom:30px;">${m.overview}</p><div class="intel-grid"><div class="intel-box"><div class="intel-label">BUDGET (EST)</div><div class="intel-value">${budget}</div></div><div class="intel-box"><div class="intel-label">BOX OFFICE</div><div class="intel-value">${revenue}</div></div><div class="intel-box"><div class="intel-label">STATUS</div><div class="intel-value" style="color:${ai.status_verdict?.includes('Hit')?'#00ff00':'#ff0055'}">${ai.status_verdict || 'Unknown'}</div></div><div class="intel-box"><div class="intel-label">CULTURAL IMPACT</div><div class="intel-value" style="font-size:14px;">${ai.cultural_impact || 'Minimal'}</div></div></div><div class="spoiler-section" onclick="this.classList.add('revealed')"><div class="spoiler-overlay"><button class="spoiler-btn">⚠️ REVEAL PLOT TWIST</button></div><div class="spoiler-blur"><h3 style="color:var(--accent);">MAJOR SPOILER WARNING</h3><p>${ai.plot_twist || 'No Twist Detected.'}</p></div></div></div></div>`;
         } catch(e) { console.error(e); content.innerHTML = 'Error loading dossier.'; }
     }
 
@@ -354,24 +325,35 @@
     function goBack() { document.getElementById('view-dossier').style.display='none'; document.getElementById('view-collection').style.display='block'; document.getElementById('btn-back').style.display='none'; }
     function closeModal() { document.querySelector('.modal-overlay').classList.remove('active'); setTimeout(()=>document.getElementById('quick-view-modal').style.display='none', 300); }
     
+    function switchToIntelFromModal(m, type) {
+        closeModal();
+        switchMode('knowledge');
+        setTimeout(() => openDossier(m, type), 400); // Wait for modal to close
+    }
+
     async function openModal(m, type) { 
         if(m.first_air_date) type='tv'; else type='movie';
         const modal = document.getElementById('quick-view-modal');
         const c = document.getElementById('modal-content');
-        
-        const cred = await fetch(`${BASE_URL}/${type}/${m.id}/credits?api_key=${TMDB_KEY}`).then(r=>r.json());
-        const cast = cred.cast ? cred.cast.slice(0,5).map(a=>a.name).join(', ') : 'N/A';
-        
-        // USE SMART META FOR POPUP TOO
         const meta = getSmartMeta(m, type);
+        
+        // Fetch Providers
+        const provRes = await fetch(`${BASE_URL}/${type}/${m.id}/watch/providers?api_key=${TMDB_KEY}`);
+        const provData = await provRes.json();
+        const providers = provData.results?.IN?.flatrate || provData.results?.US?.flatrate || [];
+        const links = providers.slice(0, 3).map(p => `<a href="${provData.results?.IN?.link || provData.results?.US?.link}" target="_blank" class="stream-btn"><img src="${IMG_URL + p.logo_path}"> Watch on ${p.provider_name}</a>`).join('');
 
         c.innerHTML = `
             <div class="modal-poster-area"><img src="${IMG_URL+m.poster_path}" class="modal-poster-img"></div>
             <div class="modal-info">
                 <div class="modal-title">${m.title||m.name} <span style="font-size:20px; color:var(--ink-muted);">${meta.dateStr}</span></div>
                 <div style="margin-bottom:20px; color:var(--accent); font-weight:700;">★ ${m.vote_average.toFixed(1)} &nbsp;&nbsp;|&nbsp;&nbsp; ${type.toUpperCase()} &nbsp;&nbsp;|&nbsp;&nbsp; ${meta.seasonStr || 'Feature Film'}</div>
+                <div style="margin-bottom:20px;">${links}</div>
                 <p style="line-height:1.6; color:var(--ink-muted);">${m.overview}</p>
-                <div style="margin-top:20px;"><strong>Cast:</strong> ${cast}</div>
+                
+                <button class="intel-btn-modal" onclick='switchToIntelFromModal(${JSON.stringify(m)}, "${type}")'>
+                    📂 Access Classified Intel Dossier
+                </button>
             </div>
         `;
         modal.style.display = 'flex'; setTimeout(()=>document.querySelector('.modal-overlay').classList.add('active'), 10);
