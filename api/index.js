@@ -25,23 +25,28 @@ app.post('/api/smart-search', async (req, res) => {
     try {
         const { refTitle, userPrompt, type, exclude = [] } = req.body;
         
-        // STRICT EXCLUSION LOGIC
-        const excludeText = exclude.length > 0 
-            ? `CRITICAL: Do NOT recommend these titles: ${exclude.join(', ')}. Search for DIFFERENT, fresh recommendations.` 
-            : '';
+        const excludeText = exclude.length > 0 ? `Do NOT recommend: ${exclude.join(', ')}.` : '';
+
+        // UPDATED PROMPT: Forces AI to match the specific sub-genre (e.g., Teen Romance)
+        const systemPrompt = `You are a precise Movie/TV recommendation engine. 
+        Your goal is HIGH SIMILARITY. Ignore "Critical Acclaim"—focus on VIBE, GENRE, and PLOT.
+        If the user references a teen romance, recommend teen romances (not The Godfather).
+        If the user references a horror movie, recommend horror.
+        
+        Task: Recommend 6 ${type === 'tv' ? 'Series' : 'Movies'} that are exactly like "${refTitle}".
+        User Notes: "${userPrompt}".
+        ${excludeText}
+        
+        STRICT OUTPUT: JSON Array Only. No text. 
+        Format: [{"title":"Name","reason":"Why it matches","score":95}]`;
 
         const payload = {
             model: "llama-3.3-70b-versatile",
-            messages: [{
-                role: "system",
-                content: `Recommend 6 ${type === 'tv' ? 'Series' : 'Movies'}. 
-                ${excludeText}
-                Output STRICT JSON Array: [{"title":"Name","reason":"Why","score":90}]`
-            }, {
-                role: "user",
-                content: `Ref: ${refTitle}. Note: ${userPrompt}`
-            }],
-            temperature: 0.7, // Higher temp = more variety
+            messages: [
+                { role: "system", content: systemPrompt },
+                { role: "user", content: "Generate recommendations." }
+            ],
+            temperature: 0.4, // Lower temp = More precise/predictable results
             max_tokens: 1000
         };
         const response = await axios.post(GROQ_URL, payload, { headers: { "Authorization": `Bearer ${GROQ_API_KEY}` } });
