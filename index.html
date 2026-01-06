@@ -8,91 +8,56 @@
     <style>
         :root { --bg-paper: #0f001e; --bg-panel: #1a0030; --ink: #ffffff; --ink-muted: #b39ddb; --border: #4a148c; --accent: #d500f9; --accent-secondary: #00e5ff; --card-bg: rgba(255, 255, 255, 0.05); --font-head: 'Montserrat', sans-serif; --font-body: 'Poppins', sans-serif; }
         [data-theme="light"] { --bg-paper: #f8f9fa; --bg-panel: #ffffff; --ink: #1a1a2e; --ink-muted: #5c5c8a; --border: #dee2e6; --accent: #6200ea; --accent-secondary: #00b0ff; --card-bg: #ffffff; }
-        
         * { box-sizing: border-box; }
         body { background-color: var(--bg-paper); color: var(--ink); font-family: var(--font-body); margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        
-        /* HEADER */
-        .masthead { height: 70px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; padding: 0 40px; background: rgba(20, 0, 40, 0.8); backdrop-filter: blur(10px); z-index: 50; }
+        .masthead { height: 70px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; padding: 0 40px; background: rgba(20, 0, 40, 0.95); z-index: 50; }
         .logo { font-family: var(--font-head); font-weight: 900; font-size: 24px; letter-spacing: 1px; text-transform: uppercase; }
         .logo span { color: var(--accent); font-style: italic; text-shadow: 0 0 10px var(--accent); }
-        
         .mode-toggle { display: flex; gap: 5px; background: var(--bg-panel); padding: 5px; border-radius: 30px; border: 1px solid var(--border); }
         .mode-btn { background: transparent; border: none; color: var(--ink-muted); font-family: var(--font-head); font-weight: 700; font-size: 10px; text-transform: uppercase; cursor: pointer; padding: 8px 16px; border-radius: 20px; transition:0.3s; }
         .mode-btn:hover { color: var(--ink); }
         .mode-btn.active { background: var(--accent); color: #fff; box-shadow: 0 0 15px var(--accent); }
-        
         .theme-switch { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; border: 2px solid var(--border); transition: 0.3s; }
-        .theme-switch:hover { border-color: var(--accent-secondary); color: var(--accent-secondary); }
-
-        /* LAYOUT */
         .editorial-layout { display: flex; flex: 1; overflow: hidden; }
-        .research-sidebar { width: 380px; background: var(--bg-panel); padding: 30px; overflow-y: auto; border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 25px; }
-        .sidebar-header { font-family: var(--font-head); font-weight: 900; font-size: 12px; color: var(--accent-secondary); letter-spacing: 2px; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 10px; }
-
-        /* CONTROLS */
-        .control-group { margin-bottom: 20px; }
-        .control-label { font-size: 11px; font-weight: 700; color: var(--ink-muted); margin-bottom: 8px; display: block; text-transform: uppercase; letter-spacing: 1px; }
-        
-        .toggle-row { display: flex; background: var(--bg-paper); border-radius: 8px; padding: 4px; border: 1px solid var(--border); }
-        .toggle-opt { flex: 1; background: transparent; border: none; padding: 8px; color: var(--ink-muted); font-size: 11px; font-weight: 700; cursor: pointer; border-radius: 6px; transition: 0.3s; }
-        .toggle-opt.active { background: var(--bg-panel); color: var(--accent); box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        
-        input, select, textarea { width: 100%; background: var(--bg-paper); color: var(--ink); border: 1px solid var(--border); padding: 12px; font-family: var(--font-body); font-size: 13px; border-radius: 8px; outline: none; transition: 0.3s; }
-        input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(213, 0, 249, 0.2); }
-        
-        .btn-action { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--accent), #aa00ff); color: #fff; border: none; font-family: var(--font-head); font-weight: 800; font-size: 12px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; border-radius: 8px; transition: 0.3s; box-shadow: 0 5px 15px rgba(213, 0, 249, 0.3); }
-        .btn-action:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(213, 0, 249, 0.5); }
-
-        .genre-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-        .genre-pill { font-size: 10px; padding: 6px 10px; border: 1px solid var(--border); border-radius: 20px; cursor: pointer; color: var(--ink-muted); transition: 0.3s; }
-        .genre-pill.selected { background: var(--accent-secondary); color: #000; border-color: var(--accent-secondary); font-weight: 700; }
-
-        /* MAIN CANVAS */
+        .research-sidebar { width: 380px; background: var(--bg-panel); padding: 20px; overflow-y: auto; border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 15px; }
+        details { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 10px; }
+        details[open] { border-color: var(--accent); }
+        summary { padding: 12px; cursor: pointer; font-family: var(--font-head); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-secondary); list-style: none; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); }
+        .filter-content { padding: 15px; }
+        .toggle-row { display: flex; background: var(--bg-paper); border-radius: 6px; padding: 4px; border: 1px solid var(--border); margin-bottom: 15px; }
+        .toggle-opt { flex: 1; background: transparent; border: none; padding: 8px; color: var(--ink-muted); font-size: 11px; font-weight: 700; cursor: pointer; border-radius: 4px; transition: 0.3s; }
+        .toggle-opt.active { background: var(--accent); color: #fff; }
+        input, select, textarea { width: 100%; background: var(--bg-paper); color: var(--ink); border: 1px solid var(--border); padding: 10px; font-family: var(--font-body); font-size: 12px; border-radius: 6px; outline: none; margin-bottom: 10px; }
+        .range-group { display: flex; align-items: center; gap: 10px; }
+        .range-label { font-size: 10px; color: var(--ink-muted); margin-bottom: 5px; display: block; }
+        .btn-action { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--accent), #aa00ff); color: #fff; border: none; font-family: var(--font-head); font-weight: 800; font-size: 12px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; border-radius: 8px; transition: 0.3s; margin-top: 10px; }
+        .btn-action:hover { box-shadow: 0 0 15px var(--accent); }
+        .genre-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+        .genre-pill { font-size: 10px; padding: 5px 8px; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; color: var(--ink-muted); transition: 0.2s; background: rgba(255,255,255,0.02); }
+        .genre-pill.selected { background: var(--accent); color: #fff; border-color: var(--accent); }
         .canvas { flex: 1; padding: 40px; overflow-y: auto; background: radial-gradient(circle at top right, rgba(0, 229, 255, 0.05), transparent 40%); position: relative; }
-        .section-title { font-family: var(--font-head); font-weight: 900; font-size: 48px; line-height: 1; margin-bottom: 10px; background: linear-gradient(to right, #fff, var(--ink-muted)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .section-subtitle { font-size: 12px; color: var(--accent-secondary); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 40px; font-weight: 700; }
-
-        /* LOADING ANIMATION */
-        .loader-container { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 100px 0; }
-        .scanner { width: 60px; height: 60px; border: 4px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
-        .loading-text { font-family: var(--font-head); font-weight: 700; font-size: 12px; letter-spacing: 3px; color: var(--ink-muted); animation: pulse 1.5s infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
-
-        /* GRID & CARDS */
+        .section-title { font-family: var(--font-head); font-weight: 900; font-size: 42px; margin-bottom: 10px; color: var(--ink); text-transform: uppercase; }
+        .section-subtitle { font-size: 12px; color: var(--accent-secondary); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 30px; border-left: 3px solid var(--accent); padding-left: 15px; }
         .exhibit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 30px; }
-        
-        .exhibit-card { position: relative; background: var(--card-bg); border-radius: 12px; overflow: hidden; transition: 0.4s; border: 1px solid transparent; }
-        .exhibit-card:hover { transform: translateY(-10px); border-color: var(--accent); box-shadow: 0 10px 40px rgba(0,0,0,0.5); z-index: 2; }
-        
+        .exhibit-card { position: relative; background: var(--card-bg); border-radius: 12px; overflow: hidden; transition: 0.4s; border: 1px solid transparent; cursor: pointer; }
+        .exhibit-card:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .poster-frame { width: 100%; aspect-ratio: 2/3; position: relative; overflow: hidden; }
         .poster-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-        .exhibit-card:hover .poster-img { transform: scale(1.1); }
-        
-        .rating-badge { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: #ffd700; font-weight: 800; font-size: 11px; padding: 4px 8px; border-radius: 6px; backdrop-filter: blur(4px); border: 1px solid rgba(255,215,0,0.3); display: flex; align-items: center; gap: 4px; z-index: 5; }
-        
+        .exhibit-card:hover .poster-img { transform: scale(1.05); }
+        .rating-badge { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.85); color: #ffd700; font-weight: 800; font-size: 11px; padding: 4px 8px; border-radius: 6px; backdrop-filter: blur(4px); border: 1px solid rgba(255,215,0,0.3); z-index: 5; }
         .card-info { padding: 15px; }
-        .film-title { font-family: var(--font-head); font-weight: 800; font-size: 14px; margin-bottom: 6px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .film-meta { font-size: 11px; color: var(--ink-muted); display: flex; justify-content: space-between; align-items: center; }
-        .season-tag { background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-size: 10px; color: var(--accent-secondary); font-weight: 600; }
-
-        /* LOAD MORE */
-        .btn-load-more { display: block; margin: 50px auto; background: transparent; border: 2px solid var(--accent); color: var(--ink); padding: 12px 40px; border-radius: 30px; font-family: var(--font-head); font-weight: 700; cursor: pointer; transition: 0.3s; letter-spacing: 1px; }
-        .btn-load-more:hover { background: var(--accent); color: #fff; box-shadow: 0 0 20px var(--accent); }
-
-        /* MODAL */
+        .film-title { font-family: var(--font-head); font-weight: 800; font-size: 14px; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .film-meta { font-size: 11px; color: var(--ink-muted); display: flex; justify-content: space-between; }
+        .loader-container { padding: 60px; text-align: center; display: none; }
+        .btn-load-more { display: block; margin: 40px auto; background: transparent; border: 2px solid var(--accent); color: var(--ink); padding: 12px 40px; border-radius: 30px; font-weight: 700; cursor: pointer; transition: 0.3s; letter-spacing: 1px; }
+        .btn-load-more:hover { background: var(--accent); color: #fff; }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); opacity: 0; transition: 0.3s; }
         .modal-overlay.active { opacity: 1; pointer-events: all; }
-        .modal-card { background: #1a0030; width: 90%; max-width: 900px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 0 50px rgba(0,0,0,0.5); display: flex; overflow: hidden; max-height: 90vh; }
-        .modal-poster-area { width: 350px; flex-shrink: 0; position: relative; }
+        .modal-card { background: #1a0030; width: 90%; max-width: 900px; border-radius: 20px; border: 1px solid var(--border); display: flex; overflow: hidden; max-height: 90vh; }
+        .modal-poster-area { width: 350px; flex-shrink: 0; }
         .modal-poster-img { width: 100%; height: 100%; object-fit: cover; }
         .modal-info { padding: 40px; flex: 1; overflow-y: auto; }
-        .modal-title { font-family: var(--font-head); font-weight: 900; font-size: 36px; line-height: 1.1; margin-bottom: 10px; }
-        .modal-stats { display: flex; gap: 15px; margin-bottom: 25px; font-size: 12px; color: var(--accent-secondary); font-weight: 700; text-transform: uppercase; }
-        .modal-desc { font-size: 15px; line-height: 1.7; color: var(--ink-muted); margin-bottom: 30px; }
-        .close-modal { position: absolute; top: 20px; right: 20px; font-size: 24px; cursor: pointer; color: var(--ink-muted); z-index: 10; }
-
+        .close-modal { position: absolute; top: 20px; right: 20px; font-size: 24px; cursor: pointer; }
         @media (max-width: 800px) { .modal-card { flex-direction: column; } .modal-poster-area { width: 100%; height: 200px; } .research-sidebar { display: none; } }
     </style>
 </head>
@@ -111,98 +76,56 @@
 
     <div class="editorial-layout">
         <aside class="research-sidebar">
-            
             <div id="input-filter">
-                <div class="sidebar-header">VIBE ENGINE</div>
-                <div class="control-group">
-                    <textarea id="browse-mood" placeholder="I need something cozy and rainy..." style="height:70px;"></textarea>
-                    <button class="btn-action" onclick="runMoodSearch()" style="margin-top:10px;">Find Matches</button>
+                <div class="control-group" style="margin-bottom:20px;">
+                    <textarea id="browse-mood" placeholder="✨ Vibe Check: Type a feeling here..." style="height:60px; background:rgba(213,0,249,0.1); border-color:var(--accent);"></textarea>
+                    <button class="btn-action" onclick="runMoodSearch()">Match Vibe</button>
                 </div>
-                
-                <div class="sidebar-header" style="margin-top:30px;">FILTERS</div>
-                <div class="control-group">
-                    <span class="control-label">Format</span>
-                    <div class="toggle-row">
-                        <button class="toggle-opt active" id="b-btn-movie" onclick="setBrowseType('movie')">Movie</button>
-                        <button class="toggle-opt" id="b-btn-tv" onclick="setBrowseType('tv')">Series</button>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <span class="control-label">Sort Order</span>
-                    <select id="sort-select" onchange="resetAndRunBrowse()">
-                        <option value="popularity.desc">Trending Now</option>
-                        <option value="vote_average.desc">Highest Rated</option>
-                        <option value="first_air_date.desc">Newest Releases</option>
-                    </select>
-                </div>
-                <div class="control-group">
-                    <span class="control-label">Genres</span>
-                    <div id="genre-container" class="genre-grid"></div>
-                </div>
+                <details open><summary>Main Controls</summary><div class="filter-content">
+                    <div class="toggle-row"><button class="toggle-opt active" id="b-btn-movie" onclick="setBrowseType('movie')">Movie</button><button class="toggle-opt" id="b-btn-tv" onclick="setBrowseType('tv')">Series</button></div>
+                    <span class="range-label">Sort By</span>
+                    <select id="sort-select" onchange="resetAndRunBrowse()"><option value="popularity.desc">Trending Now</option><option value="vote_average.desc">Highest Rated</option><option value="revenue.desc">Box Office Hits</option><option value="primary_release_date.desc">Newest First</option></select>
+                </div></details>
+                <details open><summary>Genres (19)</summary><div class="filter-content"><div id="genre-container" class="genre-grid"></div></div></details>
+                <details><summary>Era & Rating</summary><div class="filter-content">
+                    <span class="range-label">Year Range</span>
+                    <div class="range-group"><input type="number" id="year-start" placeholder="1900"><span>-</span><input type="number" id="year-end" placeholder="2026"></div>
+                    <span class="range-label" style="margin-top:10px;">Min Rating (0-10)</span><input type="number" id="vote-min" placeholder="e.g. 7.5" step="0.1" max="10">
+                </div></details>
+                <button class="btn-action" style="background:transparent; border:1px solid var(--border); color:var(--ink);" onclick="resetAndRunBrowse()">Apply Filters</button>
             </div>
 
             <div id="input-search" style="display:none;">
-                <div class="sidebar-header">AI CURATOR</div>
-                <div class="control-group">
-                    <span class="control-label">Target Format</span>
-                    <div class="toggle-row">
-                        <button class="toggle-opt active" id="c-btn-movie" onclick="setCurateType('movie')">Movie</button>
-                        <button class="toggle-opt" id="c-btn-tv" onclick="setCurateType('tv')">Series</button>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <span class="control-label">Reference Title</span>
-                    <input type="text" id="ref-search" placeholder="e.g. Breaking Bad">
-                </div>
-                <div class="control-group">
-                    <span class="control-label">Curator Notes</span>
-                    <textarea id="ai-context" placeholder="What specific elements did you like?"></textarea>
-                </div>
-                <button class="btn-action" onclick="runCurateSearch()">Generate Collection</button>
+                <div class="toggle-row"><button class="toggle-opt active" id="c-btn-movie" onclick="setCurateType('movie')">Movie</button><button class="toggle-opt" id="c-btn-tv" onclick="setCurateType('tv')">Series</button></div>
+                <span class="range-label">Reference Title</span>
+                <input type="text" id="ref-search" placeholder="e.g. Inception">
+                <span class="range-label">Notes</span>
+                <textarea id="ai-context" placeholder="What did you like about it?"></textarea>
+                <button class="btn-action" onclick="runCurateSearch()">Generate</button>
             </div>
 
             <div id="input-describe" style="display:none;">
-                <div class="sidebar-header">DREAM INTERPRETER</div>
-                <div class="control-group">
-                    <span class="control-label">I want to watch a...</span>
-                    <div class="toggle-row">
-                        <button class="toggle-opt active" id="d-btn-movie" onclick="setDescribeType('movie')">Movie</button>
-                        <button class="toggle-opt" id="d-btn-tv" onclick="setDescribeType('tv')">Series</button>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <textarea id="describe-input" placeholder="Describe a plot, a feeling, a specific scene, or a character you imagined..." style="height:150px;"></textarea>
-                </div>
-                <button class="btn-action" onclick="runDescribeSearch()">Interpret Dream</button>
+                <div class="toggle-row"><button class="toggle-opt active" id="d-btn-movie" onclick="setDescribeType('movie')">Movie</button><button class="toggle-opt" id="d-btn-tv" onclick="setDescribeType('tv')">Series</button></div>
+                <textarea id="describe-input" placeholder="Describe your dream movie..." style="height:150px;"></textarea>
+                <button class="btn-action" onclick="runDescribeSearch()">Interpret</button>
             </div>
 
             <div id="input-dossier" style="display:none;">
-                <div class="sidebar-header">ARCHIVE INTEL</div>
-                <div class="control-group">
-                    <span class="control-label">Subject Name</span>
-                    <input type="text" id="know-search" placeholder="Enter exact title...">
-                </div>
-                <button class="btn-action" onclick="runKnowledgeSearch()">Access File</button>
+                <input type="text" id="know-search" placeholder="Enter Exact Title...">
+                <button class="btn-action" onclick="runKnowledgeSearch()">Access Archives</button>
             </div>
         </aside>
 
         <div class="canvas">
-            <button class="btn-back" id="btn-back" onclick="goBack()" style="display:none; margin-bottom:20px; background:none; border:1px solid var(--accent); color:var(--accent); padding:5px 15px; border-radius:15px; cursor:pointer;">← Back to Collection</button>
-            
+            <button class="btn-back" id="btn-back" onclick="goBack()" style="display:none; margin-bottom:20px; background:none; border:1px solid var(--accent); color:var(--accent); padding:5px 15px; border-radius:15px; cursor:pointer;">← Back</button>
             <div id="view-collection">
                 <h1 class="section-title">The Collection</h1>
-                <div class="section-subtitle">CURRENT EXHIBITION: FILTERED VIEW</div>
+                <div class="section-subtitle">EXPLORE THE ARCHIVES</div>
                 <div id="grid-container" class="exhibit-grid"></div>
-                <div id="loading-spinner" class="loader-container" style="display:none;">
-                    <div class="scanner"></div>
-                    <div class="loading-text">ACCESSING MAINFRAME...</div>
-                </div>
-                <button id="btn-load-more" class="btn-load-more" onclick="loadMore()" style="display:none;">LOAD MORE TITLES</button>
+                <div id="loading-spinner" class="loader-container">Searching Database...</div>
+                <button id="btn-load-more" class="btn-load-more" onclick="loadMore()" style="display:none;">LOAD MORE</button>
             </div>
-
-            <div id="view-dossier" style="display:none;">
-                <div id="dossier-content"></div>
-            </div>
+            <div id="view-dossier" style="display:none;"><div id="dossier-content"></div></div>
         </div>
     </div>
 
@@ -217,14 +140,20 @@
     const TMDB_KEY = "09ca3ca71692ba80b848d268502d24ed"; 
     const BASE_URL = 'https://api.themoviedb.org/3';
     const IMG_URL = 'https://image.tmdb.org/t/p/w500';
-    const API_SEARCH = "/api/smart-search"; // Vercel Backend
-    const API_INTEL = "/api/intel-brief";   // Vercel Backend
+    const API_SEARCH = "/api/smart-search"; 
+    const API_INTEL = "/api/intel-brief";
 
     let currentMode = 'filter', browseType = 'movie', curateType = 'movie', describeType = 'movie';
     let currentPage = 1, isFetching = false, curatedTitles = [], previousMode = 'filter';
 
     window.onload = () => {
-        const g = [{id:28,n:"Action"},{id:878,n:"Sci-Fi"},{id:27,n:"Horror"},{id:35,n:"Comedy"},{id:18,n:"Drama"},{id:53,n:"Thriller"},{id:10749,n:"Romance"}];
+        const g = [
+            {id:28,n:"Action"}, {id:12,n:"Adventure"}, {id:16,n:"Animation"}, {id:35,n:"Comedy"},
+            {id:80,n:"Crime"}, {id:99,n:"Documentary"}, {id:18,n:"Drama"}, {id:10751,n:"Family"},
+            {id:14,n:"Fantasy"}, {id:36,n:"History"}, {id:27,n:"Horror"}, {id:10402,n:"Music"},
+            {id:9648,n:"Mystery"}, {id:10749,n:"Romance"}, {id:878,n:"Sci-Fi"}, {id:10770,n:"TV Movie"},
+            {id:53,n:"Thriller"}, {id:10752,n:"War"}, {id:37,n:"Western"}
+        ];
         const c = document.getElementById('genre-container');
         g.forEach(x => { 
             let d = document.createElement('div'); d.className='genre-pill'; d.innerText=x.n; d.dataset.id=x.id;
@@ -247,18 +176,17 @@
             document.getElementById('view-dossier').style.display='none';
             document.getElementById('btn-back').style.display='none';
         }
-
-        if(mode === 'filter') {
-             if(document.getElementById('grid-container').innerHTML==='') resetAndRunBrowse();
-        } else {
-             if(document.getElementById('grid-container').innerHTML==='') document.getElementById('grid-container').innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:50px; opacity:0.5;">Waiting for input...</div>';
-             document.getElementById('btn-load-more').style.display='none';
-        }
+        if(mode === 'filter' && document.getElementById('grid-container').innerHTML==='') resetAndRunBrowse();
+        if(mode === 'search') { if(document.getElementById('grid-container').innerHTML==='') document.getElementById('grid-container').innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:50px; opacity:0.5;">Ready for Input.</div>'; document.getElementById('btn-load-more').style.display='none'; }
     }
 
-    // --- BUTTON TOGGLES ---
     function setBrowseType(t) { browseType = t; updateToggle('b', t); resetAndRunBrowse(); }
-    function setCurateType(t) { curateType = t; updateToggle('c', t); }
+    
+    // UPDATED: Dynamic Placeholders
+    function setCurateType(t) { 
+        curateType = t; updateToggle('c', t); 
+        document.getElementById('ref-search').placeholder = t === 'movie' ? 'e.g. Inception' : 'e.g. Stranger Things';
+    }
     function setDescribeType(t) { describeType = t; updateToggle('d', t); }
     function updateToggle(p, t) {
         document.getElementById(p+'-btn-movie').classList.remove('active');
@@ -267,57 +195,53 @@
     }
 
     function showLoading(show) {
-        const spinner = document.getElementById('loading-spinner');
-        const loadBtn = document.getElementById('btn-load-more');
-        if(show) { spinner.style.display='flex'; loadBtn.style.display='none'; }
-        else { spinner.style.display='none'; }
+        document.getElementById('loading-spinner').style.display = show ? 'block' : 'none';
+        if(show) document.getElementById('btn-load-more').style.display = 'none';
     }
 
-    // --- BROWSE LOGIC ---
     function resetAndRunBrowse() { currentPage=1; document.getElementById('grid-container').innerHTML=''; runBrowseSearch(); }
-    
     async function runBrowseSearch() {
-        if(isFetching) return; isFetching=true;
-        showLoading(true);
-        
+        if(isFetching) return; isFetching=true; showLoading(true);
         try {
             const sort = document.getElementById('sort-select').value;
             const genres = Array.from(document.querySelectorAll('.genre-pill.selected')).map(el => el.dataset.id).join(',');
-            let url = `${BASE_URL}/discover/${browseType}?api_key=${TMDB_KEY}&sort_by=${sort}&page=${currentPage}`;
+            const yearStart = document.getElementById('year-start').value;
+            const yearEnd = document.getElementById('year-end').value;
+            const voteMin = document.getElementById('vote-min').value;
+
+            let url = `${BASE_URL}/discover/${browseType}?api_key=${TMDB_KEY}&sort_by=${sort}&page=${currentPage}&include_adult=false`;
             if(genres) url += `&with_genres=${genres}`;
+            if(voteMin) url += `&vote_average.gte=${voteMin}`;
+            const dateField = browseType === 'movie' ? 'primary_release_date' : 'first_air_date';
+            if(yearStart) url += `&${dateField}.gte=${yearStart}-01-01`;
+            if(yearEnd) url += `&${dateField}.lte=${yearEnd}-12-31`;
             
             const res = await fetch(url);
             const data = await res.json();
             
-            // Fetch details for extra stats (Seasons/Ratings)
             const detailedPromises = data.results.map(async (item) => {
                 const det = await fetch(`${BASE_URL}/${browseType}/${item.id}?api_key=${TMDB_KEY}`);
                 return await det.json();
             });
             const detailedList = await Promise.all(detailedPromises);
-
             renderGrid(detailedList, browseType);
             showLoading(false);
             if(data.page < data.total_pages) document.getElementById('btn-load-more').style.display = 'block';
-            
         } catch(e) { console.error(e); showLoading(false); } finally { isFetching=false; }
     }
 
-    // --- AI SEARCHES ---
+    // AI LOGIC WITH DUPLICATE FIX
     async function runCurateSearch(more=false) { runAi(more, 'curate'); }
     async function runDescribeSearch(more=false) { runAi(more, 'describe'); }
     async function runMoodSearch(more=false) { runAi(more, 'mood'); }
 
     async function runAi(isLoadMore, mode) {
-        if(isFetching) return; isFetching=true;
-        showLoading(true);
+        if(isFetching) return; isFetching=true; showLoading(true);
         const grid = document.getElementById('grid-container');
-        
         if(!isLoadMore) { grid.innerHTML=''; curatedTitles=[]; }
 
         try {
-            let body = { exclude: curatedTitles };
-            // Mode config...
+            let body = { exclude: curatedTitles }; // SENDING EXCLUDE LIST
             if(mode==='curate') { body.type=curateType; body.refTitle=document.getElementById('ref-search').value; body.userPrompt=document.getElementById('ai-context').value; }
             else if(mode==='describe') { body.type=describeType; body.refTitle="Dream"; body.userPrompt=document.getElementById('describe-input').value; }
             else if(mode==='mood') { body.type=browseType; body.refTitle="Vibe"; body.userPrompt=document.getElementById('browse-mood').value; }
@@ -325,29 +249,20 @@
             const res = await fetch(API_SEARCH, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
             const aiData = await res.json();
 
-            if(!aiData || aiData.length === 0) { 
-                if(!isLoadMore) grid.innerHTML='<div style="grid-column:1/-1; text-align:center;">No results found.</div>';
-                showLoading(false); return; 
-            }
+            if(!aiData || aiData.length === 0) { showLoading(false); return; }
 
             const promises = aiData.map(async (item) => {
                 const s = await fetch(`${BASE_URL}/search/${body.type}?api_key=${TMDB_KEY}&query=${encodeURIComponent(item.title)}`);
                 const d = await s.json();
                 if(d.results?.[0]) {
-                    const base = d.results[0];
-                    // Get full details for seasons/ratings
-                    const full = await fetch(`${BASE_URL}/${body.type}/${base.id}?api_key=${TMDB_KEY}`).then(r=>r.json());
-                    full.ai_reason = item.reason; 
-                    curatedTitles.push(item.title); 
-                    return full;
+                    const full = await fetch(`${BASE_URL}/${body.type}/${d.results[0].id}?api_key=${TMDB_KEY}`).then(r=>r.json());
+                    full.ai_reason = item.reason; curatedTitles.push(item.title); return full;
                 }
             });
             const final = (await Promise.all(promises)).filter(x=>x);
-
             renderGrid(final, body.type, true);
             showLoading(false);
             document.getElementById('btn-load-more').style.display='block';
-
         } catch(e) { console.error(e); showLoading(false); } finally { isFetching=false; }
     }
 
@@ -355,37 +270,18 @@
         const grid = document.getElementById('grid-container');
         list.forEach(m => {
             if(!m.poster_path) return;
-            
-            // META DATA LOGIC
             const year = (m.release_date || m.first_air_date || 'N/A').split('-')[0];
             const rating = m.vote_average ? m.vote_average.toFixed(1) : 'NR';
             let metaHtml = `<span>${year}</span>`;
-            
-            // TV Specifics: Seasons & End Year
             if(type === 'tv') {
-                const seasons = m.number_of_seasons ? `${m.number_of_seasons} Seasons` : '';
-                let endYear = '';
-                if(m.status === 'Ended' && m.last_air_date) {
-                    endYear = ' - ' + m.last_air_date.split('-')[0];
-                } else if (m.in_production) {
-                    endYear = ' - Present';
-                }
-                metaHtml = `<div style="display:flex; flex-direction:column; width:100%;">
-                                <div style="display:flex; justify-content:space-between;"><span>${year}${endYear}</span> <span class="season-tag">${seasons}</span></div>
-                            </div>`;
+                const seasons = m.number_of_seasons ? `${m.number_of_seasons} Seas.` : '';
+                metaHtml = `<div style="display:flex; justify-content:space-between; width:100%;"><span>${year}</span> <span>${seasons}</span></div>`;
             }
-
-            const div = document.createElement('div');
-            div.className = 'exhibit-card';
-            div.onclick = () => openModal(m, type);
+            const div = document.createElement('div'); div.className = 'exhibit-card'; div.onclick = () => openModal(m, type);
             div.innerHTML = `
                 <div class="rating-badge">★ ${rating}</div>
                 <div class="poster-frame"><img src="${IMG_URL+m.poster_path}" class="poster-img"></div>
-                <div class="card-info">
-                    <div class="film-title">${m.title||m.name}</div>
-                    <div class="film-meta">${metaHtml}</div>
-                    ${isAi ? `<div style="font-size:11px; margin-top:8px; color:var(--accent); line-height:1.4;">💡 ${m.ai_reason}</div>` : ''}
-                </div>
+                <div class="card-info"><div class="film-title">${m.title||m.name}</div><div class="film-meta">${metaHtml}</div>${isAi ? `<div style="font-size:10px; margin-top:5px; color:var(--accent);">${m.ai_reason}</div>` : ''}</div>
             `;
             grid.appendChild(div);
         });
@@ -401,29 +297,14 @@
     async function openModal(m, type) {
         const modal = document.getElementById('quick-view-modal');
         const c = document.getElementById('modal-content');
-        
-        // Fetch credits
         const cred = await fetch(`${BASE_URL}/${type}/${m.id}/credits?api_key=${TMDB_KEY}`).then(r=>r.json());
         const cast = cred.cast ? cred.cast.slice(0,5).map(a=>a.name).join(', ') : 'N/A';
         const year = (m.release_date||m.first_air_date||'').split('-')[0];
-
-        c.innerHTML = `
-            <div class="modal-poster-area"><img src="${IMG_URL+m.poster_path}" class="modal-poster-img"></div>
-            <div class="modal-info">
-                <div class="modal-title">${m.title||m.name} <span style="font-size:20px; color:var(--ink-muted);">(${year})</span></div>
-                <div class="modal-stats">★ ${m.vote_average.toFixed(1)} Rating &nbsp;&nbsp; • &nbsp;&nbsp; ${type.toUpperCase()}</div>
-                <p class="modal-desc">${m.overview}</p>
-                <div style="margin-bottom:20px;"><strong style="color:var(--accent);">Cast:</strong> ${cast}</div>
-            </div>
-        `;
-        modal.style.display = 'flex';
-        setTimeout(()=>document.querySelector('.modal-overlay').classList.add('active'), 10);
+        c.innerHTML = `<div class="modal-poster-area"><img src="${IMG_URL+m.poster_path}" class="modal-poster-img"></div><div class="modal-info"><div class="modal-title">${m.title||m.name} <span style="font-size:20px; color:var(--ink-muted);">(${year})</span></div><div style="margin-bottom:20px; color:var(--accent);">★ ${m.vote_average.toFixed(1)} &nbsp;|&nbsp; ${type.toUpperCase()}</div><p style="line-height:1.6; color:var(--ink-muted);">${m.overview}</p><div style="margin-top:20px;"><strong>Cast:</strong> ${cast}</div></div>`;
+        modal.style.display = 'flex'; setTimeout(()=>document.querySelector('.modal-overlay').classList.add('active'), 10);
     }
     
-    function closeModal() { 
-        document.querySelector('.modal-overlay').classList.remove('active'); 
-        setTimeout(()=>document.getElementById('quick-view-modal').style.display='none', 300); 
-    }
+    function closeModal() { document.querySelector('.modal-overlay').classList.remove('active'); setTimeout(()=>document.getElementById('quick-view-modal').style.display='none', 300); }
 </script>
 </body>
 </html>
