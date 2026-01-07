@@ -165,7 +165,6 @@
         .film-title { font-family: var(--font-head); font-weight: 700; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; font-size: 16px; letter-spacing: 1px; }
         .film-meta { font-size: 11px; color: rgba(255,255,255,0.7); display: flex; justify-content: space-between; font-weight: 500; }
         
-        /* FIX: Ratings made prominent and high Z-index */
         .rating-badge { 
             position: absolute; top: 15px; right: 15px; background: #000; color: var(--accent); 
             font-weight: 800; font-size: 12px; padding: 6px 10px; border-radius: 2px; 
@@ -385,14 +384,39 @@
 
     function toggleTheme() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme')==='light'?'dark':'light'); }
 
+    // --- FIXED: AUTO-CLEAR AND RESET ON TAB SWITCH ---
     function switchMode(mode) {
         currentMode = mode;
         document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('btn-'+(mode==='filter'?'browse':mode==='search'?'search':mode==='describe'?'describe':'know')).classList.add('active');
         ['filter','search','describe','dossier'].forEach(x => document.getElementById('input-'+x).style.display = 'none');
         document.getElementById('input-'+(mode==='knowledge'?'dossier':mode)).style.display = 'block';
-        if(mode!=='knowledge') { document.getElementById('view-collection').style.display='block'; document.getElementById('view-dossier').style.display='none'; document.getElementById('btn-back').style.display='none'; }
-        if(mode === 'filter' && document.getElementById('grid-container').innerHTML==='') resetAndRunBrowse();
+
+        const grid = document.getElementById('grid-container');
+        const loadBtn = document.getElementById('btn-load-more');
+
+        // ALWAYS RESET VIEW ON SWITCH
+        if(mode !== 'knowledge') {
+            document.getElementById('view-collection').style.display='block';
+            document.getElementById('view-dossier').style.display='none';
+            document.getElementById('btn-back').style.display='none';
+            
+            // 1. Clear current results
+            grid.innerHTML = '';
+            loadBtn.style.display = 'none';
+
+            // 2. Set "Opening Page" based on mode
+            if (mode === 'filter') {
+                // Browse: Auto-load default feed
+                resetAndRunBrowse();
+            } else if (mode === 'search') {
+                // Curate: Show placeholder
+                grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:100px; opacity:0.3; font-family:var(--font-head); letter-spacing:2px;">// READY TO CURATE</div>';
+            } else if (mode === 'describe') {
+                // Dream: Show placeholder
+                grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:100px; opacity:0.3; font-family:var(--font-head); letter-spacing:2px;">// AWAITING DREAM SEQUENCE</div>';
+            }
+        }
     }
 
     function setBrowseType(t) { 
@@ -496,7 +520,6 @@
             const div = document.createElement('div'); div.className = 'exhibit-card'; 
             div.onclick = () => { if(currentMode==='knowledge') openDossier(m, type); else openModal(m, type); };
             
-            // FIXED HTML: Added Z-index heavy rating badge
             div.innerHTML = `<div class="rating-badge">★ ${m.vote_average.toFixed(1)}</div>${isAi && m.ai_score ? `<div class="match-badge">${m.ai_score}% MATCH</div>` : ''}<div class="poster-frame"><img src="${IMG_URL+m.poster_path}"></div><div class="card-info"><div class="film-title">${m.title||m.name}</div><div class="film-meta"><span>(${dateStr})</span><span>${seasonStr}</span></div>${isAi?`<div style="font-size:10px; color:var(--accent); margin-top:5px;">${m.ai_reason}</div>`:''}</div>`;
             grid.appendChild(div);
         });
@@ -509,7 +532,7 @@
     function runKnowledgeSearch() { resetAndRunBrowse(); }
     function filterGenres(input) { const f = input.value.toUpperCase(); Array.from(document.getElementsByClassName('genre-pill')).forEach(p => p.style.display = p.innerText.toUpperCase().indexOf(f) > -1 ? 'block' : 'none'); }
 
-    // --- MODAL & OVERLAY LOGIC (Kept same) ---
+    // --- MODAL & OVERLAY LOGIC ---
     async function openModal(m, type) { 
         if(m.first_air_date) type='tv'; else type='movie';
         activeModalMovie = m; activeModalType = type;
