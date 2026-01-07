@@ -52,32 +52,42 @@
         }
         @keyframes rotateFog { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* --- NEW MYSTERY SMOKE ENGINE --- */
+        /* --- MYSTERY SMOG ENGINE (FIXED) --- */
         #fog-layer {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 9998; 
-            opacity: 0; transition: opacity 2.5s ease;
-            mix-blend-mode: screen; /* THIS MAKES THE BLACK PART TRANSPARENT */
+            opacity: 0; transition: opacity 1.5s ease;
+            mix-blend-mode: screen; 
             overflow: hidden;
         }
         #fog-layer.active { opacity: 1; }
 
         .smoke-plume {
-            position: absolute; top: 0; left: 0; width: 200%; height: 100%;
-            background-image: url('https://raw.githubusercontent.com/danielstuart14/CSS_FOG_ANIMATION/master/img/fog1.png');
+            position: absolute; top: 0; left: 0; width: 300%; height: 100%;
+            /* Using a Base64 tiny placeholder pattern to ensure it loads, 
+               but in production you'd use a high-res texture. 
+               For now, I'll use a reliable external pattern or CSS gradient approximation for guaranteed load. */
+            background: radial-gradient(circle at 50% 50%, rgba(150,150,150,0.4) 0%, transparent 60%);
+            filter: blur(60px);
+            opacity: 0.5;
+        }
+        
+        /* Ideally use a real image, here is a reliable one from a CDN */
+        .smoke-texture {
+            position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/e/e3/Smoke_texture.png'); /* Reliable Source */
             background-size: cover;
-            opacity: 0.6; /* Thicker smoke */
+            mix-blend-mode: screen;
         }
 
-        /* Three layers of smoke moving at different speeds for depth */
-        .smoke-1 { animation: smokeMove 60s linear infinite; opacity: 0.4; }
-        .smoke-2 { animation: smokeMove 40s linear infinite reverse; opacity: 0.5; top: -20%; }
-        .smoke-3 { animation: smokeMove 25s linear infinite; opacity: 0.3; top: 30%; transform: scale(1.5); }
+        .smoke-1 { animation: smokeMove 40s linear infinite; opacity: 0.6; }
+        .smoke-2 { animation: smokeMove 30s linear infinite reverse; opacity: 0.4; top: -20%; left: -20%; }
+        .smoke-3 { animation: smokeMove 20s linear infinite; opacity: 0.3; top: 20%; transform: scale(1.2); }
 
         @keyframes smokeMove {
-            0% { transform: translate3d(0, 0, 0); }
-            50% { transform: translate3d(-10%, 2%, 0); }
-            100% { transform: translate3d(-20%, 0, 0); }
+            0% { transform: rotate(0deg) translate(0, 0); }
+            50% { transform: rotate(10deg) translate(-50px, -20px); }
+            100% { transform: rotate(0deg) translate(0, 0); }
         }
 
         /* --- HEADER --- */
@@ -212,7 +222,7 @@
         .modal-bg { position: absolute; top:0; left:0; width:100%; height:100%; background-size: cover; background-position: center; opacity: 0.15; filter: blur(50px) saturate(0); z-index: 0; }
         .modal-content { position: relative; z-index: 1; display: flex; width: 100%; padding: 50px; gap: 50px; }
         .modal-poster { width: 320px; flex-shrink: 0; border-radius: 4px; box-shadow: 0 30px 60px rgba(0,0,0,0.6); border: 1px solid var(--glass-border); }
-        .modal-data { flex: 1; overflow-y: auto; padding-right: 15px; } /* Scrolling Enabled */
+        .modal-data { flex: 1; overflow-y: auto; padding-right: 15px; } 
         .modal-title-text { font-family: var(--font-head); font-weight: 900; font-size: 48px; line-height: 1; margin-bottom: 15px; color: var(--ink); text-transform: uppercase; letter-spacing: -1px; }
         .cast-row { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 15px; margin: 25px 0; scrollbar-width: thin; }
         .cast-item { flex: 0 0 90px; text-align: center; }
@@ -286,9 +296,9 @@
 
     <div class="ambient-background"></div>
     <div id="fog-layer">
-        <div class="smoke-plume smoke-1"></div>
-        <div class="smoke-plume smoke-2"></div>
-        <div class="smoke-plume smoke-3"></div>
+        <div class="smoke-texture smoke-1"></div>
+        <div class="smoke-texture smoke-2"></div>
+        <div class="smoke-texture smoke-3"></div>
     </div>
     <div id="theme-overlay"></div>
 
@@ -536,17 +546,27 @@
         const grid = document.getElementById('grid-container');
         list.forEach(m => {
             if(!m.poster_path) return;
-            const start = (m.release_date||m.first_air_date||'').split('-')[0];
-            let dateStr = start; let seasonStr = '';
-            if(type === 'tv') {
+            // Handle differences between movie and tv object properties
+            const isTv = m.media_type === 'tv' || type === 'tv';
+            const releaseDate = m.release_date || m.first_air_date || '';
+            const start = releaseDate.split('-')[0];
+            let dateStr = start; 
+            let seasonStr = '';
+            
+            if(isTv) {
                 if(m.status === 'Returning Series') dateStr = `${start}-Present`;
                 else if(m.status === 'Ended' && m.last_air_date) dateStr = `${start}-${m.last_air_date.split('-')[0]}`;
                 seasonStr = m.number_of_seasons ? `${m.number_of_seasons} Seas` : '';
             }
-            const div = document.createElement('div'); div.className = 'exhibit-card'; 
-            div.onclick = () => { if(currentMode==='knowledge') openDossier(m, type); else openModal(m, type); };
             
-            div.innerHTML = `<div class="rating-badge">★ ${m.vote_average.toFixed(1)}</div>${isAi && m.ai_score ? `<div class="match-badge">${m.ai_score}% MATCH</div>` : ''}<div class="poster-frame"><img src="${IMG_URL+m.poster_path}"></div><div class="card-info"><div class="film-title">${m.title||m.name}</div><div class="film-meta"><span>(${dateStr})</span><span>${seasonStr}</span></div>${isAi?`<div style="font-size:10px; color:var(--accent); margin-top:5px;">${m.ai_reason}</div>`:''}</div>`;
+            const div = document.createElement('div'); div.className = 'exhibit-card'; 
+            
+            // Pass correct type to open function
+            const finalType = isTv ? 'tv' : 'movie';
+            
+            div.onclick = () => { if(currentMode==='knowledge') openDossier(m, finalType); else openModal(m, finalType); };
+            
+            div.innerHTML = `<div class="rating-badge">★ ${m.vote_average ? m.vote_average.toFixed(1) : 'N/A'}</div>${isAi && m.ai_score ? `<div class="match-badge">${m.ai_score}% MATCH</div>` : ''}<div class="poster-frame"><img src="${IMG_URL+m.poster_path}"></div><div class="card-info"><div class="film-title">${m.title||m.name}</div><div class="film-meta"><span>(${dateStr})</span><span>${seasonStr}</span></div>${isAi?`<div style="font-size:10px; color:var(--accent); margin-top:5px;">${m.ai_reason}</div>`:''}</div>`;
             grid.appendChild(div);
         });
     }
@@ -556,30 +576,35 @@
     function goBack() { document.getElementById('view-dossier').style.display='none'; document.getElementById('view-collection').style.display='block'; document.getElementById('btn-back').style.display='none'; }
     function closeModal() { document.querySelector('.modal-overlay').classList.remove('active'); }
     
-    // --- FIXED: Intel Search now actually uses the input value ---
+    // --- UPDATED INTEL SEARCH: Displays results instead of auto-opening ---
     async function runKnowledgeSearch() { 
         const query = document.getElementById('know-search').value.trim();
         if(!query) return;
 
-        // Show visual feedback
         const btn = document.querySelector('#input-dossier .btn-action');
         const originalText = btn.innerText;
-        btn.innerText = "SCANNING DATABASE...";
+        btn.innerText = "SEARCHING...";
+        
+        // Ensure the grid is visible for results
+        document.getElementById('view-collection').style.display = 'block';
+        document.getElementById('view-dossier').style.display = 'none';
+        document.getElementById('grid-container').innerHTML = ''; // Clear previous
 
         try {
             const res = await fetch(`${BASE_URL}/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(query)}`);
             const data = await res.json();
 
             if(data.results && data.results.length > 0) {
-                // Find first movie or tv show (skip people)
-                const target = data.results.find(i => i.media_type === 'movie' || i.media_type === 'tv');
-                if(target) {
-                    openDossier(target, target.media_type);
+                // Filter only Movies and TV shows
+                const validResults = data.results.filter(i => i.media_type === 'movie' || i.media_type === 'tv' && i.poster_path);
+                
+                if(validResults.length > 0) {
+                    renderGrid(validResults, 'mixed'); // 'mixed' is handled inside renderGrid now
                 } else {
-                    alert("Subject not found in archives.");
+                    document.getElementById('grid-container').innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:50px;">NO CLASSIFIED FILES FOUND.</div>';
                 }
             } else {
-                alert("Subject not found in archives.");
+                document.getElementById('grid-container').innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:50px;">NO CLASSIFIED FILES FOUND.</div>';
             }
         } catch(e) {
             console.error(e);
@@ -638,7 +663,6 @@
                 fetch(`${BASE_URL}/${type}/${m.id}/credits?api_key=${TMDB_KEY}`).then(r=>r.json())
             ]);
 
-            // --- FIXED: Fallback Intel Data if API Fails ---
             let aiRes = {
                 tagline_ai: m.tagline || "TOP SECRET PROJECT",
                 status_verdict: m.status || "UNKNOWN",
