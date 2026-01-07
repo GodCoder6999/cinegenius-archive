@@ -52,6 +52,31 @@
         }
         @keyframes rotateFog { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+        /* --- MYSTERY SMOG LAYER (NEW) --- */
+        #fog-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9998; /* High, but below Magic Overlay (9999) */
+            opacity: 0; transition: opacity 2s ease;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(200, 200, 200, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 30%, rgba(200, 200, 200, 0.05) 0%, transparent 40%);
+            filter: blur(40px);
+        }
+        #fog-layer.active { opacity: 1; }
+        
+        /* The Moving Smog Clouds */
+        .fog-cloud {
+            position: absolute; width: 300%; height: 300%;
+            background: url('https://raw.githubusercontent.com/s1mpson/fog/master/fog1.png') repeat; /* Open Source Fog Texture */
+            background-size: cover; opacity: 0.3;
+            animation: driftFog 60s linear infinite;
+        }
+        .fog-cloud:nth-child(2) {
+            animation-direction: reverse; animation-duration: 45s; opacity: 0.2;
+        }
+        @keyframes driftFog { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-200px, 0, 0); } }
+
+
         /* --- HEADER --- */
         .masthead { 
             height: 90px; display: flex; justify-content: space-between; align-items: center; padding: 0 50px; 
@@ -95,6 +120,11 @@
             box-shadow: 0 0 20px var(--accent-glow); 
             animation: cinematicPulse 3s infinite; 
         }
+        .fog-btn.active { 
+            background: rgba(255,255,255,0.2); color: #fff;
+            box-shadow: 0 0 20px rgba(255,255,255,0.4); 
+        }
+
         @keyframes cinematicPulse { 0% { box-shadow: 0 0 5px var(--accent-glow); } 50% { box-shadow: 0 0 25px var(--accent-glow); } 100% { box-shadow: 0 0 5px var(--accent-glow); } }
 
         /* --- LAYOUT --- */
@@ -257,6 +287,10 @@
 <body data-theme="dark">
 
     <div class="ambient-background"></div>
+    <div id="fog-layer">
+        <div class="fog-cloud"></div>
+        <div class="fog-cloud"></div>
+    </div>
     <div id="theme-overlay"></div>
 
     <header class="masthead">
@@ -268,6 +302,7 @@
                 <button class="mode-btn" onclick="switchMode('describe')" id="btn-describe">Dream</button>
                 <button class="mode-btn" onclick="switchMode('knowledge')" id="btn-know">Intel</button>
             </div>
+            <button class="icon-btn fog-btn" id="btn-fog" onclick="toggleFogMode()" title="Toggle Mystery Smog">🌫️</button>
             <button class="icon-btn magic-btn" id="btn-magic" onclick="toggleMagicMode()" title="Toggle Immersive Vibe">✨</button>
             <button class="icon-btn theme-switch" onclick="toggleTheme()" title="Switch Theme">☀</button>
         </div>
@@ -362,7 +397,7 @@
 
 <script>
     const TMDB_KEY = "09ca3ca71692ba80b848d268502d24ed"; 
-    const GIPHY_API_KEY = 'YOUR_GIPHY_KEY_HERE'; // <--- PASTE YOUR KEY HERE
+    const GIPHY_API_KEY = 'DS1KOjHWZWCWkWZjJmCIUXRsx5XApvHE'; // <--- PASTE YOUR KEY HERE
     
     const BASE_URL = 'https://api.themoviedb.org/3';
     const IMG_URL = 'https://image.tmdb.org/t/p/w500';
@@ -374,6 +409,7 @@
     let currentPage = 1, isFetching = false, curatedTitles = [];
     let activeModalMovie = null; let activeModalType = 'movie';
     let isMagicActive = false;
+    let isFogActive = false;
 
     window.onload = () => {
         const g = [{id:28,n:"Action"},{id:12,n:"Adventure"},{id:16,n:"Animation"},{id:35,n:"Comedy"},{id:80,n:"Crime"},{id:99,n:"Documentary"},{id:18,n:"Drama"},{id:10751,n:"Family"},{id:14,n:"Fantasy"},{id:36,n:"History"},{id:27,n:"Horror"},{id:10402,n:"Music"},{id:9648,n:"Mystery"},{id:10749,n:"Romance"},{id:878,n:"Sci-Fi"},{id:10770,n:"TV Movie"},{id:53,n:"Thriller"},{id:10752,n:"War"},{id:37,n:"Western"}];
@@ -384,7 +420,7 @@
 
     function toggleTheme() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme')==='light'?'dark':'light'); }
 
-    // --- FIXED: AUTO-CLEAR AND RESET ON TAB SWITCH ---
+    // --- AUTO-CLEAR AND RESET ON TAB SWITCH ---
     function switchMode(mode) {
         currentMode = mode;
         document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
@@ -407,13 +443,10 @@
 
             // 2. Set "Opening Page" based on mode
             if (mode === 'filter') {
-                // Browse: Auto-load default feed
                 resetAndRunBrowse();
             } else if (mode === 'search') {
-                // Curate: Show placeholder
                 grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:100px; opacity:0.3; font-family:var(--font-head); letter-spacing:2px;">// READY TO CURATE</div>';
             } else if (mode === 'describe') {
-                // Dream: Show placeholder
                 grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:100px; opacity:0.3; font-family:var(--font-head); letter-spacing:2px;">// AWAITING DREAM SEQUENCE</div>';
             }
         }
@@ -499,8 +532,6 @@
             const final = (await Promise.all(promises)).filter(x=>x);
             renderGrid(final, body.type, true); 
             document.getElementById('loading-spinner').style.display='none';
-            
-            // FIX: Show the load more button after successful AI search
             document.getElementById('btn-load-more').style.display = 'block';
 
         } catch(e) { console.error(e); isFetching=false; } finally { isFetching=false; }
@@ -567,6 +598,7 @@
 
     async function openDossier(m, type) {
         if(m.first_air_date) type='tv'; else type='movie';
+        activeModalMovie = m; // Update active movie for magic button context
         document.getElementById('view-collection').style.display='none';
         document.getElementById('view-dossier').style.display='block';
         document.getElementById('btn-back').style.display='block';
@@ -583,6 +615,21 @@
         } catch(e) { content.innerHTML = 'Error.'; }
     }
     
+    // --- MYSTERY SMOG TOGGLE ---
+    function toggleFogMode() {
+        isFogActive = !isFogActive;
+        const btn = document.getElementById('btn-fog');
+        const layer = document.getElementById('fog-layer');
+        if (isFogActive) {
+            btn.classList.add('active');
+            layer.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+            layer.classList.remove('active');
+        }
+    }
+
+    // --- CONTEXT-AWARE MAGIC OVERLAY ---
     async function toggleMagicMode() {
         isMagicActive = !isMagicActive;
         const btn = document.getElementById('btn-magic');
@@ -593,20 +640,30 @@
     async function updateMagicTheme() {
         const overlay = document.getElementById('theme-overlay'); overlay.innerHTML = ''; 
         try {
-            const trendUrl = `${BASE_URL}/trending/${browseType}/day?api_key=${TMDB_KEY}`;
-            const trendRes = await fetch(trendUrl);
-            const trendData = await trendRes.json();
-            if (!trendData.results || trendData.results.length === 0) return;
-            const topItem = trendData.results[0];
-            let title = topItem.title || topItem.name;
-            console.log(`✨ Magic Mode: Attempting theme for: ${title}`);
+            let title = '';
             
+            // 1. CHECK CONTEXT: Are we in Intel Mode (viewing a specific file)?
+            if (currentMode === 'knowledge' && activeModalMovie) {
+                title = activeModalMovie.title || activeModalMovie.name;
+                console.log(`✨ Magic Mode: Intel Context -> ${title}`);
+            } else {
+                // 2. FALLBACK: Use Trending (Browse Mode)
+                const trendUrl = `${BASE_URL}/trending/${browseType}/day?api_key=${TMDB_KEY}`;
+                const trendRes = await fetch(trendUrl);
+                const trendData = await trendRes.json();
+                if (!trendData.results || trendData.results.length === 0) return;
+                const topItem = trendData.results[0];
+                title = topItem.title || topItem.name;
+                console.log(`✨ Magic Mode: Trending Context -> ${title}`);
+            }
+
+            // 3. FETCH & SPAWN
             let stickers = await fetchStickers(title);
             if (stickers.length === 0) {
                 const shortTitle = title.split(/[:(-]/)[0].trim();
                 if (shortTitle !== title && shortTitle.length > 2) stickers = await fetchStickers(shortTitle);
             }
-            if (stickers.length === 0) stickers = await fetchStickers(browseType === 'movie' ? 'popcorn cinema' : 'tv show aesthetic');
+            if (stickers.length === 0) stickers = await fetchStickers('cinema aesthetic');
             if (stickers.length === 0) return;
 
             for (let i = 0; i < 8; i++) {
