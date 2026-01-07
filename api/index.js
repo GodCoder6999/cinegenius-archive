@@ -23,13 +23,14 @@ function cleanJSON(text) {
 
 app.post('/api/smart-search', async (req, res) => {
     try {
+        // NOW ACCEPTING 'genreFilter' FROM FRONTEND
         const { refTitle, userPrompt, type, exclude = [], genreFilter = "" } = req.body;
         
         const excludeText = exclude.length > 0 ? `Do NOT recommend: ${exclude.join(', ')}.` : '';
         
-        // NEW: Strict Genre Instruction
+        // NEW: STRICT GENRE INSTRUCTION
         const genreInstruction = genreFilter 
-            ? `STRICT CONSTRAINT: The user has selected these specific genres: [${genreFilter}]. You MUST prioritize movies/series that fit these genres.` 
+            ? `STRICT CONSTRAINT: The user has selected these genres: [${genreFilter}]. You MUST prioritize results that fit these genres.` 
             : '';
 
         const systemPrompt = `You are a precise Movie/TV recommendation engine. 
