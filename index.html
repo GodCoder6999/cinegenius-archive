@@ -23,11 +23,8 @@
         * { box-sizing: border-box; }
         
         body {
-            background-color: var(--bg-deep);
-            color: var(--ink);
-            font-family: var(--font-body);
-            margin: 0; height: 100vh;
-            display: flex; flex-direction: column; overflow: hidden; position: relative;
+            background-color: var(--bg-deep); color: var(--ink); font-family: var(--font-body);
+            margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; position: relative;
         }
 
         /* LIVING BACKGROUND */
@@ -37,10 +34,7 @@
                         radial-gradient(circle at 85% 30%, rgba(0, 229, 255, 0.15), transparent 50%);
             animation: breathe 15s ease-in-out infinite alternate;
         }
-        .floating-orb {
-            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4;
-            animation: floatOrb 20s infinite ease-in-out;
-        }
+        .floating-orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4; animation: floatOrb 20s infinite ease-in-out; }
         .orb-1 { width: 600px; height: 600px; background: var(--accent); top: -20%; left: -10%; animation-delay: 0s; }
         .orb-2 { width: 500px; height: 500px; background: var(--accent-secondary); bottom: -10%; right: -10%; animation-delay: -10s; }
         @keyframes breathe { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
@@ -54,11 +48,20 @@
         .logo { font-family: var(--font-head); font-weight: 900; font-size: 26px; letter-spacing: 2px; text-transform: uppercase; background: linear-gradient(to right, #fff, #ccc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .logo span { background: linear-gradient(to right, var(--accent), var(--accent-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-style: italic; }
         
-        .mode-toggle { display: flex; gap: 5px; background: rgba(255,255,255,0.03); padding: 5px; border-radius: 30px; border: 1px solid var(--glass-border); }
+        .mode-toggle { display: flex; gap: 5px; background: rgba(255,255,255,0.03); padding: 5px; border-radius: 30px; border: 1px solid var(--glass-border); align-items: center; }
         .mode-btn { background: transparent; border: none; color: var(--ink-muted); font-family: var(--font-head); font-weight: 700; font-size: 10px; text-transform: uppercase; cursor: pointer; padding: 10px 20px; border-radius: 20px; transition: 0.3s; }
         .mode-btn:hover { color: #fff; }
         .mode-btn.active { background: var(--accent); color: #fff; box-shadow: 0 0 20px var(--accent-glow); }
         .theme-switch { display: none; }
+
+        /* DOODLE BUTTON */
+        .doodle-btn {
+            width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--accent-secondary);
+            background: rgba(0, 229, 255, 0.1); color: var(--accent-secondary);
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            font-size: 18px; transition: 0.3s; margin-left: 10px;
+        }
+        .doodle-btn:hover { background: var(--accent-secondary); color: #000; box-shadow: 0 0 20px var(--accent-secondary); transform: rotate(15deg); }
 
         /* LAYOUT */
         .editorial-layout { display: flex; flex: 1; overflow: hidden; position: relative; z-index: 1; }
@@ -76,17 +79,11 @@
         /* INPUTS */
         .range-group { display: flex; align-items: center; gap: 10px; }
         .label-mini { font-size: 10px; font-weight: 700; color: var(--ink-muted); margin-bottom: 8px; display: block; text-transform: uppercase; }
-        
         input, select, textarea { width: 100%; background: rgba(0,0,0,0.4); color: #fff; border: 1px solid var(--glass-border); padding: 12px; font-family: var(--font-body); font-size: 13px; border-radius: 8px; outline: none; transition: 0.3s; }
         input:focus, select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); background: rgba(0,0,0,0.6); }
         
-        /* CUSTOM RANGE SLIDER (GLOWING ANIMATION) */
         input[type=range] { -webkit-appearance: none; width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 5px; border: none; padding: 0; }
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%;
-            background: var(--accent); cursor: pointer; margin-top: 0;
-            box-shadow: 0 0 10px var(--accent); transition: 0.2s;
-        }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: var(--accent); cursor: pointer; box-shadow: 0 0 10px var(--accent); transition: 0.2s; }
         input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); box-shadow: 0 0 20px var(--accent), 0 0 40px var(--accent-secondary); }
         .slider-val { float: right; color: var(--accent-secondary); font-weight: 900; font-size: 12px; }
 
@@ -98,9 +95,7 @@
         }
         .btn-action:hover { box-shadow: 0 0 30px var(--accent-glow); transform: translateY(-2px); }
 
-        /* GENRE PILLS & SEARCH */
         .genre-search { padding: 10px; margin-bottom: 10px; border: none; border-bottom: 1px solid var(--glass-border); background: transparent; font-size: 12px; color: var(--ink-muted); }
-        .genre-search:focus { border-color: var(--accent); }
         .genre-grid { display: flex; flex-wrap: wrap; gap: 8px; max-height: 250px; overflow-y: auto; }
         .genre-pill { font-size: 10px; padding: 6px 12px; border: 1px solid var(--glass-border); border-radius: 20px; cursor: pointer; color: var(--ink-muted); transition: 0.3s; background: rgba(255,255,255,0.02); }
         .genre-pill.selected { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
@@ -116,10 +111,7 @@
         .section-subtitle { font-size: 12px; color: var(--accent-secondary); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 40px; border-left: 3px solid var(--accent); padding-left: 20px; font-weight: 700; }
 
         .exhibit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 35px; }
-        .exhibit-card { 
-            position: relative; background: rgba(255,255,255,0.03); border-radius: 16px; overflow: hidden; 
-            transition: 0.5s; border: 1px solid var(--glass-border); cursor: pointer; animation: cardEntrance 0.6s backwards;
-        }
+        .exhibit-card { position: relative; background: rgba(255,255,255,0.03); border-radius: 16px; overflow: hidden; transition: 0.5s; border: 1px solid var(--glass-border); cursor: pointer; animation: cardEntrance 0.6s backwards; }
         .exhibit-card:hover { transform: translateY(-15px) scale(1.02); border-color: var(--accent); box-shadow: 0 20px 50px rgba(213, 0, 249, 0.3); z-index: 10; }
         .poster-frame { width: 100%; aspect-ratio: 2/3; position: relative; overflow: hidden; }
         .poster-img { width: 100%; height: 100%; object-fit: cover; transition: 0.6s; }
@@ -154,11 +146,35 @@
         .stream-btn { display: inline-flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 14px 24px; border-radius: 12px; font-weight: 700; font-size: 13px; margin-right: 12px; margin-bottom: 12px; text-decoration: none; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; backdrop-filter: blur(10px); }
         .stream-btn:hover { background: #fff; color: #000; box-shadow: 0 0 30px rgba(255,255,255,0.4); transform: translateY(-3px); }
         .stream-btn img { width: 24px; height: 24px; border-radius: 4px; }
-        .intel-btn-modal { width:100%; margin-top:40px; background: linear-gradient(90deg, rgba(255, 0, 85, 0.1), transparent); border: 2px solid #ff0055; color: #ff0055; padding: 20px; border-radius: 14px; font-family: var(--font-head); font-weight: 900; cursor: pointer; text-transform: uppercase; letter-spacing: 3px; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 15px; }
+        .intel-btn-modal { width:100%; margin-top:20px; background: linear-gradient(90deg, rgba(255, 0, 85, 0.1), transparent); border: 2px solid #ff0055; color: #ff0055; padding: 20px; border-radius: 14px; font-family: var(--font-head); font-weight: 900; cursor: pointer; text-transform: uppercase; letter-spacing: 3px; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 15px; }
         .intel-btn-modal:hover { background: #ff0055; color: #fff; box-shadow: 0 0 50px rgba(255, 0, 85, 0.6); }
         .close-modal { position: absolute; top: 30px; right: 30px; font-size: 40px; color: rgba(255,255,255,0.5); z-index: 20; transition: 0.3s; }
         .close-modal:hover { color: #fff; transform: rotate(90deg) scale(1.1); }
 
+        /* CAST GRID */
+        .cast-grid { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: thin; }
+        .cast-card { flex: 0 0 90px; text-align: center; }
+        .cast-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); margin-bottom: 8px; transition: 0.3s; }
+        .cast-card:hover .cast-img { transform: scale(1.1); box-shadow: 0 0 15px var(--accent); }
+        .cast-name { font-size: 10px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+        .cast-role { font-size: 9px; color: var(--ink-muted); font-style: italic; }
+
+        /* DOODLE (CINEMA MODE) OVERLAY */
+        .doodle-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 9999; display: none; opacity: 0; transition: 0.5s;
+            overflow: hidden; pointer-events: none; /* Allows click through when fading out */
+        }
+        .doodle-overlay.active { display: flex; opacity: 1; pointer-events: all; }
+        .doodle-backdrop { position: absolute; width: 100%; height: 100%; object-fit: cover; opacity: 0.4; animation: zoomPan 10s infinite alternate; }
+        .doodle-content { position: absolute; bottom: 100px; left: 50px; z-index: 2; text-shadow: 0 0 50px #000; }
+        .doodle-tag { background: #ff0055; color: #fff; padding: 5px 10px; font-weight: 900; font-size: 12px; display: inline-block; margin-bottom: 10px; box-shadow: 0 0 20px #ff0055; }
+        .doodle-title { font-family: var(--font-head); font-weight: 900; font-size: 80px; line-height: 0.9; text-transform: uppercase; color: #fff; margin-bottom: 20px; opacity: 0; animation: slideUp 1s 0.5s forwards; }
+        .doodle-particles { position: absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; background: url('https://raw.githubusercontent.com/hudsonmar/codepen-assets/master/particles.png'); animation: particleDrift 20s linear infinite; opacity: 0.5; }
+        @keyframes zoomPan { from { transform: scale(1); } to { transform: scale(1.1); } }
+        @keyframes particleDrift { from { background-position: 0 0; } to { background-position: 100% 100%; } }
+
+        /* DOSSIER */
         #dossier-view { padding: 50px; display: none; max-width: 900px; margin: 0 auto; }
         .dossier-header { display: flex; gap: 50px; margin-bottom: 50px; align-items: center; }
         .dossier-poster { width: 280px; border-radius: 16px; border: 2px solid var(--accent); box-shadow: 0 0 50px rgba(213,0,249,0.3); transform: rotate(-3deg); }
@@ -178,11 +194,21 @@
         @keyframes slideInLeft { to { opacity: 1; transform: translateX(0); } }
         @keyframes fadeIn { to { opacity: 1; } }
         @keyframes cardEntrance { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
         @media (max-width: 900px) { .research-sidebar { display: none; } .modal-content-wrapper { flex-direction: column; background: rgba(0,0,0,0.9); } .modal-poster-area { width: 100%; height: 300px; padding: 20px; } .modal-poster-img { height: 100%; width: auto; transform: translateY(0); } .modal-info { padding: 30px; } .dossier-header { flex-direction: column; } .dossier-poster { width: 200px; } }
     </style>
 </head>
 <body data-theme="dark">
     <div class="ambient-background"><div class="floating-orb orb-1"></div><div class="floating-orb orb-2"></div></div>
+
+    <div class="doodle-overlay" id="doodle-overlay">
+        <img id="doodle-img" class="doodle-backdrop" src="">
+        <div class="doodle-particles"></div>
+        <div class="doodle-content">
+            <div class="doodle-tag">#1 TRENDING WORLDWIDE</div>
+            <div id="doodle-title" class="doodle-title"></div>
+        </div>
+    </div>
 
     <header class="masthead">
         <div class="logo">CINEGENIUS <span>ARCHIVE</span></div>
@@ -191,6 +217,7 @@
             <button class="mode-btn" onclick="switchMode('search')" id="btn-search">Curate</button>
             <button class="mode-btn" onclick="switchMode('describe')" id="btn-describe">Dream</button>
             <button class="mode-btn" onclick="switchMode('knowledge')" id="btn-know">Intel</button>
+            <button class="doodle-btn" onclick="triggerDoodle()" title="Cinema Mode">🎬</button>
         </div>
     </header>
 
@@ -219,7 +246,6 @@
                         <span style="color:#fff">-</span>
                         <input type="number" id="year-end" placeholder="2026">
                     </div>
-                    
                     <span class="label-mini">Minimum Rating (0-10)</span>
                     <div style="display:flex; align-items:center; gap:10px;">
                         <input type="range" id="vote-min" min="0" max="10" step="0.5" value="0" oninput="document.getElementById('vote-val').innerText = this.value > 0 ? this.value + '+' : 'All'">
@@ -302,6 +328,27 @@
         resetAndRunBrowse(); 
     };
 
+    // --- DOODLE ENGINE ---
+    async function triggerDoodle() {
+        const overlay = document.getElementById('doodle-overlay');
+        const img = document.getElementById('doodle-img');
+        const title = document.getElementById('doodle-title');
+        
+        // Fetch #1 Trending
+        try {
+            const res = await fetch(`${BASE_URL}/trending/all/day?api_key=${TMDB_KEY}`);
+            const data = await res.json();
+            const top = data.results[0];
+            
+            img.src = ORIGINAL_IMG_URL + top.backdrop_path;
+            title.innerText = top.title || top.name;
+            overlay.classList.add('active');
+            
+            // Auto close after 5s
+            setTimeout(() => { overlay.classList.remove('active'); }, 5000);
+        } catch(e) { console.error("Doodle Failed", e); }
+    }
+
     function filterGenres(input) {
         const filter = input.value.toUpperCase();
         const pills = document.getElementById('genre-container').getElementsByClassName('genre-pill');
@@ -315,25 +362,17 @@
         currentMode = mode;
         document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('btn-'+(mode==='filter'?'browse':mode==='search'?'search':mode==='describe'?'describe':'know')).classList.add('active');
-        ['filter','search','describe','knowledge'].forEach(id => document.getElementById('controls-'+id).style.display='none');
-        document.getElementById('controls-'+(mode==='knowledge'?'knowledge':mode)).style.display='block';
-        if(mode !== 'knowledge') { document.getElementById('view-collection').style.display='block'; document.getElementById('view-dossier').style.display='none'; document.getElementById('btn-back').style.display='none'; }
+        ['filter','search','describe','dossier'].forEach(x => document.getElementById('input-'+x).style.display = 'none');
+        document.getElementById('input-'+(mode==='knowledge'?'dossier':mode)).style.display = 'block';
+        if(mode!=='knowledge') { document.getElementById('view-collection').style.display='block'; document.getElementById('view-dossier').style.display='none'; document.getElementById('btn-back').style.display='none'; }
         if(mode === 'filter' && document.getElementById('grid-container').innerHTML==='') resetAndRunBrowse();
-        if(mode === 'search' && document.getElementById('grid-container').innerHTML==='') document.getElementById('grid-container').innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:50px; opacity:0.5;">Ready for Input.</div>';
     }
 
     function setBrowseType(t) { browseType = t; updateToggle('b', t); resetAndRunBrowse(); }
     function setCurateType(t) { curateType = t; updateToggle('c', t); document.getElementById('ref-search').placeholder = t === 'movie' ? 'e.g. Inception' : 'e.g. Stranger Things'; }
     function setDescribeType(t) { describeType = t; updateToggle('d', t); }
     function updateToggle(p, t) { document.getElementById(p+'-btn-movie').classList.remove('active'); document.getElementById(p+'-btn-tv').classList.remove('active'); document.getElementById(p+'-btn-'+t).classList.add('active'); }
-    
-    function showLoading(show) { 
-        document.getElementById('loading-spinner').style.display = show ? 'flex' : 'none'; 
-        if(show) {
-            document.getElementById('btn-load-more').style.display = 'none'; 
-            document.getElementById('grid-container').innerHTML = ''; // Clear grid to avoid confusion
-        }
-    }
+    function showLoading(show) { document.getElementById('loading-spinner').style.display = show ? 'flex' : 'none'; if(show) document.getElementById('btn-load-more').style.display = 'none'; if(show) document.getElementById('grid-container').innerHTML = ''; }
 
     function getSmartMeta(m, type) {
         const start = (m.release_date || m.first_air_date || 'N/A').split('-')[0];
@@ -360,30 +399,20 @@
             let url = `${BASE_URL}/discover/${browseType}?api_key=${TMDB_KEY}&sort_by=${sort}&page=${currentPage}&include_adult=false`;
             
             if(genres) url += `&with_genres=${genres}`;
-            
             const dateField = browseType === 'movie' ? 'primary_release_date' : 'first_air_date';
             if(yearStart) url += `&${dateField}.gte=${yearStart}-01-01`;
             if(yearEnd) url += `&${dateField}.lte=${yearEnd}-12-31`;
-
-            // CRASH PREVENTION: Lowered threshold from 300 to 50
-            if(voteMin > 0) {
-                url += `&vote_average.gte=${voteMin}`;
-                url += `&vote_count.gte=50`; 
-            }
+            if(voteMin > 0) { url += `&vote_average.gte=${voteMin}`; url += `&vote_count.gte=50`; }
 
             const res = await fetch(url); const data = await res.json();
             
-            // HANDLING EMPTY RESULTS
             if (!data.results || data.results.length === 0) {
-                document.getElementById('grid-container').innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 50px; color: var(--accent); font-family: var(--font-head); font-weight:900;">NO MATCHES FOUND IN THE ARCHIVE.<br><span style="font-size:12px; color:var(--ink-muted); font-weight:400;">TRY ADJUSTING YOUR FILTERS.</span></div>';
-                showLoading(false);
-                return;
+                document.getElementById('grid-container').innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 50px; color: var(--accent); font-family: var(--font-head); font-weight:900;">NO ARCHIVES FOUND.<br><span style="font-size:12px; color:var(--ink-muted); font-weight:400;">TRY ADJUSTING YOUR FILTERS.</span></div>';
+                showLoading(false); return;
             }
 
             const det = await Promise.all(data.results.map(i => fetch(`${BASE_URL}/${browseType}/${i.id}?api_key=${TMDB_KEY}`).then(r=>r.json())));
-            renderGrid(det, browseType); 
-            showLoading(false); 
-            if(data.page<data.total_pages) document.getElementById('btn-load-more').style.display = 'block';
+            renderGrid(det, browseType); showLoading(false); if(data.page<data.total_pages) document.getElementById('btn-load-more').style.display = 'block';
         } catch(e) { console.error(e); showLoading(false); } finally { isFetching=false; }
     }
 
@@ -423,11 +452,7 @@
             });
             const final = (await Promise.all(promises)).filter(x=>x);
             renderGrid(final, body.type, true); showLoading(false); document.getElementById('btn-load-more').style.display='block';
-        } catch(e) { 
-            console.error(e); 
-            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 50px; color: #ff0055; font-weight:900;">CONNECTION ERROR.</div>';
-            showLoading(false); 
-        } finally { isFetching=false; }
+        } catch(e) { console.error(e); grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 50px; color: #ff0055; font-weight:900;">CONNECTION ERROR.</div>'; showLoading(false); } finally { isFetching=false; }
     }
 
     function renderGrid(list, type, isAi=false) {
@@ -473,13 +498,23 @@
         document.getElementById('btn-back').style.display='block';
         const content = document.getElementById('dossier-content');
         content.innerHTML = '<div style="text-align:center; padding:100px;">DECRYPTING FILE...</div>';
+        
         try {
             const details = await fetch(`${BASE_URL}/${type}/${m.id}?api_key=${TMDB_KEY}`).then(r=>r.json());
             const budget = details.budget ? `$${(details.budget/1000000).toFixed(1)}M` : 'Classified';
             const revenue = details.revenue ? `$${(details.revenue/1000000).toFixed(1)}M` : 'Classified';
+            
+            // FETCH CREDITS FOR DOSSIER
+            const credRes = await fetch(`${BASE_URL}/${type}/${m.id}/credits?api_key=${TMDB_KEY}`);
+            const credData = await credRes.json();
+            const castHtml = credData.cast.slice(0,6).map(c => 
+                `<div class="cast-card"><img src="${c.profile_path?IMG_URL+c.profile_path:''}" class="cast-img"><div class="cast-name">${c.name}</div><div class="cast-role">${c.character}</div></div>`
+            ).join('');
+
             const aiRes = await fetch(API_INTEL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({title: m.title||m.name, type: type}) });
             const ai = await aiRes.json();
-            content.innerHTML = `<div class="dossier-header"><img src="${IMG_URL + m.poster_path}" class="dossier-poster"><div class="dossier-data"><div class="dossier-title">${m.title||m.name}</div><div class="dossier-tagline">"${ai.tagline_ai || m.tagline || 'No data found'}"</div><p style="line-height:1.6; margin-bottom:30px;">${m.overview}</p><div class="intel-grid"><div class="intel-box"><div class="intel-label">BUDGET (EST)</div><div class="intel-value">${budget}</div></div><div class="intel-box"><div class="intel-label">BOX OFFICE</div><div class="intel-value">${revenue}</div></div><div class="intel-box"><div class="intel-label">STATUS</div><div class="intel-value" style="color:${ai.status_verdict?.includes('Hit')?'#00ff00':'#ff0055'}">${ai.status_verdict || 'Unknown'}</div></div><div class="intel-box"><div class="intel-label">CULTURAL IMPACT</div><div class="intel-value" style="font-size:14px;">${ai.cultural_impact || 'Minimal'}</div></div></div><div class="spoiler-section" onclick="this.classList.add('revealed')"><div class="spoiler-overlay"><button class="spoiler-btn">⚠️ REVEAL PLOT TWIST</button></div><div class="spoiler-blur"><h3 style="color:var(--accent);">MAJOR SPOILER WARNING</h3><p>${ai.plot_twist || 'No Twist Detected.'}</p></div></div></div></div>`;
+            
+            content.innerHTML = `<div class="dossier-header"><img src="${IMG_URL + m.poster_path}" class="dossier-poster"><div class="dossier-data"><div class="dossier-title">${m.title||m.name}</div><div class="dossier-tagline">"${ai.tagline_ai || m.tagline || 'No data found'}"</div><p style="line-height:1.6; margin-bottom:30px;">${m.overview}</p><div class="intel-grid"><div class="intel-box"><div class="intel-label">BUDGET (EST)</div><div class="intel-value">${budget}</div></div><div class="intel-box"><div class="intel-label">BOX OFFICE</div><div class="intel-value">${revenue}</div></div><div class="intel-box"><div class="intel-label">STATUS</div><div class="intel-value" style="color:${ai.status_verdict?.includes('Hit')?'#00ff00':'#ff0055'}">${ai.status_verdict || 'Unknown'}</div></div><div class="intel-box"><div class="intel-label">CULTURAL IMPACT</div><div class="intel-value" style="font-size:14px;">${ai.cultural_impact || 'Minimal'}</div></div></div><div style="margin-bottom:30px;"><div class="intel-label" style="margin-bottom:15px;">KEY AGENTS (CAST)</div><div class="cast-grid">${castHtml}</div></div><div class="spoiler-section" onclick="this.classList.add('revealed')"><div class="spoiler-overlay"><button class="spoiler-btn">⚠️ REVEAL PLOT TWIST</button></div><div class="spoiler-blur"><h3 style="color:var(--accent);">MAJOR SPOILER WARNING</h3><p>${ai.plot_twist || 'No Twist Detected.'}</p></div></div></div></div>`;
         } catch(e) { console.error(e); content.innerHTML = 'Error loading dossier.'; }
     }
 
@@ -496,6 +531,7 @@
         if(m.backdrop_path) bg.style.backgroundImage = `url(${ORIGINAL_IMG_URL + m.backdrop_path})`; else bg.style.backgroundImage = 'none';
         const meta = getSmartMeta(m, type);
         
+        // FETCH PROVIDERS
         const provRes = await fetch(`${BASE_URL}/${type}/${m.id}/watch/providers?api_key=${TMDB_KEY}`);
         const provData = await provRes.json();
         const region = provData.results?.US || provData.results?.IN;
@@ -508,7 +544,16 @@
         const unique = [...new Map(allOptions.map(item => [item['provider_name'], item])).values()];
         let linkHtml = unique.length > 0 ? unique.slice(0, 3).map(p => `<a href="${region.link}" target="_blank" class="stream-btn"><img src="${IMG_URL + p.logo_path}"> Watch on ${p.provider_name}</a>`).join('') : `<a href="https://www.google.com/search?q=watch+${encodeURIComponent(m.title||m.name)}" target="_blank" class="stream-btn">🔍 Find Streaming Options</a>`;
 
-        c.innerHTML = `<div class="modal-poster-area"><img src="${IMG_URL+m.poster_path}" class="modal-poster-img"></div><div class="modal-info"><div class="modal-title">${m.title||m.name} <span style="font-size:24px; color:var(--ink-muted); font-weight:400;">${meta.dateStr}</span></div><div style="margin-bottom:30px; color:var(--accent); font-weight:700; letter-spacing:1px;">★ ${m.vote_average.toFixed(1)} &nbsp;&nbsp;|&nbsp;&nbsp; ${type.toUpperCase()} &nbsp;&nbsp;|&nbsp;&nbsp; ${meta.seasonStr || 'Feature Film'}</div><div style="margin-bottom:30px; display:flex; flex-wrap:wrap;">${linkHtml}</div><p style="line-height:1.8; color:#ddd; font-size:16px; margin-bottom:40px;">${m.overview}</p><button class="intel-btn-modal" onclick="triggerIntel()">📂 Access Classified Intel Dossier</button></div>`;
+        // FETCH CAST
+        const credRes = await fetch(`${BASE_URL}/${type}/${m.id}/credits?api_key=${TMDB_KEY}`);
+        const credData = await credRes.json();
+        const castHtml = credData.cast.slice(0,6).map(c => 
+            `<div class="cast-card"><img src="${c.profile_path?IMG_URL+c.profile_path:''}" class="cast-img"><div class="cast-name">${c.name}</div><div class="cast-role">${c.character}</div></div>`
+        ).join('');
+
+        c.innerHTML = `<div class="modal-poster-area"><img src="${IMG_URL+m.poster_path}" class="modal-poster-img"></div><div class="modal-info"><div class="modal-title">${m.title||m.name} <span style="font-size:24px; color:var(--ink-muted); font-weight:400;">${meta.dateStr}</span></div><div style="margin-bottom:30px; color:var(--accent); font-weight:700; letter-spacing:1px;">★ ${m.vote_average.toFixed(1)} &nbsp;&nbsp;|&nbsp;&nbsp; ${type.toUpperCase()} &nbsp;&nbsp;|&nbsp;&nbsp; ${meta.seasonStr || 'Feature Film'}</div><div style="margin-bottom:30px; display:flex; flex-wrap:wrap;">${linkHtml}</div><p style="line-height:1.8; color:#ddd; font-size:16px; margin-bottom:40px;">${m.overview}</p><div style="margin-bottom:30px;"><h4 style="margin-bottom:15px; color:#fff;">TOP CAST</h4><div class="cast-grid">${castHtml}</div></div><button class="intel-btn-modal" onclick="triggerIntel()">📂 Access Classified Intel Dossier</button></div>`;
         modal.style.display = 'flex'; setTimeout(()=>document.querySelector('.modal-overlay').classList.add('active'), 10);
     }
 </script>
+</body>
+</html>
