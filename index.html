@@ -52,39 +52,22 @@
         }
         @keyframes rotateFog { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* --- MYSTERY SMOG ENGINE (FIXED) --- */
+        /* --- MYSTERY SMOG ENGINE (VIDEO OVERLAY) --- */
         #fog-layer {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 9998; 
             opacity: 0; transition: opacity 1.5s ease;
-            mix-blend-mode: screen; 
+            mix-blend-mode: screen; /* REMOVES BLACK BACKGROUND */
             overflow: hidden;
         }
         #fog-layer.active { opacity: 1; }
 
-        .smoke-plume {
-            position: absolute; top: 0; left: 0; width: 300%; height: 100%;
-            background: radial-gradient(circle at 50% 50%, rgba(150,150,150,0.4) 0%, transparent 60%);
-            filter: blur(60px);
-            opacity: 0.5;
-        }
-        
-        /* Ideally use a real image, here is a reliable one from a CDN */
-        .smoke-texture {
-            position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background-image: url('https://upload.wikimedia.org/wikipedia/commons/e/e3/Smoke_texture.png'); /* Reliable Source */
-            background-size: cover;
-            mix-blend-mode: screen;
-        }
-
-        .smoke-1 { animation: smokeMove 40s linear infinite; opacity: 0.6; }
-        .smoke-2 { animation: smokeMove 30s linear infinite reverse; opacity: 0.4; top: -20%; left: -20%; }
-        .smoke-3 { animation: smokeMove 20s linear infinite; opacity: 0.3; top: 20%; transform: scale(1.2); }
-
-        @keyframes smokeMove {
-            0% { transform: rotate(0deg) translate(0, 0); }
-            50% { transform: rotate(10deg) translate(-50px, -20px); }
-            100% { transform: rotate(0deg) translate(0, 0); }
+        #fog-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: contrast(1.2) brightness(1.1);
+            opacity: 0.6; /* Adjust smoke intensity here */
         }
 
         /* --- HEADER --- */
@@ -292,11 +275,13 @@
 <body data-theme="dark">
 
     <div class="ambient-background"></div>
+    
     <div id="fog-layer">
-        <div class="smoke-texture smoke-1"></div>
-        <div class="smoke-texture smoke-2"></div>
-        <div class="smoke-texture smoke-3"></div>
+        <video id="fog-video" loop muted playsinline>
+            <source src="https://assets.mixkit.co/videos/preview/mixkit-white-smoke-floating-on-black-background-33924-large.mp4" type="video/mp4">
+        </video>
     </div>
+    
     <div id="theme-overlay"></div>
 
     <header class="masthead">
@@ -686,7 +671,17 @@
         isFogActive = !isFogActive;
         const btn = document.getElementById('btn-fog');
         const layer = document.getElementById('fog-layer');
-        if (isFogActive) { btn.classList.add('active'); layer.classList.add('active'); } else { btn.classList.remove('active'); layer.classList.remove('active'); }
+        const vid = document.getElementById('fog-video');
+        
+        if (isFogActive) { 
+            btn.classList.add('active'); 
+            layer.classList.add('active'); 
+            vid.play();
+        } else { 
+            btn.classList.remove('active'); 
+            layer.classList.remove('active'); 
+            vid.pause();
+        }
     }
 
     async function toggleMagicMode() {
