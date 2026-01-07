@@ -223,7 +223,7 @@
                     <span class="label-mini">Minimum Rating (0-10)</span>
                     <div style="display:flex; align-items:center; gap:10px;">
                         <input type="range" id="vote-min" min="0" max="10" step="0.5" value="0" oninput="document.getElementById('vote-val').innerText = this.value > 0 ? this.value + '+' : 'All'">
-                        <span id="vote-val" class="slider-val">All</span>
+                        <span id="vote-val" class="slider-val" style="font-weight:900; color:var(--accent);">All</span>
                     </div>
                 </div></details>
 
@@ -286,7 +286,6 @@
     let activeModalMovie = null; let activeModalType = 'movie';
 
     window.onload = () => {
-        // FULL GENRE LIST (19 Items)
         const allGenres = [
             {id:28,n:"Action"}, {id:12,n:"Adventure"}, {id:16,n:"Animation"}, {id:35,n:"Comedy"},
             {id:80,n:"Crime"}, {id:99,n:"Documentary"}, {id:18,n:"Drama"}, {id:10751,n:"Family"},
@@ -303,7 +302,6 @@
         resetAndRunBrowse(); 
     };
 
-    // GENRE SEARCH FILTER
     function filterGenres(input) {
         const filter = input.value.toUpperCase();
         const pills = document.getElementById('genre-container').getElementsByClassName('genre-pill');
@@ -317,9 +315,9 @@
         currentMode = mode;
         document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('btn-'+(mode==='filter'?'browse':mode==='search'?'search':mode==='describe'?'describe':'know')).classList.add('active');
-        ['filter','search','describe','dossier'].forEach(x => document.getElementById('input-'+x).style.display = 'none');
-        document.getElementById('input-'+(mode==='knowledge'?'dossier':mode)).style.display = 'block';
-        if(mode!=='knowledge') { document.getElementById('view-collection').style.display='block'; document.getElementById('view-dossier').style.display='none'; document.getElementById('btn-back').style.display='none'; }
+        ['filter','search','describe','knowledge'].forEach(id => document.getElementById('controls-'+id).style.display='none');
+        document.getElementById('controls-'+(mode==='knowledge'?'knowledge':mode)).style.display='block';
+        if(mode !== 'knowledge') { document.getElementById('view-collection').style.display='block'; document.getElementById('view-dossier').style.display='none'; document.getElementById('btn-back').style.display='none'; }
         if(mode === 'filter' && document.getElementById('grid-container').innerHTML==='') resetAndRunBrowse();
         if(mode === 'search' && document.getElementById('grid-container').innerHTML==='') document.getElementById('grid-container').innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:50px; opacity:0.5;">Ready for Input.</div>';
     }
@@ -328,7 +326,14 @@
     function setCurateType(t) { curateType = t; updateToggle('c', t); document.getElementById('ref-search').placeholder = t === 'movie' ? 'e.g. Inception' : 'e.g. Stranger Things'; }
     function setDescribeType(t) { describeType = t; updateToggle('d', t); }
     function updateToggle(p, t) { document.getElementById(p+'-btn-movie').classList.remove('active'); document.getElementById(p+'-btn-tv').classList.remove('active'); document.getElementById(p+'-btn-'+t).classList.add('active'); }
-    function showLoading(show) { document.getElementById('loading-spinner').style.display = show ? 'flex' : 'none'; if(show) document.getElementById('btn-load-more').style.display = 'none'; }
+    
+    function showLoading(show) { 
+        document.getElementById('loading-spinner').style.display = show ? 'flex' : 'none'; 
+        if(show) {
+            document.getElementById('btn-load-more').style.display = 'none'; 
+            document.getElementById('grid-container').innerHTML = ''; // Clear grid to avoid confusion
+        }
+    }
 
     function getSmartMeta(m, type) {
         const start = (m.release_date || m.first_air_date || 'N/A').split('-')[0];
@@ -341,9 +346,8 @@
         return { dateStr: `(${dateStr})`, seasonStr };
     }
 
-    function resetAndRunBrowse() { currentPage=1; document.getElementById('grid-container').innerHTML=''; runBrowseSearch(); }
+    function resetAndRunBrowse() { currentPage=1; runBrowseSearch(); }
     
-    // UPDATED BROWSE SEARCH (WITH FILTERS)
     async function runBrowseSearch() {
         if(isFetching) return; isFetching=true; showLoading(true);
         try {
@@ -357,24 +361,32 @@
             
             if(genres) url += `&with_genres=${genres}`;
             
-            // Year Filters
             const dateField = browseType === 'movie' ? 'primary_release_date' : 'first_air_date';
             if(yearStart) url += `&${dateField}.gte=${yearStart}-01-01`;
             if(yearEnd) url += `&${dateField}.lte=${yearEnd}-12-31`;
 
-            // Rating Filter (+ Quality Guard: Must have 300+ votes if filtering by rating)
+            // CRASH PREVENTION: Lowered threshold from 300 to 50
             if(voteMin > 0) {
                 url += `&vote_average.gte=${voteMin}`;
-                url += `&vote_count.gte=300`;
+                url += `&vote_count.gte=50`; 
             }
 
             const res = await fetch(url); const data = await res.json();
+            
+            // HANDLING EMPTY RESULTS
+            if (!data.results || data.results.length === 0) {
+                document.getElementById('grid-container').innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 50px; color: var(--accent); font-family: var(--font-head); font-weight:900;">NO MATCHES FOUND IN THE ARCHIVE.<br><span style="font-size:12px; color:var(--ink-muted); font-weight:400;">TRY ADJUSTING YOUR FILTERS.</span></div>';
+                showLoading(false);
+                return;
+            }
+
             const det = await Promise.all(data.results.map(i => fetch(`${BASE_URL}/${browseType}/${i.id}?api_key=${TMDB_KEY}`).then(r=>r.json())));
-            renderGrid(det, browseType); showLoading(false); if(data.page<data.total_pages) document.getElementById('btn-load-more').style.display = 'block';
+            renderGrid(det, browseType); 
+            showLoading(false); 
+            if(data.page<data.total_pages) document.getElementById('btn-load-more').style.display = 'block';
         } catch(e) { console.error(e); showLoading(false); } finally { isFetching=false; }
     }
 
-    // AI SEARCH WITH GENRE FILTER
     async function runMoodSearch() {
         const selectedGenreNames = Array.from(document.querySelectorAll('.genre-pill.selected')).map(el => el.innerText).join(', ');
         runAi(false, 'mood', selectedGenreNames);
@@ -385,7 +397,7 @@
     async function runAi(isLoadMore, mode, genreFilter = "") {
         if(isFetching) return; isFetching=true; showLoading(true);
         const grid = document.getElementById('grid-container');
-        if(!isLoadMore) { grid.innerHTML=''; curatedTitles=[]; }
+        if(!isLoadMore) { curatedTitles=[]; }
         
         let body = { exclude: curatedTitles, genreFilter: genreFilter };
         if(mode==='curate') { body.type=curateType; body.refTitle=document.getElementById('ref-search').value; body.userPrompt=document.getElementById('ai-context').value; }
@@ -395,7 +407,11 @@
         try {
             const res = await fetch(API_SEARCH, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
             const aiData = await res.json();
-            if(!aiData || aiData.length===0) { showLoading(false); return; }
+            
+            if(!aiData || aiData.length===0) { 
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 50px; color: var(--accent); font-family: var(--font-head); font-weight:900;">AI COULD NOT FIND MATCHES.<br><span style="font-size:12px; color:var(--ink-muted); font-weight:400;">TRY DIFFERENT KEYWORDS.</span></div>';
+                showLoading(false); return; 
+            }
             
             const promises = aiData.map(async (item) => {
                 const s = await fetch(`${BASE_URL}/search/${body.type}?api_key=${TMDB_KEY}&query=${encodeURIComponent(item.title)}`);
@@ -407,7 +423,11 @@
             });
             const final = (await Promise.all(promises)).filter(x=>x);
             renderGrid(final, body.type, true); showLoading(false); document.getElementById('btn-load-more').style.display='block';
-        } catch(e) { console.error(e); showLoading(false); } finally { isFetching=false; }
+        } catch(e) { 
+            console.error(e); 
+            grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 50px; color: #ff0055; font-weight:900;">CONNECTION ERROR.</div>';
+            showLoading(false); 
+        } finally { isFetching=false; }
     }
 
     function renderGrid(list, type, isAi=false) {
@@ -432,6 +452,12 @@
         grid.innerHTML = ''; showLoading(true);
         const res = await fetch(`${BASE_URL}/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(q)}`);
         const data = await res.json();
+        
+        if (!data.results || data.results.length === 0) {
+             grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 50px;">NO FILES FOUND.</div>';
+             showLoading(false); return;
+        }
+
         const filtered = data.results.filter(x => x.media_type!=='person' && x.poster_path);
         const detailed = await Promise.all(filtered.map(item => {
              const t = item.media_type || (item.title ? 'movie' : 'tv');
@@ -486,5 +512,3 @@
         modal.style.display = 'flex'; setTimeout(()=>document.querySelector('.modal-overlay').classList.add('active'), 10);
     }
 </script>
-</body>
-</html>
