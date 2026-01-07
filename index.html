@@ -52,25 +52,33 @@
         }
         @keyframes rotateFog { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* --- FOG LAYER --- */
+        /* --- NEW MYSTERY SMOKE ENGINE --- */
         #fog-layer {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 9998; 
-            opacity: 0; transition: opacity 2s ease;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(200, 200, 200, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 80% 30%, rgba(200, 200, 200, 0.05) 0%, transparent 40%);
-            filter: blur(40px);
+            opacity: 0; transition: opacity 2.5s ease;
+            mix-blend-mode: screen; /* THIS MAKES THE BLACK PART TRANSPARENT */
+            overflow: hidden;
         }
         #fog-layer.active { opacity: 1; }
-        .fog-cloud {
-            position: absolute; width: 300%; height: 300%;
-            background: url('https://raw.githubusercontent.com/s1mpson/fog/master/fog1.png') repeat;
-            background-size: cover; opacity: 0.3;
-            animation: driftFog 60s linear infinite;
+
+        .smoke-plume {
+            position: absolute; top: 0; left: 0; width: 200%; height: 100%;
+            background-image: url('https://raw.githubusercontent.com/danielstuart14/CSS_FOG_ANIMATION/master/img/fog1.png');
+            background-size: cover;
+            opacity: 0.6; /* Thicker smoke */
         }
-        .fog-cloud:nth-child(2) { animation-direction: reverse; animation-duration: 45s; opacity: 0.2; }
-        @keyframes driftFog { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-200px, 0, 0); } }
+
+        /* Three layers of smoke moving at different speeds for depth */
+        .smoke-1 { animation: smokeMove 60s linear infinite; opacity: 0.4; }
+        .smoke-2 { animation: smokeMove 40s linear infinite reverse; opacity: 0.5; top: -20%; }
+        .smoke-3 { animation: smokeMove 25s linear infinite; opacity: 0.3; top: 30%; transform: scale(1.5); }
+
+        @keyframes smokeMove {
+            0% { transform: translate3d(0, 0, 0); }
+            50% { transform: translate3d(-10%, 2%, 0); }
+            100% { transform: translate3d(-20%, 0, 0); }
+        }
 
         /* --- HEADER --- */
         .masthead { 
@@ -204,7 +212,7 @@
         .modal-bg { position: absolute; top:0; left:0; width:100%; height:100%; background-size: cover; background-position: center; opacity: 0.15; filter: blur(50px) saturate(0); z-index: 0; }
         .modal-content { position: relative; z-index: 1; display: flex; width: 100%; padding: 50px; gap: 50px; }
         .modal-poster { width: 320px; flex-shrink: 0; border-radius: 4px; box-shadow: 0 30px 60px rgba(0,0,0,0.6); border: 1px solid var(--glass-border); }
-        .modal-data { flex: 1; overflow-y: auto; padding-right: 15px; } /* IMPORTANT: This class enables scrolling */
+        .modal-data { flex: 1; overflow-y: auto; padding-right: 15px; } /* Scrolling Enabled */
         .modal-title-text { font-family: var(--font-head); font-weight: 900; font-size: 48px; line-height: 1; margin-bottom: 15px; color: var(--ink); text-transform: uppercase; letter-spacing: -1px; }
         .cast-row { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 15px; margin: 25px 0; scrollbar-width: thin; }
         .cast-item { flex: 0 0 90px; text-align: center; }
@@ -278,8 +286,9 @@
 
     <div class="ambient-background"></div>
     <div id="fog-layer">
-        <div class="fog-cloud"></div>
-        <div class="fog-cloud"></div>
+        <div class="smoke-plume smoke-1"></div>
+        <div class="smoke-plume smoke-2"></div>
+        <div class="smoke-plume smoke-3"></div>
     </div>
     <div id="theme-overlay"></div>
 
@@ -546,7 +555,39 @@
     function loadMore() { if(currentMode==='filter') { currentPage++; runBrowseSearch(); } else if(currentMode==='search') runCurateSearch(true); else runDescribeSearch(true); }
     function goBack() { document.getElementById('view-dossier').style.display='none'; document.getElementById('view-collection').style.display='block'; document.getElementById('btn-back').style.display='none'; }
     function closeModal() { document.querySelector('.modal-overlay').classList.remove('active'); }
-    function runKnowledgeSearch() { resetAndRunBrowse(); }
+    
+    // --- FIXED: Intel Search now actually uses the input value ---
+    async function runKnowledgeSearch() { 
+        const query = document.getElementById('know-search').value.trim();
+        if(!query) return;
+
+        // Show visual feedback
+        const btn = document.querySelector('#input-dossier .btn-action');
+        const originalText = btn.innerText;
+        btn.innerText = "SCANNING DATABASE...";
+
+        try {
+            const res = await fetch(`${BASE_URL}/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(query)}`);
+            const data = await res.json();
+
+            if(data.results && data.results.length > 0) {
+                // Find first movie or tv show (skip people)
+                const target = data.results.find(i => i.media_type === 'movie' || i.media_type === 'tv');
+                if(target) {
+                    openDossier(target, target.media_type);
+                } else {
+                    alert("Subject not found in archives.");
+                }
+            } else {
+                alert("Subject not found in archives.");
+            }
+        } catch(e) {
+            console.error(e);
+        } finally {
+            btn.innerText = originalText;
+        }
+    }
+    
     function filterGenres(input) { const f = input.value.toUpperCase(); Array.from(document.getElementsByClassName('genre-pill')).forEach(p => p.style.display = p.innerText.toUpperCase().indexOf(f) > -1 ? 'block' : 'none'); }
 
     // --- MODAL & OVERLAY LOGIC ---
@@ -578,7 +619,6 @@
             if(m.number_of_seasons) seasonStr = `${m.number_of_seasons} SEASONS`;
         }
 
-        // --- FIXED: Changed 'modal-info' to 'modal-data' so scroll/button works ---
         c.innerHTML = `<div class="modal-poster-area"><img src="${IMG_URL+m.poster_path}" class="modal-poster-img"></div><div class="modal-data"><div class="modal-title-text">${m.title||m.name} <span style="font-size:24px; color:var(--ink-muted); font-weight:400;">(${dateStr})</span></div><div style="margin-bottom:30px; color:var(--accent); font-weight:700; letter-spacing:1px;">★ ${m.vote_average.toFixed(1)} &nbsp;&nbsp;|&nbsp;&nbsp; ${type.toUpperCase()} &nbsp;&nbsp;|&nbsp;&nbsp; ${seasonStr || 'Feature Film'}</div><div style="margin-bottom:30px; display:flex; flex-wrap:wrap;">${linkHtml}</div><p style="line-height:1.8; color:var(--ink-muted); font-size:16px; margin-bottom:40px;">${m.overview}</p><div style="margin-bottom:30px;"><h4 style="margin-bottom:15px; color:var(--ink);">TOP CAST</h4><div class="cast-row">${castHtml}</div></div><button class="intel-btn-modal" onclick="triggerIntel()">📂 Access Classified Intel</button></div>`;
         document.querySelector('.modal-overlay').classList.add('active');
     }
@@ -593,14 +633,12 @@
         content.innerHTML = '<div style="text-align:center; padding:100px;">DECRYPTING...</div>';
         
         try {
-            // --- FIXED: Added Error Handling for API ---
-            // We fetch TMDB details first, which always works
             const [details, credRes] = await Promise.all([
                 fetch(`${BASE_URL}/${type}/${m.id}?api_key=${TMDB_KEY}`).then(r=>r.json()),
                 fetch(`${BASE_URL}/${type}/${m.id}/credits?api_key=${TMDB_KEY}`).then(r=>r.json())
             ]);
 
-            // Attempt AI Fetch, but use Fallback if it fails
+            // --- FIXED: Fallback Intel Data if API Fails ---
             let aiRes = {
                 tagline_ai: m.tagline || "TOP SECRET PROJECT",
                 status_verdict: m.status || "UNKNOWN",
