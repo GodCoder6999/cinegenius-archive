@@ -63,12 +63,19 @@
         .mode-btn:hover { color: var(--ink); }
         .mode-btn.active { background: var(--accent); color: #fff; box-shadow: 0 0 15px var(--accent-glow); }
 
-        .theme-switch {
+        .icon-btn {
             width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--glass-border);
             display: flex; align-items: center; justify-content: center; cursor: pointer;
             font-size: 20px; transition: 0.4s; background: rgba(100,100,100,0.1); color: var(--ink);
         }
-        .theme-switch:hover { background: var(--accent); color: #fff; transform: rotate(180deg); box-shadow: 0 0 20px var(--accent-glow); }
+        .icon-btn:hover { background: var(--accent); color: #fff; box-shadow: 0 0 20px var(--accent-glow); }
+        
+        /* Specific rotation for sun/moon */
+        .theme-switch:hover { transform: rotate(180deg); }
+        
+        /* Magic button active state */
+        .magic-btn.active { background: linear-gradient(45deg, #ff00cc, #3333ff); color: #fff; box-shadow: 0 0 30px #ff00cc; border-color: #fff; animation: pulse-magic 2s infinite; }
+        @keyframes pulse-magic { 0% { box-shadow: 0 0 10px #ff00cc; } 50% { box-shadow: 0 0 30px #3333ff; } 100% { box-shadow: 0 0 10px #ff00cc; } }
 
         /* --- LAYOUT --- */
         .editorial-layout { display: flex; flex: 1; overflow: hidden; position: relative; z-index: 1; }
@@ -159,13 +166,28 @@
         .close-btn { position: absolute; top: 20px; right: 20px; font-size: 30px; cursor: pointer; color: var(--ink-muted); z-index: 10; }
         .btn-load-more { display: block; margin: 40px auto; background: transparent; border: 2px solid var(--accent); color: var(--ink); padding: 12px 40px; border-radius: 30px; font-weight: 700; cursor: pointer; }
         @media (max-width: 900px) { .research-sidebar { display: none; } .modal-content { flex-direction: column; } .dossier-header { flex-direction: column; } }
+
+        /* --- MAGIC OVERLAY STYLES --- */
+        #theme-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9999; overflow: hidden;
+        }
+        .theme-sticker {
+            position: absolute; opacity: 0; 
+            filter: drop-shadow(0 0 15px rgba(213, 0, 249, 0.4));
+            animation: drift 20s infinite linear, fadeIn 2s forwards;
+        }
+        @keyframes drift {
+            0% { transform: translateY(110vh) rotate(0deg) scale(0.8); }
+            100% { transform: translateY(-20vh) rotate(20deg) scale(1); }
+        }
+        @keyframes fadeIn { to { opacity: 0.9; } }
     </style>
 </head>
 <body data-theme="dark">
 
     <div class="ambient-background"></div>
-
-    <header class="masthead">
+    <div id="theme-overlay"></div> <header class="masthead">
         <div class="logo">CINEGENIUS <span>ARCHIVE</span></div>
         <div class="header-controls">
             <div class="mode-toggle">
@@ -174,7 +196,8 @@
                 <button class="mode-btn" onclick="switchMode('describe')" id="btn-describe">Dream</button>
                 <button class="mode-btn" onclick="switchMode('knowledge')" id="btn-know">Intel</button>
             </div>
-            <button class="theme-switch" onclick="toggleTheme()" title="Switch Theme">☀</button>
+            <button class="icon-btn magic-btn" id="btn-magic" onclick="toggleMagicMode()" title="Toggle Immersive Vibe">✨</button>
+            <button class="icon-btn theme-switch" onclick="toggleTheme()" title="Switch Theme">☀</button>
         </div>
     </header>
 
@@ -267,6 +290,9 @@
 
 <script>
     const TMDB_KEY = "09ca3ca71692ba80b848d268502d24ed"; 
+    // --- GIPHY API KEY (Required for magic button) ---
+    const GIPHY_API_KEY = 'YOUR_GIPHY_KEY_HERE'; // <--- PASTE YOUR KEY HERE
+    
     const BASE_URL = 'https://api.themoviedb.org/3';
     const IMG_URL = 'https://image.tmdb.org/t/p/w500';
     const ORIGINAL_IMG_URL = 'https://image.tmdb.org/t/p/original';
@@ -276,6 +302,9 @@
     let currentMode = 'filter', browseType = 'movie', curateType = 'movie', describeType = 'movie';
     let currentPage = 1, isFetching = false, curatedTitles = [];
     let activeModalMovie = null; let activeModalType = 'movie';
+    
+    // Magic Mode State
+    let isMagicActive = false;
 
     window.onload = () => {
         const g = [{id:28,n:"Action"},{id:12,n:"Adventure"},{id:16,n:"Animation"},{id:35,n:"Comedy"},{id:80,n:"Crime"},{id:99,n:"Documentary"},{id:18,n:"Drama"},{id:10751,n:"Family"},{id:14,n:"Fantasy"},{id:36,n:"History"},{id:27,n:"Horror"},{id:10402,n:"Music"},{id:9648,n:"Mystery"},{id:10749,n:"Romance"},{id:878,n:"Sci-Fi"},{id:10770,n:"TV Movie"},{id:53,n:"Thriller"},{id:10752,n:"War"},{id:37,n:"Western"}];
@@ -297,7 +326,18 @@
     }
 
     // --- TOGGLE FUNCTIONS ---
-    function setBrowseType(t) { browseType = t; document.getElementById('b-btn-movie').className = t==='movie'?'mode-btn active':'mode-btn'; document.getElementById('b-btn-tv').className = t==='tv'?'mode-btn active':'mode-btn'; resetAndRunBrowse(); }
+    function setBrowseType(t) { 
+        browseType = t; 
+        document.getElementById('b-btn-movie').className = t==='movie'?'mode-btn active':'mode-btn'; 
+        document.getElementById('b-btn-tv').className = t==='tv'?'mode-btn active':'mode-btn'; 
+        
+        // If magic mode is active, update the theme based on the new tab
+        if(isMagicActive) {
+            updateMagicTheme();
+        }
+        
+        resetAndRunBrowse(); 
+    }
     
     function setCurateType(t) { 
         curateType = t; 
@@ -455,64 +495,48 @@
             content.innerHTML = `<div class="dossier-header"><img src="${IMG_URL + m.poster_path}" class="dossier-poster"><div class="dossier-data"><div class="modal-title-text">${m.title||m.name}</div><div class="dossier-tagline">"${aiRes.tagline_ai}"</div><p>${m.overview}</p><div class="intel-grid"><div class="intel-box"><div class="intel-label">BUDGET</div><div class="intel-value">${details.budget?'$'+(details.budget/1000000).toFixed(1)+'M':'N/A'}</div></div><div class="intel-box"><div class="intel-label">STATUS</div><div class="intel-value">${aiRes.status_verdict}</div></div></div><div style="margin:20px 0;"><div class="intel-label">KEY AGENTS</div><div class="cast-row">${castHtml}</div></div><div class="spoiler-box" onclick="this.classList.add('revealed')">⚠️ REVEAL PLOT TWIST: ${aiRes.plot_twist}</div></div></div>`;
         } catch(e) { content.innerHTML = 'Error.'; }
     }
-<style>
-    #theme-overlay {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        pointer-events: none; z-index: 9999; overflow: hidden;
-    }
-    .theme-sticker {
-        position: absolute; opacity: 0; /* Start hidden */
-        filter: drop-shadow(0 0 15px rgba(213, 0, 249, 0.4)); /* Neon glow match */
-        animation: drift 20s infinite linear, fadeIn 2s forwards;
-    }
-    /* Drifting Animation */
-    @keyframes drift {
-        0% { transform: translateY(110vh) rotate(0deg) scale(0.8); }
-        100% { transform: translateY(-20vh) rotate(20deg) scale(1); }
-    }
-    @keyframes fadeIn { to { opacity: 0.9; } }
-</style>
-
-<div id="theme-overlay"></div>
-
-<script>
-    // --- CONFIGURATION ---
-    const GIPHY_API_KEY = 'YOUR_GIPHY_KEY_HERE'; // <--- PASTE YOUR KEY HERE
-    const DOODLE_COUNT = 8; // How many stickers to float
     
-    // We can reuse the TMDB_KEY from your main script since it's in the same file
-    // If not found, paste it here too:
-    const MY_TMDB_KEY = "09ca3ca71692ba80b848d268502d24ed"; 
-
-    async function initAutoTheme() {
+    // --- MAGIC OVERLAY ENGINE (UPDATED) ---
+    async function toggleMagicMode() {
+        isMagicActive = !isMagicActive;
+        const btn = document.getElementById('btn-magic');
+        const overlay = document.getElementById('theme-overlay');
+        
+        if (isMagicActive) {
+            btn.classList.add('active');
+            updateMagicTheme(); // Load based on current context
+        } else {
+            btn.classList.remove('active');
+            overlay.innerHTML = ''; // Clear all stickers
+        }
+    }
+    
+    async function updateMagicTheme() {
+        const overlay = document.getElementById('theme-overlay');
+        overlay.innerHTML = ''; // Clear previous theme
+        
         try {
-            // 1. Get the #1 Trending Item
-            const trendRes = await fetch(`https://api.themoviedb.org/3/trending/all/day?api_key=${MY_TMDB_KEY}`);
+            // 1. Get Trend based on ACTIVE TAB (browseType)
+            // if browseType is 'movie', get movie trends. If 'tv', get TV trends.
+            const trendUrl = `${BASE_URL}/trending/${browseType}/day?api_key=${TMDB_KEY}`;
+            const trendRes = await fetch(trendUrl);
             const trendData = await trendRes.json();
             
             if (!trendData.results || trendData.results.length === 0) return;
 
             const topItem = trendData.results[0];
             const title = topItem.title || topItem.name;
+            console.log(`✨ Magic Mode: Spawning ${title} theme...`);
             
-            console.log(`🎬 Theme detected: ${title}`);
-            
-            // 2. Search GIPHY for stickers of this title
-            // We add "sticker" and "transparent" to ensure we get cutouts
+            // 2. Fetch Stickers from Giphy
             const giphyRes = await fetch(`https://api.giphy.com/v1/stickers/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(title)}&limit=15&rating=pg-13`);
             const giphyData = await giphyRes.json();
             
-            if (!giphyData.data || giphyData.data.length === 0) {
-                console.log("No stickers found for this trend.");
-                return;
-            }
-
-            // 3. Spawn the Animations
-            const overlay = document.getElementById('theme-overlay');
+            if (!giphyData.data || giphyData.data.length === 0) return;
             const stickers = giphyData.data;
 
-            for (let i = 0; i < DOODLE_COUNT; i++) {
-                // Pick a random sticker from the results
+            // 3. Spawn 8 random elements
+            for (let i = 0; i < 8; i++) {
                 const randomSticker = stickers[Math.floor(Math.random() * stickers.length)];
                 const imgUrl = randomSticker.images.fixed_height.url;
 
@@ -520,28 +544,21 @@
                 el.src = imgUrl;
                 el.className = 'theme-sticker';
                 
-                // Randomize positions and sizes
-                const size = Math.floor(Math.random() * 100) + 80; // 80px to 180px
+                // Randomize positions/animations
+                const size = Math.floor(Math.random() * 100) + 80;
                 el.style.width = `${size}px`;
                 el.style.left = `${Math.random() * 90}%`;
                 
-                // Random animation delays so they don't all start at once
-                const duration = Math.floor(Math.random() * 15) + 15; // 15s to 30s float time
-                const delay = Math.floor(Math.random() * 20); // 0s to 20s delay
+                const duration = Math.floor(Math.random() * 15) + 15;
+                const delay = Math.floor(Math.random() * 20);
                 
-                el.style.animationDuration = `${duration}s, 2s`; // Drift duration, FadeIn duration
-                el.style.animationDelay = `-${delay}s, 0s`; // Negative delay makes them appear pre-scattered
+                el.style.animationDuration = `${duration}s, 2s`;
+                el.style.animationDelay = `-${delay}s, 0s`;
                 
                 overlay.appendChild(el);
             }
-
-        } catch (error) {
-            console.error("Auto-Theme Error:", error);
-        }
+        } catch(e) { console.error("Magic Error:", e); }
     }
-
-    // Run this when the page loads
-    window.addEventListener('load', initAutoTheme);
 </script>
 </body>
 </html>
