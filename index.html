@@ -4,31 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CineGenius | The Archive</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        /* --- NEON THEME VARIABLES --- */
+        /* --- NOLAN-ESQUE THEME VARIABLES --- */
         :root {
-            --bg-deep: #030005;
-            --glass-panel: rgba(20, 0, 40, 0.6);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --ink: #ffffff;
-            --ink-muted: #a0a0c0;
-            --accent: #d500f9;
-            --accent-glow: rgba(213, 0, 249, 0.5);
-            --accent-secondary: #00e5ff;
-            --font-head: 'Montserrat', sans-serif;
-            --font-body: 'Poppins', sans-serif;
+            --bg-deep: #050608; /* Deep Void Black */
+            --glass-panel: rgba(30, 35, 40, 0.75); /* Cold Steel Glass */
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --ink: #e6e8eb; /* Cinema Screen White */
+            --ink-muted: #8b9bb4; /* Muted Slate Blue */
+            --accent: #cfb53b; /* "Inception" Gold / "Dark Knight" Amber */
+            --accent-glow: rgba(207, 181, 59, 0.4);
+            --accent-secondary: #4a5d6e; /* Gotham Grey */
+            --font-head: 'Cinzel', serif; /* Epic Movie Title Font */
+            --font-body: 'Rajdhani', sans-serif; /* Technical/Sci-Fi Font */
         }
 
         [data-theme="light"] {
             --bg-deep: #f0f2f5;
-            --glass-panel: rgba(255, 255, 255, 0.85);
+            --glass-panel: rgba(255, 255, 255, 0.9);
             --glass-border: rgba(0, 0, 0, 0.1);
             --ink: #1a1a1a;
             --ink-muted: #555;
-            --accent: #6200ea;
-            --accent-glow: rgba(98, 0, 234, 0.3);
-            --accent-secondary: #00b0ff;
+            --accent: #2c3e50; /* Strong Navy */
+            --accent-glow: rgba(44, 62, 80, 0.2);
+            --accent-secondary: #bdc3c7;
         }
 
         * { box-sizing: border-box; }
@@ -36,133 +36,212 @@
         body {
             background-color: var(--bg-deep); color: var(--ink); font-family: var(--font-body);
             margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; position: relative;
-            transition: background-color 0.5s, color 0.5s;
+            transition: background-color 0.8s ease-in-out, color 0.5s;
+            letter-spacing: 0.5px; /* Technical feel */
         }
 
-        /* --- BACKGROUND ATMOSPHERE --- */
+        /* --- ATMOSPHERIC BACKGROUND (FOG OF TIME) --- */
         .ambient-background {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; overflow: hidden;
-            background: radial-gradient(circle at 15% 50%, rgba(76, 29, 149, 0.2), transparent 50%),
-                        radial-gradient(circle at 85% 30%, rgba(0, 229, 255, 0.15), transparent 50%);
-            animation: breathe 15s ease-in-out infinite alternate;
+            background: linear-gradient(to bottom, #090a0c, #15181c);
         }
-        @keyframes breathe { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
+        /* A subtle moving fog layer */
+        .ambient-background::after {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.03) 0%, transparent 60%);
+            animation: rotateFog 60s infinite linear;
+        }
+        @keyframes rotateFog { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* --- HEADER & NAV --- */
         .masthead { 
-            height: 80px; display: flex; justify-content: space-between; align-items: center; padding: 0 40px; 
-            background: var(--glass-panel); backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); z-index: 50; 
+            height: 90px; display: flex; justify-content: space-between; align-items: center; padding: 0 50px; 
+            background: var(--glass-panel); backdrop-filter: blur(15px); border-bottom: 1px solid var(--glass-border); z-index: 50; 
+            box-shadow: 0 4px 30px rgba(0,0,0,0.4);
         }
-        .logo { font-family: var(--font-head); font-weight: 900; font-size: 24px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink); }
-        .logo span { background: linear-gradient(to right, var(--accent), var(--accent-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-style: italic; }
+        .logo { 
+            font-family: var(--font-head); font-weight: 700; font-size: 26px; letter-spacing: 4px; 
+            text-transform: uppercase; color: var(--ink); text-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        .logo span { 
+            color: var(--accent); font-weight: 400; font-style: normal; border-bottom: 1px solid var(--accent); padding-bottom: 2px;
+            background: none; -webkit-text-fill-color: initial; /* Reset previous gradient */
+        }
         
-        .header-controls { display: flex; align-items: center; gap: 15px; }
+        .header-controls { display: flex; align-items: center; gap: 20px; }
         
-        .mode-toggle { display: flex; gap: 5px; background: rgba(100,100,100,0.1); padding: 5px; border-radius: 30px; border: 1px solid var(--glass-border); }
-        .mode-btn { background: transparent; border: none; color: var(--ink-muted); font-family: var(--font-head); font-weight: 700; font-size: 10px; text-transform: uppercase; cursor: pointer; padding: 10px 20px; border-radius: 20px; transition: 0.3s; }
-        .mode-btn:hover { color: var(--ink); }
-        .mode-btn.active { background: var(--accent); color: #fff; box-shadow: 0 0 15px var(--accent-glow); }
+        /* SHARPER BUTTONS */
+        .mode-toggle { display: flex; gap: 0; background: rgba(0,0,0,0.3); padding: 2px; border-radius: 4px; border: 1px solid var(--glass-border); }
+        .mode-btn { 
+            background: transparent; border: none; color: var(--ink-muted); 
+            font-family: var(--font-body); font-weight: 700; font-size: 11px; letter-spacing: 1px;
+            text-transform: uppercase; cursor: pointer; padding: 10px 24px; 
+            border-radius: 2px; transition: all 0.4s ease; 
+        }
+        .mode-btn:hover { color: var(--ink); background: rgba(255,255,255,0.05); }
+        .mode-btn.active { 
+            background: var(--accent); color: #000; /* High contrast text on Gold */
+            box-shadow: 0 0 20px var(--accent-glow); 
+        }
 
         .icon-btn {
-            width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--glass-border);
+            width: 40px; height: 40px; border-radius: 4px; border: 1px solid var(--glass-border);
             display: flex; align-items: center; justify-content: center; cursor: pointer;
-            font-size: 20px; transition: 0.4s; background: rgba(100,100,100,0.1); color: var(--ink);
+            font-size: 18px; transition: 0.4s; background: rgba(255,255,255,0.03); color: var(--ink-muted);
         }
-        .icon-btn:hover { background: var(--accent); color: #fff; box-shadow: 0 0 20px var(--accent-glow); }
+        .icon-btn:hover { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
         .theme-switch:hover { transform: rotate(180deg); }
         
-        /* Magic button active state */
-        .magic-btn.active { background: linear-gradient(45deg, #ff00cc, #3333ff); color: #fff; box-shadow: 0 0 30px #ff00cc; border-color: #fff; animation: pulse-magic 2s infinite; }
-        @keyframes pulse-magic { 0% { box-shadow: 0 0 10px #ff00cc; } 50% { box-shadow: 0 0 30px #3333ff; } 100% { box-shadow: 0 0 10px #ff00cc; } }
+        .magic-btn.active { 
+            background: transparent; border-color: var(--accent); color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow); 
+            animation: cinematicPulse 3s infinite; 
+        }
+        @keyframes cinematicPulse { 0% { box-shadow: 0 0 5px var(--accent-glow); } 50% { box-shadow: 0 0 25px var(--accent-glow); } 100% { box-shadow: 0 0 5px var(--accent-glow); } }
 
         /* --- LAYOUT --- */
         .editorial-layout { display: flex; flex: 1; overflow: hidden; position: relative; z-index: 1; }
-        .research-sidebar { width: 380px; background: var(--glass-panel); backdrop-filter: blur(30px); padding: 30px; overflow-y: auto; border-right: 1px solid var(--glass-border); display: flex; flex-direction: column; gap: 20px; }
-        .canvas { flex: 1; padding: 50px 60px; overflow-y: auto; scroll-behavior: smooth; }
+        .research-sidebar { 
+            width: 400px; background: var(--glass-panel); backdrop-filter: blur(40px); padding: 40px; 
+            overflow-y: auto; border-right: 1px solid var(--glass-border); display: flex; flex-direction: column; gap: 25px; 
+            box-shadow: 10px 0 50px rgba(0,0,0,0.5);
+        }
+        .canvas { flex: 1; padding: 60px 80px; overflow-y: auto; scroll-behavior: smooth; }
 
         /* INPUTS & FILTERS */
-        details { background: rgba(100,100,100,0.1); border: 1px solid var(--glass-border); border-radius: 12px; overflow: hidden; margin-bottom: 10px; transition: 0.3s; }
-        details[open] { border-color: var(--accent); background: rgba(213,0,249,0.05); }
-        summary { padding: 15px; cursor: pointer; font-family: var(--font-head); font-weight: 700; font-size: 11px; text-transform: uppercase; color: var(--accent-secondary); display: flex; justify-content: space-between; outline: none; }
+        details { background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 4px; overflow: hidden; margin-bottom: 12px; transition: 0.3s; }
+        details[open] { border-color: var(--accent-secondary); background: rgba(0,0,0,0.4); }
+        summary { 
+            padding: 16px; cursor: pointer; font-family: var(--font-body); font-weight: 700; font-size: 12px; letter-spacing: 2px;
+            text-transform: uppercase; color: var(--ink-muted); display: flex; justify-content: space-between; outline: none; 
+        }
         .filter-content { padding: 15px; }
         
-        .toggle-row { display: flex; background: rgba(100,100,100,0.1); border-radius: 8px; padding: 4px; border: 1px solid var(--glass-border); margin-bottom: 15px; }
-        .toggle-opt { flex: 1; background: transparent; border: none; padding: 10px; color: var(--ink-muted); font-size: 11px; font-weight: 700; cursor: pointer; border-radius: 6px; transition: 0.3s; text-transform: uppercase; }
-        .toggle-opt.active { background: var(--accent); color: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .toggle-row { display: flex; background: rgba(0,0,0,0.3); border-radius: 4px; padding: 2px; border: 1px solid var(--glass-border); margin-bottom: 20px; }
+        .toggle-opt { 
+            flex: 1; background: transparent; border: none; padding: 12px; color: var(--ink-muted); 
+            font-size: 11px; font-weight: 700; cursor: pointer; border-radius: 2px; transition: 0.3s; 
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .toggle-opt.active { background: var(--ink-muted); color: #000; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
 
-        .genre-search { padding: 10px; margin-bottom: 10px; border: none; border-bottom: 1px solid var(--glass-border); background: transparent; font-size: 12px; color: var(--ink-muted); width: 100%; }
-        .genre-grid { display: flex; flex-wrap: wrap; gap: 8px; max-height: 250px; overflow-y: auto; }
-        .genre-pill { font-size: 10px; padding: 6px 12px; border: 1px solid var(--glass-border); border-radius: 20px; cursor: pointer; color: var(--ink-muted); background: rgba(100,100,100,0.1); transition: 0.2s; }
-        .genre-pill.selected { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .genre-search { padding: 12px; margin-bottom: 12px; border: none; border-bottom: 1px solid var(--glass-border); background: transparent; font-size: 13px; color: var(--ink); width: 100%; font-family: var(--font-body); }
+        .genre-grid { display: flex; flex-wrap: wrap; gap: 10px; max-height: 250px; overflow-y: auto; }
+        .genre-pill { 
+            font-size: 11px; padding: 6px 14px; border: 1px solid var(--glass-border); border-radius: 2px; cursor: pointer; 
+            color: var(--ink-muted); background: rgba(255,255,255,0.02); transition: 0.2s; letter-spacing: 0.5px;
+        }
+        .genre-pill:hover { border-color: var(--ink-muted); }
+        .genre-pill.selected { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
         .genre-pill.hidden { display: none; }
 
         .range-group { display: flex; align-items: center; gap: 10px; margin-bottom:15px; }
-        .label-mini { font-size: 10px; font-weight: 700; color: var(--ink-muted); margin-bottom: 8px; display: block; text-transform: uppercase; letter-spacing: 1px; }
+        .label-mini { font-size: 10px; font-weight: 700; color: var(--accent); margin-bottom: 10px; display: block; text-transform: uppercase; letter-spacing: 2px; }
         
-        input, select, textarea { width: 100%; background: rgba(100,100,100,0.1); color: var(--ink); border: 1px solid var(--glass-border); padding: 12px; border-radius: 8px; margin-bottom:10px; outline:none; }
-        input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+        input, select, textarea { 
+            width: 100%; background: rgba(0,0,0,0.2); color: var(--ink); border: 1px solid var(--glass-border); 
+            padding: 14px; border-radius: 4px; margin-bottom:12px; outline:none; font-family: var(--font-body);
+        }
+        input:focus, select:focus, textarea:focus { border-color: var(--accent); background: rgba(0,0,0,0.4); }
 
-        .btn-action { width: 100%; padding: 16px; background: var(--accent); color: #fff; border: none; font-weight: 900; cursor: pointer; border-radius: 8px; transition: 0.3s; text-transform: uppercase; }
-        .btn-action:hover { box-shadow: 0 0 20px var(--accent-glow); transform: translateY(-2px); }
-        input[type=range] { -webkit-appearance: none; width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 5px; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 18px; width: 18px; border-radius: 50%; background: var(--accent); cursor: pointer; box-shadow: 0 0 10px var(--accent); }
+        .btn-action { 
+            width: 100%; padding: 18px; background: var(--accent); color: #000; border: none; 
+            font-weight: 800; cursor: pointer; border-radius: 4px; transition: 0.3s; text-transform: uppercase; letter-spacing: 2px;
+            font-family: var(--font-body);
+        }
+        .btn-action:hover { box-shadow: 0 0 30px var(--accent-glow); transform: translateY(-1px); background: #e0c548; }
+        
+        input[type=range] { -webkit-appearance: none; width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: var(--accent); cursor: pointer; box-shadow: 0 0 10px var(--accent); border: 2px solid #000; }
 
-        /* CARDS */
-        .exhibit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 35px; }
-        .exhibit-card { position: relative; background: var(--glass-panel); border-radius: 16px; overflow: hidden; transition: 0.3s; border: 1px solid var(--glass-border); cursor: pointer; }
-        .exhibit-card:hover { transform: translateY(-10px); border-color: var(--accent); box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
-        .poster-frame { width: 100%; aspect-ratio: 2/3; }
+        /* CARDS - Cinematic Ratio */
+        .exhibit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 40px; }
+        .exhibit-card { 
+            position: relative; background: var(--glass-panel); border-radius: 6px; overflow: hidden; 
+            transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); border: 1px solid var(--glass-border); cursor: pointer; 
+        }
+        .exhibit-card:hover { transform: scale(1.02); border-color: var(--accent); box-shadow: 0 20px 60px rgba(0,0,0,0.7); z-index: 10; }
+        .poster-frame { width: 100%; aspect-ratio: 2/3; filter: grayscale(20%) contrast(110%); transition: 0.4s; }
+        .exhibit-card:hover .poster-frame { filter: grayscale(0%) contrast(100%); }
         .poster-frame img { width: 100%; height: 100%; object-fit: cover; }
-        .card-info { padding: 15px; }
-        .film-title { font-weight: 700; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--ink); }
-        .film-meta { font-size: 11px; color: var(--ink-muted); display: flex; justify-content: space-between; }
-        .rating-badge { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: #ffd700; font-weight: 800; font-size: 11px; padding: 4px 8px; border-radius: 6px; }
-        .match-badge { position: absolute; top: 12px; left: 12px; background: #00e676; color: #000; font-weight: 900; font-size: 10px; padding: 5px 10px; border-radius: 8px; z-index: 5; text-transform: uppercase; box-shadow: 0 0 15px #00e676; }
+        .card-info { padding: 20px; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); position: absolute; bottom: 0; width: 100%; }
+        .film-title { font-family: var(--font-head); font-weight: 700; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; font-size: 16px; letter-spacing: 1px; }
+        .film-meta { font-size: 11px; color: rgba(255,255,255,0.7); display: flex; justify-content: space-between; font-weight: 500; }
+        .rating-badge { 
+            position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.85); color: var(--accent); 
+            font-weight: 700; font-size: 12px; padding: 6px 10px; border-radius: 2px; border: 1px solid var(--accent-secondary); 
+        }
+        .match-badge { 
+            position: absolute; top: 15px; left: 15px; background: var(--ink); color: #000; 
+            font-weight: 800; font-size: 10px; padding: 6px 10px; border-radius: 2px; z-index: 5; text-transform: uppercase; letter-spacing: 1px; 
+        }
 
         /* MODAL */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; display: none; justify-content: center; align-items: center; backdrop-filter: blur(15px); }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100; display: none; justify-content: center; align-items: center; backdrop-filter: blur(20px); }
         .modal-overlay.active { display: flex; }
-        .modal-card { background: var(--bg-deep); width: 90%; max-width: 1000px; border-radius: 20px; border: 1px solid var(--glass-border); display: flex; overflow: hidden; max-height: 90vh; position: relative; box-shadow: 0 0 100px rgba(213,0,249,0.1); }
-        .modal-bg { position: absolute; top:0; left:0; width:100%; height:100%; background-size: cover; background-position: center; opacity: 0.2; filter: blur(30px); z-index: 0; }
-        .modal-content { position: relative; z-index: 1; display: flex; width: 100%; padding: 40px; gap: 40px; }
-        .modal-poster { width: 300px; flex-shrink: 0; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .modal-data { flex: 1; overflow-y: auto; padding-right: 10px; }
-        .modal-title-text { font-family: var(--font-head); font-weight: 900; font-size: 40px; line-height: 1.1; margin-bottom: 10px; color: var(--ink); }
-        .cast-row { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; margin: 20px 0; scrollbar-width: thin; }
-        .cast-item { flex: 0 0 80px; text-align: center; }
-        .cast-pic { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); margin-bottom: 5px; }
-        .cast-name { font-size: 10px; font-weight: 700; color: var(--ink); }
-        .cast-role { font-size: 9px; color: var(--ink-muted); font-style: italic; }
-        .stream-btn { display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); color: var(--ink); padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 12px; margin-right: 10px; margin-bottom: 10px; text-decoration: none; transition: 0.3s; }
-        .stream-btn:hover { background: var(--accent); color: #fff; transform: translateY(-2px); }
-        .stream-btn img { width: 20px; height: 20px; }
-        .intel-btn { width: 100%; padding: 15px; margin-top: 20px; background: transparent; border: 2px solid #ff0055; color: #ff0055; font-weight: 900; cursor: pointer; border-radius: 10px; transition: 0.3s; text-transform: uppercase; letter-spacing: 2px; }
-        .intel-btn:hover { background: #ff0055; color: #fff; box-shadow: 0 0 30px #ff0055; }
+        .modal-card { 
+            background: #0b0c0e; width: 90%; max-width: 1100px; border-radius: 8px; border: 1px solid var(--glass-border); 
+            display: flex; overflow: hidden; max-height: 90vh; position: relative; box-shadow: 0 0 100px rgba(0,0,0,0.8); 
+        }
+        .modal-bg { position: absolute; top:0; left:0; width:100%; height:100%; background-size: cover; background-position: center; opacity: 0.15; filter: blur(50px) saturate(0); z-index: 0; }
+        .modal-content { position: relative; z-index: 1; display: flex; width: 100%; padding: 50px; gap: 50px; }
+        .modal-poster { width: 320px; flex-shrink: 0; border-radius: 4px; box-shadow: 0 30px 60px rgba(0,0,0,0.6); border: 1px solid var(--glass-border); }
+        .modal-data { flex: 1; overflow-y: auto; padding-right: 15px; }
+        .modal-title-text { font-family: var(--font-head); font-weight: 900; font-size: 48px; line-height: 1; margin-bottom: 15px; color: var(--ink); text-transform: uppercase; letter-spacing: -1px; }
+        .cast-row { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 15px; margin: 25px 0; scrollbar-width: thin; }
+        .cast-item { flex: 0 0 90px; text-align: center; }
+        .cast-pic { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-secondary); margin-bottom: 8px; filter: grayscale(50%); transition: 0.3s; }
+        .cast-item:hover .cast-pic { filter: grayscale(0%); border-color: var(--accent); }
+        .cast-name { font-size: 11px; font-weight: 700; color: var(--ink); text-transform: uppercase; }
+        .cast-role { font-size: 10px; color: var(--ink-muted); font-style: italic; }
+        
+        .stream-btn { 
+            display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.05); 
+            border: 1px solid var(--glass-border); color: var(--ink); padding: 12px 24px; border-radius: 2px; 
+            font-weight: 700; font-size: 12px; margin-right: 15px; margin-bottom: 15px; text-decoration: none; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .stream-btn:hover { background: var(--accent); color: #000; transform: translateY(-2px); border-color: var(--accent); }
+        .stream-btn img { width: 20px; height: 20px; filter: invert(1); }
+        .intel-btn { 
+            width: 100%; padding: 18px; margin-top: 20px; background: transparent; 
+            border: 1px solid var(--accent); color: var(--accent); font-weight: 700; cursor: pointer; 
+            border-radius: 2px; transition: 0.3s; text-transform: uppercase; letter-spacing: 4px; font-family: var(--font-body);
+        }
+        .intel-btn:hover { background: var(--accent); color: #000; box-shadow: 0 0 40px var(--accent-glow); }
+        .intel-btn-modal { 
+            padding: 15px 30px; background: transparent; border: 1px solid var(--accent); color: var(--accent);
+            font-weight: 700; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: 0.3s;
+            margin-top: 20px; width: 100%;
+        }
+        .intel-btn-modal:hover { background: var(--accent); color: #000; box-shadow: 0 0 20px var(--accent-glow); }
 
-        /* INTEL DOSSIER */
-        #dossier-view { padding: 50px; display: none; max-width: 900px; margin: 0 auto; color: var(--ink); }
-        .dossier-header { display: flex; gap: 40px; margin-bottom: 40px; align-items: center; }
-        .dossier-tagline { font-size: 20px; color: var(--accent); font-style: italic; border-left: 4px solid var(--accent-secondary); padding-left: 20px; margin-bottom: 20px; }
-        .intel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
-        .intel-box { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; border: 1px solid var(--glass-border); }
-        .intel-label { font-size: 10px; color: var(--accent-secondary); font-weight: 900; letter-spacing: 1px; margin-bottom: 5px; }
-        .intel-value { font-size: 18px; font-weight: 700; }
-        .spoiler-box { background: #000; color: #000; padding: 5px; cursor: pointer; transition: 0.5s; }
-        .spoiler-box:hover, .spoiler-box.revealed { background: transparent; color: var(--accent); }
 
-        /* LOADER */
+        /* INTEL DOSSIER (Classified File Look) */
+        #dossier-view { padding: 60px; display: none; max-width: 1000px; margin: 0 auto; color: var(--ink); font-family: 'Courier Prime', monospace; }
+        .dossier-header { display: flex; gap: 50px; margin-bottom: 50px; align-items: start; border-bottom: 1px solid var(--glass-border); padding-bottom: 40px; }
+        .dossier-poster { width: 200px; border: 4px solid #fff; box-shadow: 10px 10px 0 rgba(255,255,255,0.1); transform: rotate(-2deg); }
+        .dossier-tagline { font-size: 24px; color: var(--accent); font-family: var(--font-head); font-style: italic; border-left: 2px solid var(--accent); padding-left: 20px; margin-bottom: 30px; line-height: 1.4; }
+        .intel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px; }
+        .intel-box { background: rgba(0,0,0,0.3); padding: 25px; border-left: 2px solid var(--accent-secondary); }
+        .intel-label { font-size: 11px; color: var(--accent-secondary); font-weight: 900; letter-spacing: 2px; margin-bottom: 10px; text-transform: uppercase; }
+        .intel-value { font-size: 20px; font-weight: 500; font-family: var(--font-body); }
+        .spoiler-box { background: #1a1a1a; color: #1a1a1a; padding: 15px; cursor: pointer; transition: 0.5s; border: 1px dashed var(--glass-border); text-align: center; }
+        .spoiler-box:hover, .spoiler-box.revealed { background: rgba(207, 181, 59, 0.1); color: var(--accent); border-style: solid; }
+
+        /* LOADER (Minimalist) */
         .loader-container { padding: 100px 0; display: none; flex-direction: column; align-items: center; justify-content: center; }
-        .clapperboard { width: 60px; height: 60px; position: relative; margin-bottom: 20px; }
-        .clapper-top { width: 60px; height: 12px; background: repeating-linear-gradient(45deg, var(--bg-deep) 0, var(--bg-deep) 8px, var(--ink) 8px, var(--ink) 16px); border-radius: 4px; position: absolute; top: 0; left: 0; transform-origin: bottom left; animation: snap 1.2s infinite; border: 1px solid var(--accent); }
-        .clapper-bottom { width: 60px; height: 40px; background: var(--bg-deep); border: 2px solid var(--ink); border-radius: 4px; position: absolute; bottom: 0; left: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 0 20px var(--accent); }
-        .clapper-bottom::before { content:''; width:100%; height:8px; background: repeating-linear-gradient(45deg, var(--bg-deep) 0, var(--bg-deep) 8px, var(--ink) 8px, var(--ink) 16px); position: absolute; top: 0; border-bottom: 1px solid var(--accent); }
-        @keyframes snap { 0% { transform: rotate(0deg); } 20% { transform: rotate(-30deg); } 40% { transform: rotate(0deg); } 100% { transform: rotate(0deg); } }
-        .loading-text { font-family: var(--font-head); font-weight: 900; font-size: 14px; letter-spacing: 4px; color: var(--accent); animation: pulse 1.5s infinite; text-transform: uppercase; text-shadow: 0 0 20px var(--accent); }
-        @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
+        .clapperboard { width: 60px; height: 60px; position: relative; margin-bottom: 20px; opacity: 0.7; }
+        .clapper-top { width: 60px; height: 12px; background: var(--ink); border-radius: 2px; position: absolute; top: 0; left: 0; transform-origin: bottom left; animation: snap 1.2s infinite; }
+        .clapper-bottom { width: 60px; height: 40px; background: transparent; border: 2px solid var(--ink); border-radius: 2px; position: absolute; bottom: 0; left: 0; }
+        @keyframes snap { 0% { transform: rotate(0deg); } 20% { transform: rotate(-20deg); } 40% { transform: rotate(0deg); } 100% { transform: rotate(0deg); } }
+        .loading-text { font-family: var(--font-head); font-weight: 400; font-size: 12px; letter-spacing: 6px; color: var(--ink); animation: pulse 2s infinite; text-transform: uppercase; }
+        @keyframes pulse { 0% { opacity: 0.2; } 50% { opacity: 0.8; } 100% { opacity: 0.2; } }
 
         /* UTILS */
-        .close-btn { position: absolute; top: 20px; right: 20px; font-size: 30px; cursor: pointer; color: var(--ink-muted); z-index: 10; }
-        .btn-load-more { display: block; margin: 40px auto; background: transparent; border: 2px solid var(--accent); color: var(--ink); padding: 12px 40px; border-radius: 30px; font-weight: 700; cursor: pointer; }
+        .close-btn { position: absolute; top: 25px; right: 25px; font-size: 32px; cursor: pointer; color: var(--ink-muted); z-index: 10; transition: 0.3s; }
+        .close-btn:hover { color: var(--accent); transform: rotate(90deg); }
+        .btn-load-more { display: block; margin: 50px auto; background: transparent; border: 1px solid var(--accent); color: var(--accent); padding: 15px 50px; border-radius: 2px; font-weight: 700; cursor: pointer; letter-spacing: 3px; text-transform: uppercase; transition: 0.3s; }
+        .btn-load-more:hover { background: var(--accent); color: #000; box-shadow: 0 0 20px var(--accent-glow); }
         @media (max-width: 900px) { .research-sidebar { display: none; } .modal-content { flex-direction: column; } .dossier-header { flex-direction: column; } }
 
         /* --- MAGIC OVERLAY STYLES --- */
@@ -172,14 +251,15 @@
         }
         .theme-sticker {
             position: absolute; opacity: 0; 
-            filter: drop-shadow(0 0 15px rgba(213, 0, 249, 0.4));
+            filter: sepia(100%) hue-rotate(320deg) saturate(0.5); /* Nolan-ize the stickers (golden/muted) */
             animation: drift 20s infinite linear, fadeIn 2s forwards;
+            mix-blend-mode: screen; /* Blend with dark bg */
         }
         @keyframes drift {
             0% { transform: translateY(110vh) rotate(0deg) scale(0.8); }
             100% { transform: translateY(-20vh) rotate(20deg) scale(1); }
         }
-        @keyframes fadeIn { to { opacity: 0.9; } }
+        @keyframes fadeIn { to { opacity: 0.8; } }
     </style>
 </head>
 <body data-theme="dark">
@@ -203,75 +283,75 @@
         <aside class="research-sidebar">
             <div id="input-filter">
                 <div style="margin-bottom:20px;">
-                    <textarea id="browse-mood" placeholder="✨ Vibe Check: Type a feeling here..." style="height:70px;"></textarea>
-                    <button class="btn-action" onclick="runMoodSearch()">Match Vibe</button>
+                    <textarea id="browse-mood" placeholder="Define the objective..." style="height:70px;"></textarea>
+                    <button class="btn-action" onclick="runMoodSearch()">Initiate Vibe Match</button>
                 </div>
                 
-                <details open><summary>Main Controls</summary><div class="filter-content">
+                <details open><summary>Operational Controls</summary><div class="filter-content">
                     <div style="display:flex; gap:10px; margin-bottom:15px;">
-                        <button class="mode-btn active" id="b-btn-movie" onclick="setBrowseType('movie')" style="flex:1; border:1px solid var(--glass-border);">Movie</button>
+                        <button class="mode-btn active" id="b-btn-movie" onclick="setBrowseType('movie')" style="flex:1; border:1px solid var(--glass-border);">Film</button>
                         <button class="mode-btn" id="b-btn-tv" onclick="setBrowseType('tv')" style="flex:1; border:1px solid var(--glass-border);">Series</button>
                     </div>
-                    <select id="sort-select" onchange="resetAndRunBrowse()"><option value="popularity.desc">Trending Now</option><option value="vote_average.desc">Top Rated</option><option value="primary_release_date.desc">Newest</option></select>
+                    <select id="sort-select" onchange="resetAndRunBrowse()"><option value="popularity.desc">Trending</option><option value="vote_average.desc">Critical Acclaim</option><option value="primary_release_date.desc">Latest Releases</option></select>
                 </div></details>
                 
-                <details open><summary>Genres (19)</summary><div class="filter-content">
-                    <input type="text" class="genre-search" placeholder="Search Genres..." onkeyup="filterGenres(this)">
+                <details open><summary>Genre Classification</summary><div class="filter-content">
+                    <input type="text" class="genre-search" placeholder="Filter protocols..." onkeyup="filterGenres(this)">
                     <div id="genre-container" class="genre-grid"></div>
                 </div></details>
 
-                <details open><summary>Timeline & Quality</summary><div class="filter-content">
-                    <span class="label-mini">Release Year Range</span>
+                <details open><summary>Parameters</summary><div class="filter-content">
+                    <span class="label-mini">Temporal Range</span>
                     <div class="range-group" style="margin-bottom:15px;">
                         <input type="number" id="year-start" placeholder="1990">
                         <span style="color:var(--ink);">-</span>
                         <input type="number" id="year-end" placeholder="2026">
                     </div>
-                    <span class="label-mini">Minimum Rating (0-10)</span>
+                    <span class="label-mini">Quality Threshold</span>
                     <div style="display:flex; align-items:center; gap:10px;">
                         <input type="range" id="vote-min" min="0" max="10" step="0.5" value="0" oninput="document.getElementById('vote-val').innerText = this.value > 0 ? this.value + '+' : 'All'">
                         <span id="vote-val" class="slider-val" style="font-weight:900; color:var(--accent);">All</span>
                     </div>
                 </div></details>
 
-                <button class="btn-action" style="background:transparent; border:1px solid var(--glass-border); color:var(--ink); margin-top:20px;" onclick="resetAndRunBrowse()">Apply Filters</button>
+                <button class="btn-action" style="background:transparent; border:1px solid var(--glass-border); color:var(--ink); margin-top:20px;" onclick="resetAndRunBrowse()">Execute Filters</button>
             </div>
             
             <div id="input-search" style="display:none;">
-                <div class="label-mini">TARGET FORMAT</div>
+                <div class="label-mini">Target Output</div>
                 <div class="toggle-row">
-                    <button class="toggle-opt active" id="c-btn-movie" onclick="setCurateType('movie')">Movie</button>
+                    <button class="toggle-opt active" id="c-btn-movie" onclick="setCurateType('movie')">Film</button>
                     <button class="toggle-opt" id="c-btn-tv" onclick="setCurateType('tv')">Series</button>
                 </div>
-                <input id="ref-search" placeholder="Reference Title">
-                <textarea id="ai-context" placeholder="Context notes..."></textarea>
-                <button class="btn-action" onclick="runCurateSearch()">Generate</button>
+                <input id="ref-search" placeholder="Reference Point">
+                <textarea id="ai-context" placeholder="Additional Context..."></textarea>
+                <button class="btn-action" onclick="runCurateSearch()">Generate Model</button>
             </div>
 
             <div id="input-describe" style="display:none;">
-                <div class="label-mini">I WANT TO WATCH A...</div>
+                <div class="label-mini">Subject Description</div>
                 <div class="toggle-row">
-                    <button class="toggle-opt active" id="d-btn-movie" onclick="setDescribeType('movie')">Movie</button>
+                    <button class="toggle-opt active" id="d-btn-movie" onclick="setDescribeType('movie')">Film</button>
                     <button class="toggle-opt" id="d-btn-tv" onclick="setDescribeType('tv')">Series</button>
                 </div>
-                <textarea id="describe-input" placeholder="Describe your dream movie..."></textarea>
+                <textarea id="describe-input" placeholder="Describe the sequence..."></textarea>
                 <button class="btn-action" onclick="runDescribeSearch()">Interpret</button>
             </div>
 
             <div id="input-dossier" style="display:none;">
-                <input id="know-search" placeholder="Exact Title...">
-                <button class="btn-action" onclick="runKnowledgeSearch()">Find Matches</button>
+                <input id="know-search" placeholder="Exact Subject Title...">
+                <button class="btn-action" onclick="runKnowledgeSearch()">Access File</button>
             </div>
         </aside>
 
         <div class="canvas">
-            <button class="btn-action" id="btn-back" onclick="goBack()" style="width:auto; padding:8px 20px; display:none; margin-bottom:20px;">← Back</button>
+            <button class="btn-action" id="btn-back" onclick="goBack()" style="width:auto; padding:8px 20px; display:none; margin-bottom:20px;">← Return</button>
             
             <div id="view-collection">
-                <h1 style="font-weight:900; font-size:40px; margin-bottom:10px;">THE COLLECTION</h1>
+                <h1 style="font-weight:900; font-size:48px; margin-bottom:10px; letter-spacing: -2px; text-transform: uppercase;">The Archives</h1>
                 <div id="grid-container" class="exhibit-grid"></div>
-                <div id="loading-spinner" class="loader-container"><div class="clapperboard"><div class="clapper-top"></div><div class="clapper-bottom"></div></div><div class="loading-text">SCENE LOADING...</div></div>
-                <button id="btn-load-more" class="btn-load-more" onclick="loadMore()" style="display:none;">LOAD MORE</button>
+                <div id="loading-spinner" class="loader-container"><div class="clapperboard"><div class="clapper-top"></div><div class="clapper-bottom"></div></div><div class="loading-text">Buffering...</div></div>
+                <button id="btn-load-more" class="btn-load-more" onclick="loadMore()" style="display:none;">Expand Search</button>
             </div>
 
             <div id="view-dossier" style="display:none;"><div id="dossier-content"></div></div>
@@ -569,7 +649,6 @@
     }
 
     async function fetchStickers(query) {
-        // We look for 'stickers' specifically to get transparency
         const res = await fetch(`https://api.giphy.com/v1/stickers/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(query)}&limit=25&rating=pg-13`);
         const data = await res.json();
         return data.data || [];
