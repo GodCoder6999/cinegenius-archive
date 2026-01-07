@@ -45,29 +45,39 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; overflow: hidden;
             background: linear-gradient(to bottom, #090a0c, #15181c);
         }
-        .ambient-background::after {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle at center, rgba(255,255,255,0.03) 0%, transparent 60%);
-            animation: rotateFog 60s infinite linear;
-        }
-        @keyframes rotateFog { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* --- MYSTERY SMOG ENGINE (VIDEO OVERLAY) --- */
+        /* --- CINEMATIC SMOKE ENGINE (FIXED & RELIABLE) --- */
         #fog-layer {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 9998; 
-            opacity: 0; transition: opacity 1.5s ease;
-            mix-blend-mode: screen; /* REMOVES BLACK BACKGROUND */
+            opacity: 0; transition: opacity 2s ease;
             overflow: hidden;
         }
         #fog-layer.active { opacity: 1; }
 
-        #fog-video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: contrast(1.2) brightness(1.1);
-            opacity: 0.6; /* Adjust smoke intensity here */
+        .fog-container {
+            position: absolute; width: 100%; height: 100%; overflow: hidden;
+        }
+
+        .fog-img {
+            position: absolute; height: 100vh; width: 300vw;
+            background: url('https://raw.githubusercontent.com/danielstuart14/CSS_FOG_ANIMATION/master/img/fog1.png') repeat-x;
+            background-size: contain;
+            animation: fogAnim 60s linear infinite;
+        }
+
+        .fog-img-2 {
+            position: absolute; height: 100vh; width: 300vw;
+            background: url('https://raw.githubusercontent.com/danielstuart14/CSS_FOG_ANIMATION/master/img/fog2.png') repeat-x;
+            background-size: contain;
+            animation: fogAnim 40s linear infinite;
+            z-index: 2;
+            top: 20%;
+        }
+
+        @keyframes fogAnim {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-200vw, 0, 0); }
         }
 
         /* --- HEADER --- */
@@ -277,9 +287,7 @@
     <div class="ambient-background"></div>
     
     <div id="fog-layer">
-        <video id="fog-video" loop muted playsinline>
-            <source src="https://assets.mixkit.co/videos/preview/mixkit-white-smoke-floating-on-black-background-33924-large.mp4" type="video/mp4">
-        </video>
+        <div class="fog-container"><div class="fog-img"></div><div class="fog-img-2"></div></div>
     </div>
     
     <div id="theme-overlay"></div>
@@ -671,17 +679,7 @@
         isFogActive = !isFogActive;
         const btn = document.getElementById('btn-fog');
         const layer = document.getElementById('fog-layer');
-        const vid = document.getElementById('fog-video');
-        
-        if (isFogActive) { 
-            btn.classList.add('active'); 
-            layer.classList.add('active'); 
-            vid.play();
-        } else { 
-            btn.classList.remove('active'); 
-            layer.classList.remove('active'); 
-            vid.pause();
-        }
+        if (isFogActive) { btn.classList.add('active'); layer.classList.add('active'); } else { btn.classList.remove('active'); layer.classList.remove('active'); }
     }
 
     async function toggleMagicMode() {
