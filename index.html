@@ -46,56 +46,7 @@
                         radial-gradient(circle at 85% 30%, rgba(0, 229, 255, 0.15), transparent 50%);
             animation: breathe 15s ease-in-out infinite alternate;
         }
-        
-        /* --- CINEMA MODE OVERLAY (STRANGER THINGS) --- */
-        .st-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 99999; 
-            display: none; opacity: 0; transition: 1s;
-            overflow: hidden; pointer-events: none;
-        }
-        .st-overlay.active { display: block; opacity: 1; pointer-events: all; }
-        
-        .st-sky {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, #2a0000 0%, #000 70%);
-            z-index: 1; animation: redPulse 4s infinite alternate;
-        }
-        .st-lightning {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 0, 0, 0.3); z-index: 2;
-            opacity: 0; animation: flash 5s infinite;
-        }
-        .st-spores {
-            position: absolute; width: 100%; height: 100%; z-index: 3;
-            background-image: url('https://raw.githubusercontent.com/hudsonmar/codepen-assets/master/particles.png');
-            animation: snow 20s linear infinite; opacity: 0.7; pointer-events: none;
-        }
-        .st-content {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            z-index: 20; text-align: center; width: 80%;
-        }
-        .st-title {
-            font-family: var(--font-head); font-weight: 900; 
-            font-size: 80px; color: transparent;
-            -webkit-text-stroke: 2px #ff0000; text-transform: uppercase;
-            letter-spacing: 5px; text-shadow: 0 0 30px #ff0000;
-            animation: flicker 3s infinite;
-        }
-        .st-rank {
-            background: #ff0000; color: #000; display: inline-block; padding: 5px 15px;
-            font-weight: 900; font-size: 14px; margin-bottom: 20px; box-shadow: 0 0 20px #ff0000;
-        }
-        .st-char { position: absolute; z-index: 10; pointer-events: none; }
-        .st-steve { bottom: -50px; right: 5%; height: 60vh; filter: drop-shadow(0 0 20px rgba(0,0,0,0.8)); animation: floatUp 1s ease-out forwards; }
-        .st-demo { top: 5%; left: -5%; height: 50vh; filter: drop-shadow(0 0 20px #ff0000); animation: lunge 6s infinite ease-in-out; opacity: 0.9; }
-        
-        @keyframes redPulse { 0% { filter: brightness(1); } 100% { filter: brightness(1.3); } }
-        @keyframes flash { 92% { opacity: 0; } 93% { opacity: 0.6; } 94% { opacity: 0; } }
-        @keyframes snow { from { background-position: 0 0; } to { background-position: 0 500px; } }
-        @keyframes flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } 51% { opacity: 0.4; } 52% { opacity: 1; } }
-        @keyframes floatUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        @keyframes lunge { 0%, 100% { transform: translateX(0) scale(1); } 50% { transform: translateX(20px) scale(1.05); } }
+        @keyframes breathe { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
 
         /* --- HEADER & NAV --- */
         .masthead { 
@@ -105,23 +56,19 @@
         .logo { font-family: var(--font-head); font-weight: 900; font-size: 24px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink); }
         .logo span { background: linear-gradient(to right, var(--accent), var(--accent-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-style: italic; }
         
-        /* HEADER CONTROLS CONTAINER */
         .header-controls { display: flex; align-items: center; gap: 15px; }
         
         .mode-toggle { display: flex; gap: 5px; background: rgba(100,100,100,0.1); padding: 5px; border-radius: 30px; border: 1px solid var(--glass-border); }
         .mode-btn { background: transparent; border: none; color: var(--ink-muted); font-family: var(--font-head); font-weight: 700; font-size: 10px; text-transform: uppercase; cursor: pointer; padding: 10px 20px; border-radius: 20px; transition: 0.3s; }
+        .mode-btn:hover { color: var(--ink); }
         .mode-btn.active { background: var(--accent); color: #fff; box-shadow: 0 0 15px var(--accent-glow); }
 
-        /* THEME & CINEMA BUTTONS */
-        .theme-switch, .doodle-btn {
+        .theme-switch {
             width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--glass-border);
             display: flex; align-items: center; justify-content: center; cursor: pointer;
             font-size: 20px; transition: 0.4s; background: rgba(100,100,100,0.1); color: var(--ink);
         }
         .theme-switch:hover { background: var(--accent); color: #fff; transform: rotate(180deg); box-shadow: 0 0 20px var(--accent-glow); }
-        
-        .doodle-btn { border-color: var(--accent-secondary); color: var(--accent-secondary); }
-        .doodle-btn:hover { background: var(--accent-secondary); color: #000; box-shadow: 0 0 20px var(--accent-secondary); transform: scale(1.1); }
 
         /* --- LAYOUT --- */
         .editorial-layout { display: flex; flex: 1; overflow: hidden; position: relative; z-index: 1; }
@@ -134,16 +81,22 @@
         summary { padding: 15px; cursor: pointer; font-family: var(--font-head); font-weight: 700; font-size: 11px; text-transform: uppercase; color: var(--accent-secondary); display: flex; justify-content: space-between; outline: none; }
         .filter-content { padding: 15px; }
         
+        .toggle-row { display: flex; background: rgba(100,100,100,0.1); border-radius: 8px; padding: 4px; border: 1px solid var(--glass-border); margin-bottom: 15px; }
+        .toggle-opt { flex: 1; background: transparent; border: none; padding: 10px; color: var(--ink-muted); font-size: 11px; font-weight: 700; cursor: pointer; border-radius: 6px; transition: 0.3s; text-transform: uppercase; }
+        .toggle-opt.active { background: var(--accent); color: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+
         .genre-search { padding: 10px; margin-bottom: 10px; border: none; border-bottom: 1px solid var(--glass-border); background: transparent; font-size: 12px; color: var(--ink-muted); width: 100%; }
         .genre-grid { display: flex; flex-wrap: wrap; gap: 8px; max-height: 250px; overflow-y: auto; }
         .genre-pill { font-size: 10px; padding: 6px 12px; border: 1px solid var(--glass-border); border-radius: 20px; cursor: pointer; color: var(--ink-muted); background: rgba(100,100,100,0.1); transition: 0.2s; }
         .genre-pill.selected { background: var(--accent); color: #fff; border-color: var(--accent); }
         .genre-pill.hidden { display: none; }
 
-        /* SLIDERS & BUTTONS */
         .range-group { display: flex; align-items: center; gap: 10px; margin-bottom:15px; }
-        .label-mini { font-size: 10px; font-weight: 700; color: var(--ink-muted); margin-bottom: 8px; display: block; text-transform: uppercase; }
-        input, select, textarea { width: 100%; background: rgba(100,100,100,0.1); color: var(--ink); border: 1px solid var(--glass-border); padding: 12px; border-radius: 8px; margin-bottom:10px; }
+        .label-mini { font-size: 10px; font-weight: 700; color: var(--ink-muted); margin-bottom: 8px; display: block; text-transform: uppercase; letter-spacing: 1px; }
+        
+        input, select, textarea { width: 100%; background: rgba(100,100,100,0.1); color: var(--ink); border: 1px solid var(--glass-border); padding: 12px; border-radius: 8px; margin-bottom:10px; outline:none; }
+        input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+
         .btn-action { width: 100%; padding: 16px; background: var(--accent); color: #fff; border: none; font-weight: 900; cursor: pointer; border-radius: 8px; transition: 0.3s; text-transform: uppercase; }
         .btn-action:hover { box-shadow: 0 0 20px var(--accent-glow); transform: translateY(-2px); }
         input[type=range] { -webkit-appearance: none; width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 5px; }
@@ -167,21 +120,17 @@
         .modal-card { background: var(--bg-deep); width: 90%; max-width: 1000px; border-radius: 20px; border: 1px solid var(--glass-border); display: flex; overflow: hidden; max-height: 90vh; position: relative; box-shadow: 0 0 100px rgba(213,0,249,0.1); }
         .modal-bg { position: absolute; top:0; left:0; width:100%; height:100%; background-size: cover; background-position: center; opacity: 0.2; filter: blur(30px); z-index: 0; }
         .modal-content { position: relative; z-index: 1; display: flex; width: 100%; padding: 40px; gap: 40px; }
-        
         .modal-poster { width: 300px; flex-shrink: 0; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         .modal-data { flex: 1; overflow-y: auto; padding-right: 10px; }
         .modal-title-text { font-family: var(--font-head); font-weight: 900; font-size: 40px; line-height: 1.1; margin-bottom: 10px; color: var(--ink); }
-        
         .cast-row { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; margin: 20px 0; scrollbar-width: thin; }
         .cast-item { flex: 0 0 80px; text-align: center; }
         .cast-pic { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); margin-bottom: 5px; }
         .cast-name { font-size: 10px; font-weight: 700; color: var(--ink); }
         .cast-role { font-size: 9px; color: var(--ink-muted); font-style: italic; }
-
         .stream-btn { display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); color: var(--ink); padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 12px; margin-right: 10px; margin-bottom: 10px; text-decoration: none; transition: 0.3s; }
         .stream-btn:hover { background: var(--accent); color: #fff; transform: translateY(-2px); }
         .stream-btn img { width: 20px; height: 20px; }
-
         .intel-btn { width: 100%; padding: 15px; margin-top: 20px; background: transparent; border: 2px solid #ff0055; color: #ff0055; font-weight: 900; cursor: pointer; border-radius: 10px; transition: 0.3s; text-transform: uppercase; letter-spacing: 2px; }
         .intel-btn:hover { background: #ff0055; color: #fff; box-shadow: 0 0 30px #ff0055; }
 
@@ -196,6 +145,16 @@
         .spoiler-box { background: #000; color: #000; padding: 5px; cursor: pointer; transition: 0.5s; }
         .spoiler-box:hover, .spoiler-box.revealed { background: transparent; color: var(--accent); }
 
+        /* LOADER */
+        .loader-container { padding: 100px 0; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        .clapperboard { width: 60px; height: 60px; position: relative; margin-bottom: 20px; }
+        .clapper-top { width: 60px; height: 12px; background: repeating-linear-gradient(45deg, var(--bg-deep) 0, var(--bg-deep) 8px, var(--ink) 8px, var(--ink) 16px); border-radius: 4px; position: absolute; top: 0; left: 0; transform-origin: bottom left; animation: snap 1.2s infinite; border: 1px solid var(--accent); }
+        .clapper-bottom { width: 60px; height: 40px; background: var(--bg-deep); border: 2px solid var(--ink); border-radius: 4px; position: absolute; bottom: 0; left: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 0 20px var(--accent); }
+        .clapper-bottom::before { content:''; width:100%; height:8px; background: repeating-linear-gradient(45deg, var(--bg-deep) 0, var(--bg-deep) 8px, var(--ink) 8px, var(--ink) 16px); position: absolute; top: 0; border-bottom: 1px solid var(--accent); }
+        @keyframes snap { 0% { transform: rotate(0deg); } 20% { transform: rotate(-30deg); } 40% { transform: rotate(0deg); } 100% { transform: rotate(0deg); } }
+        .loading-text { font-family: var(--font-head); font-weight: 900; font-size: 14px; letter-spacing: 4px; color: var(--accent); animation: pulse 1.5s infinite; text-transform: uppercase; text-shadow: 0 0 20px var(--accent); }
+        @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
+
         /* UTILS */
         .close-btn { position: absolute; top: 20px; right: 20px; font-size: 30px; cursor: pointer; color: var(--ink-muted); z-index: 10; }
         .btn-load-more { display: block; margin: 40px auto; background: transparent; border: 2px solid var(--accent); color: var(--ink); padding: 12px 40px; border-radius: 30px; font-weight: 700; cursor: pointer; }
@@ -206,20 +165,6 @@
 
     <div class="ambient-background"></div>
 
-    <div class="st-overlay" id="st-overlay">
-        <div class="st-sky"></div>
-        <div class="st-lightning"></div>
-        <div class="st-spores"></div>
-        <div class="st-content">
-            <div class="st-rank" id="st-rank-text">#1 TRENDING SERIES</div>
-            <div class="st-title" id="st-title-text">STRANGER THINGS</div>
-        </div>
-        <div class="st-char-container">
-            <img src="https://media.giphy.com/media/l1J9sBCbyZs92zmpO/giphy.gif" class="st-char st-steve" alt="Steve">
-            <img src="https://media.giphy.com/media/3ohhwytHcusSCXXOUg/giphy.gif" class="st-char st-demo" alt="Demogorgon">
-        </div>
-    </div>
-
     <header class="masthead">
         <div class="logo">CINEGENIUS <span>ARCHIVE</span></div>
         <div class="header-controls">
@@ -229,9 +174,7 @@
                 <button class="mode-btn" onclick="switchMode('describe')" id="btn-describe">Dream</button>
                 <button class="mode-btn" onclick="switchMode('knowledge')" id="btn-know">Intel</button>
             </div>
-            
             <button class="theme-switch" onclick="toggleTheme()" title="Switch Theme">☀</button>
-            <button class="doodle-btn" onclick="triggerCinemaMode()" title="Cinema Mode (Doodle)">🎬</button>
         </div>
     </header>
 
@@ -273,9 +216,31 @@
                 <button class="btn-action" style="background:transparent; border:1px solid var(--glass-border); color:var(--ink); margin-top:20px;" onclick="resetAndRunBrowse()">Apply Filters</button>
             </div>
             
-            <div id="input-search" style="display:none;"><input id="ref-search" placeholder="Reference Title"><textarea id="ai-context"></textarea><button class="btn-action" onclick="runCurateSearch()">Generate</button></div>
-            <div id="input-describe" style="display:none;"><textarea id="describe-input" placeholder="Dream..."></textarea><button class="btn-action" onclick="runDescribeSearch()">Interpret</button></div>
-            <div id="input-dossier" style="display:none;"><input id="know-search" placeholder="Exact Title..."><button class="btn-action" onclick="runKnowledgeSearch()">Find Matches</button></div>
+            <div id="input-search" style="display:none;">
+                <div class="label-mini">TARGET FORMAT</div>
+                <div class="toggle-row">
+                    <button class="toggle-opt active" id="c-btn-movie" onclick="setCurateType('movie')">Movie</button>
+                    <button class="toggle-opt" id="c-btn-tv" onclick="setCurateType('tv')">Series</button>
+                </div>
+                <input id="ref-search" placeholder="Reference Title">
+                <textarea id="ai-context" placeholder="Context notes..."></textarea>
+                <button class="btn-action" onclick="runCurateSearch()">Generate</button>
+            </div>
+
+            <div id="input-describe" style="display:none;">
+                <div class="label-mini">I WANT TO WATCH A...</div>
+                <div class="toggle-row">
+                    <button class="toggle-opt active" id="d-btn-movie" onclick="setDescribeType('movie')">Movie</button>
+                    <button class="toggle-opt" id="d-btn-tv" onclick="setDescribeType('tv')">Series</button>
+                </div>
+                <textarea id="describe-input" placeholder="Describe your dream movie..."></textarea>
+                <button class="btn-action" onclick="runDescribeSearch()">Interpret</button>
+            </div>
+
+            <div id="input-dossier" style="display:none;">
+                <input id="know-search" placeholder="Exact Title...">
+                <button class="btn-action" onclick="runKnowledgeSearch()">Find Matches</button>
+            </div>
         </aside>
 
         <div class="canvas">
@@ -284,7 +249,7 @@
             <div id="view-collection">
                 <h1 style="font-weight:900; font-size:40px; margin-bottom:10px;">THE COLLECTION</h1>
                 <div id="grid-container" class="exhibit-grid"></div>
-                <div id="loading-spinner" style="display:none; text-align:center; padding:50px;">LOADING ARCHIVE...</div>
+                <div id="loading-spinner" class="loader-container"><div class="clapperboard"><div class="clapper-top"></div><div class="clapper-bottom"></div></div><div class="loading-text">SCENE LOADING...</div></div>
                 <button id="btn-load-more" class="btn-load-more" onclick="loadMore()" style="display:none;">LOAD MORE</button>
             </div>
 
@@ -308,37 +273,18 @@
     const API_SEARCH = "/api/smart-search"; 
     const API_INTEL = "/api/intel-brief";
 
-    let currentMode = 'filter', browseType = 'movie', curateType = 'movie';
+    let currentMode = 'filter', browseType = 'movie', curateType = 'movie', describeType = 'movie';
     let currentPage = 1, isFetching = false, curatedTitles = [];
     let activeModalMovie = null; let activeModalType = 'movie';
 
     window.onload = () => {
-        const g = [{id:28,n:"Action"},{id:12,n:"Adventure"},{id:35,n:"Comedy"},{id:80,n:"Crime"},{id:18,n:"Drama"},{id:27,n:"Horror"},{id:878,n:"Sci-Fi"},{id:53,n:"Thriller"},{id:10752,n:"War"},{id:37,n:"Western"},{id:10749,n:"Romance"}];
+        const g = [{id:28,n:"Action"},{id:12,n:"Adventure"},{id:16,n:"Animation"},{id:35,n:"Comedy"},{id:80,n:"Crime"},{id:99,n:"Documentary"},{id:18,n:"Drama"},{id:10751,n:"Family"},{id:14,n:"Fantasy"},{id:36,n:"History"},{id:27,n:"Horror"},{id:10402,n:"Music"},{id:9648,n:"Mystery"},{id:10749,n:"Romance"},{id:878,n:"Sci-Fi"},{id:10770,n:"TV Movie"},{id:53,n:"Thriller"},{id:10752,n:"War"},{id:37,n:"Western"}];
         const c = document.getElementById('genre-container');
         g.forEach(x => { let d = document.createElement('div'); d.className='genre-pill'; d.innerText=x.n; d.dataset.id=x.id; d.onclick=()=>{d.classList.toggle('selected'); resetAndRunBrowse();}; c.appendChild(d); });
         resetAndRunBrowse(); 
     };
 
     function toggleTheme() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme')==='light'?'dark':'light'); }
-
-    // --- CINEMA MODE (DOODLE) ---
-    async function triggerCinemaMode() {
-        const overlay = document.getElementById('st-overlay');
-        const titleEl = document.getElementById('st-title-text');
-        const rankEl = document.getElementById('st-rank-text');
-        const endpoint = browseType === 'tv' ? 'trending/tv/day' : 'trending/movie/day';
-        const typeLabel = browseType === 'tv' ? 'SERIES' : 'MOVIE';
-
-        try {
-            const res = await fetch(`${BASE_URL}/${endpoint}?api_key=${TMDB_KEY}`);
-            const data = await res.json();
-            const top = data.results[0];
-            titleEl.innerText = top.title || top.name;
-            rankEl.innerText = `#1 TRENDING ${typeLabel}`;
-            overlay.classList.add('active');
-            setTimeout(() => { overlay.classList.remove('active'); }, 8000); 
-        } catch(e) { console.error(e); }
-    }
 
     function switchMode(mode) {
         currentMode = mode;
@@ -350,13 +296,26 @@
         if(mode === 'filter' && document.getElementById('grid-container').innerHTML==='') resetAndRunBrowse();
     }
 
+    // --- TOGGLE FUNCTIONS ---
     function setBrowseType(t) { browseType = t; document.getElementById('b-btn-movie').className = t==='movie'?'mode-btn active':'mode-btn'; document.getElementById('b-btn-tv').className = t==='tv'?'mode-btn active':'mode-btn'; resetAndRunBrowse(); }
+    
+    function setCurateType(t) { 
+        curateType = t; 
+        document.getElementById('c-btn-movie').className = t==='movie'?'toggle-opt active':'toggle-opt';
+        document.getElementById('c-btn-tv').className = t==='tv'?'toggle-opt active':'toggle-opt';
+    }
+
+    function setDescribeType(t) { 
+        describeType = t; 
+        document.getElementById('d-btn-movie').className = t==='movie'?'toggle-opt active':'toggle-opt';
+        document.getElementById('d-btn-tv').className = t==='tv'?'toggle-opt active':'toggle-opt';
+    }
     
     // --- MAIN SEARCH (CRASH PROOF) ---
     function resetAndRunBrowse() { currentPage=1; document.getElementById('grid-container').innerHTML=''; runBrowseSearch(); }
     async function runBrowseSearch() {
         if(isFetching) return; isFetching=true; 
-        document.getElementById('loading-spinner').style.display='block';
+        document.getElementById('loading-spinner').style.display='flex';
         try {
             const sort = document.getElementById('sort-select').value;
             const genres = Array.from(document.querySelectorAll('.genre-pill.selected')).map(el => el.dataset.id).join(',');
@@ -391,13 +350,13 @@
     async function runDescribeSearch() { runAi(false, 'describe'); }
 
     async function runAi(isLoadMore, mode, genreFilter="") {
-        if(isFetching) return; isFetching=true; document.getElementById('loading-spinner').style.display='block';
+        if(isFetching) return; isFetching=true; document.getElementById('loading-spinner').style.display='flex';
         const grid = document.getElementById('grid-container');
         if(!isLoadMore) { grid.innerHTML=''; curatedTitles=[]; }
         
         let body = { exclude: curatedTitles, genreFilter: genreFilter };
         if(mode==='curate') { body.type=curateType; body.refTitle=document.getElementById('ref-search').value; body.userPrompt=document.getElementById('ai-context').value; }
-        else if(mode==='describe') { body.type='movie'; body.refTitle="Dream"; body.userPrompt=document.getElementById('describe-input').value; }
+        else if(mode==='describe') { body.type=describeType; body.refTitle="Dream"; body.userPrompt=document.getElementById('describe-input').value; }
         else if(mode==='mood') { body.type=browseType; body.refTitle="Vibe"; body.userPrompt=document.getElementById('browse-mood').value; }
 
         try {
@@ -418,12 +377,12 @@
         const grid = document.getElementById('grid-container');
         list.forEach(m => {
             if(!m.poster_path) return;
-            const start = (m.release_date || m.first_air_date || 'N/A').split('-')[0];
+            const start = (m.release_date||m.first_air_date||'').split('-')[0];
             let dateStr = start; let seasonStr = '';
-            if(type === 'tv' && start !== 'N/A') {
-                if (m.status === 'Returning Series' || m.in_production) dateStr = `${start}-Present`;
-                else if (m.status === 'Ended' && m.last_air_date) { const end = m.last_air_date.split('-')[0]; if(end !== start) dateStr = `${start}-${end}`; }
-                if(m.number_of_seasons) seasonStr = `${m.number_of_seasons} SEASONS`;
+            if(type === 'tv') {
+                if(m.status === 'Returning Series') dateStr = `${start}-Present`;
+                else if(m.status === 'Ended' && m.last_air_date) dateStr = `${start}-${m.last_air_date.split('-')[0]}`;
+                seasonStr = m.number_of_seasons ? `${m.number_of_seasons} Seas` : '';
             }
             const div = document.createElement('div'); div.className = 'exhibit-card'; 
             div.onclick = () => { if(currentMode==='knowledge') openDossier(m, type); else openModal(m, type); };
@@ -467,12 +426,12 @@
         const start = (m.release_date || m.first_air_date || 'N/A').split('-')[0];
         let dateStr = start; let seasonStr = '';
         if(type === 'tv' && start !== 'N/A') {
-            if (m.status === 'Returning Series' || m.in_production) dateStr = `${start}-Present`;
-            else if (m.status === 'Ended' && m.last_air_date) { const end = m.last_air_date.split('-')[0]; if(end !== start) dateStr = `${start}-${end}`; }
+            if (m.status === 'Returning Series') dateStr = `${start}-Present`;
+            else if (m.status === 'Ended' && m.last_air_date) dateStr = `${start}-${m.last_air_date.split('-')[0]}`;
             if(m.number_of_seasons) seasonStr = `${m.number_of_seasons} SEASONS`;
         }
 
-        c.innerHTML = `<div class="modal-poster-area"><img src="${IMG_URL+m.poster_path}" class="modal-poster-img"></div><div class="modal-info"><div class="modal-title-text">${m.title||m.name} <span style="font-size:24px; color:var(--ink-muted); font-weight:400;">(${dateStr})</span></div><div style="margin-bottom:30px; color:var(--accent); font-weight:700; letter-spacing:1px;">★ ${m.vote_average.toFixed(1)} &nbsp;&nbsp;|&nbsp;&nbsp; ${type.toUpperCase()} &nbsp;&nbsp;|&nbsp;&nbsp; ${seasonStr || 'Feature Film'}</div><div style="margin-bottom:30px; display:flex; flex-wrap:wrap;">${linkHtml}</div><p style="line-height:1.8; color:var(--ink-muted); font-size:16px; margin-bottom:40px;">${m.overview}</p><div style="margin-bottom:30px;"><h4 style="margin-bottom:15px; color:var(--ink);">TOP CAST</h4><div class="cast-row">${castHtml}</div></div><button class="intel-btn" onclick="triggerIntel()">📂 Access Classified Intel</button></div>`;
+        c.innerHTML = `<div class="modal-poster-area"><img src="${IMG_URL+m.poster_path}" class="modal-poster-img"></div><div class="modal-info"><div class="modal-title-text">${m.title||m.name} <span style="font-size:24px; color:var(--ink-muted); font-weight:400;">(${dateStr})</span></div><div style="margin-bottom:30px; color:var(--accent); font-weight:700; letter-spacing:1px;">★ ${m.vote_average.toFixed(1)} &nbsp;&nbsp;|&nbsp;&nbsp; ${type.toUpperCase()} &nbsp;&nbsp;|&nbsp;&nbsp; ${seasonStr || 'Feature Film'}</div><div style="margin-bottom:30px; display:flex; flex-wrap:wrap;">${linkHtml}</div><p style="line-height:1.8; color:var(--ink-muted); font-size:16px; margin-bottom:40px;">${m.overview}</p><div style="margin-bottom:30px;"><h4 style="margin-bottom:15px; color:var(--ink);">TOP CAST</h4><div class="cast-row">${castHtml}</div></div><button class="intel-btn-modal" onclick="triggerIntel()">📂 Access Classified Intel</button></div>`;
         document.querySelector('.modal-overlay').classList.add('active');
     }
 
