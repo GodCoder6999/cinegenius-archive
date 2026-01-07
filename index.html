@@ -455,6 +455,93 @@
             content.innerHTML = `<div class="dossier-header"><img src="${IMG_URL + m.poster_path}" class="dossier-poster"><div class="dossier-data"><div class="modal-title-text">${m.title||m.name}</div><div class="dossier-tagline">"${aiRes.tagline_ai}"</div><p>${m.overview}</p><div class="intel-grid"><div class="intel-box"><div class="intel-label">BUDGET</div><div class="intel-value">${details.budget?'$'+(details.budget/1000000).toFixed(1)+'M':'N/A'}</div></div><div class="intel-box"><div class="intel-label">STATUS</div><div class="intel-value">${aiRes.status_verdict}</div></div></div><div style="margin:20px 0;"><div class="intel-label">KEY AGENTS</div><div class="cast-row">${castHtml}</div></div><div class="spoiler-box" onclick="this.classList.add('revealed')">⚠️ REVEAL PLOT TWIST: ${aiRes.plot_twist}</div></div></div>`;
         } catch(e) { content.innerHTML = 'Error.'; }
     }
+<style>
+    #theme-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        pointer-events: none; z-index: 9999; overflow: hidden;
+    }
+    .theme-sticker {
+        position: absolute; opacity: 0; /* Start hidden */
+        filter: drop-shadow(0 0 15px rgba(213, 0, 249, 0.4)); /* Neon glow match */
+        animation: drift 20s infinite linear, fadeIn 2s forwards;
+    }
+    /* Drifting Animation */
+    @keyframes drift {
+        0% { transform: translateY(110vh) rotate(0deg) scale(0.8); }
+        100% { transform: translateY(-20vh) rotate(20deg) scale(1); }
+    }
+    @keyframes fadeIn { to { opacity: 0.9; } }
+</style>
+
+<div id="theme-overlay"></div>
+
+<script>
+    // --- CONFIGURATION ---
+    const GIPHY_API_KEY = 'YOUR_GIPHY_KEY_HERE'; // <--- PASTE YOUR KEY HERE
+    const DOODLE_COUNT = 8; // How many stickers to float
+    
+    // We can reuse the TMDB_KEY from your main script since it's in the same file
+    // If not found, paste it here too:
+    const MY_TMDB_KEY = "09ca3ca71692ba80b848d268502d24ed"; 
+
+    async function initAutoTheme() {
+        try {
+            // 1. Get the #1 Trending Item
+            const trendRes = await fetch(`https://api.themoviedb.org/3/trending/all/day?api_key=${MY_TMDB_KEY}`);
+            const trendData = await trendRes.json();
+            
+            if (!trendData.results || trendData.results.length === 0) return;
+
+            const topItem = trendData.results[0];
+            const title = topItem.title || topItem.name;
+            
+            console.log(`🎬 Theme detected: ${title}`);
+            
+            // 2. Search GIPHY for stickers of this title
+            // We add "sticker" and "transparent" to ensure we get cutouts
+            const giphyRes = await fetch(`https://api.giphy.com/v1/stickers/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(title)}&limit=15&rating=pg-13`);
+            const giphyData = await giphyRes.json();
+            
+            if (!giphyData.data || giphyData.data.length === 0) {
+                console.log("No stickers found for this trend.");
+                return;
+            }
+
+            // 3. Spawn the Animations
+            const overlay = document.getElementById('theme-overlay');
+            const stickers = giphyData.data;
+
+            for (let i = 0; i < DOODLE_COUNT; i++) {
+                // Pick a random sticker from the results
+                const randomSticker = stickers[Math.floor(Math.random() * stickers.length)];
+                const imgUrl = randomSticker.images.fixed_height.url;
+
+                const el = document.createElement('img');
+                el.src = imgUrl;
+                el.className = 'theme-sticker';
+                
+                // Randomize positions and sizes
+                const size = Math.floor(Math.random() * 100) + 80; // 80px to 180px
+                el.style.width = `${size}px`;
+                el.style.left = `${Math.random() * 90}%`;
+                
+                // Random animation delays so they don't all start at once
+                const duration = Math.floor(Math.random() * 15) + 15; // 15s to 30s float time
+                const delay = Math.floor(Math.random() * 20); // 0s to 20s delay
+                
+                el.style.animationDuration = `${duration}s, 2s`; // Drift duration, FadeIn duration
+                el.style.animationDelay = `-${delay}s, 0s`; // Negative delay makes them appear pre-scattered
+                
+                overlay.appendChild(el);
+            }
+
+        } catch (error) {
+            console.error("Auto-Theme Error:", error);
+        }
+    }
+
+    // Run this when the page loads
+    window.addEventListener('load', initAutoTheme);
 </script>
 </body>
 </html>
