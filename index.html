@@ -69,8 +69,6 @@
             font-size: 20px; transition: 0.4s; background: rgba(100,100,100,0.1); color: var(--ink);
         }
         .icon-btn:hover { background: var(--accent); color: #fff; box-shadow: 0 0 20px var(--accent-glow); }
-        
-        /* Specific rotation for sun/moon */
         .theme-switch:hover { transform: rotate(180deg); }
         
         /* Magic button active state */
@@ -290,7 +288,8 @@
 
 <script>
     const TMDB_KEY = "09ca3ca71692ba80b848d268502d24ed"; 
-    // --- GIPHY API KEY (Required for magic button) ---
+    
+    // --- GIPHY API KEY (REQUIRED) ---
     const GIPHY_API_KEY = 'DS1KOjHWZWCWkWZjJmCIUXRsx5XApvHE'; // <--- PASTE YOUR KEY HERE
     
     const BASE_URL = 'https://api.themoviedb.org/3';
@@ -330,12 +329,7 @@
         browseType = t; 
         document.getElementById('b-btn-movie').className = t==='movie'?'mode-btn active':'mode-btn'; 
         document.getElementById('b-btn-tv').className = t==='tv'?'mode-btn active':'mode-btn'; 
-        
-        // If magic mode is active, update the theme based on the new tab
-        if(isMagicActive) {
-            updateMagicTheme();
-        }
-        
+        if(isMagicActive) { updateMagicTheme(); }
         resetAndRunBrowse(); 
     }
     
@@ -351,7 +345,7 @@
         document.getElementById('d-btn-tv').className = t==='tv'?'toggle-opt active':'toggle-opt';
     }
     
-    // --- MAIN SEARCH (CRASH PROOF) ---
+    // --- MAIN SEARCH ---
     function resetAndRunBrowse() { currentPage=1; document.getElementById('grid-container').innerHTML=''; runBrowseSearch(); }
     async function runBrowseSearch() {
         if(isFetching) return; isFetching=true; 
@@ -496,7 +490,7 @@
         } catch(e) { content.innerHTML = 'Error.'; }
     }
     
-    // --- MAGIC OVERLAY ENGINE (UPDATED) ---
+    // --- SMART MAGIC OVERLAY ENGINE ---
     async function toggleMagicMode() {
         isMagicActive = !isMagicActive;
         const btn = document.getElementById('btn-magic');
@@ -504,20 +498,19 @@
         
         if (isMagicActive) {
             btn.classList.add('active');
-            updateMagicTheme(); // Load based on current context
+            updateMagicTheme(); 
         } else {
             btn.classList.remove('active');
-            overlay.innerHTML = ''; // Clear all stickers
+            overlay.innerHTML = '';
         }
     }
     
     async function updateMagicTheme() {
         const overlay = document.getElementById('theme-overlay');
-        overlay.innerHTML = ''; // Clear previous theme
+        overlay.innerHTML = ''; 
         
         try {
-            // 1. Get Trend based on ACTIVE TAB (browseType)
-            // if browseType is 'movie', get movie trends. If 'tv', get TV trends.
+            // 1. Get Trend
             const trendUrl = `${BASE_URL}/trending/${browseType}/day?api_key=${TMDB_KEY}`;
             const trendRes = await fetch(trendUrl);
             const trendData = await trendRes.json();
@@ -525,17 +518,32 @@
             if (!trendData.results || trendData.results.length === 0) return;
 
             const topItem = trendData.results[0];
-            const title = topItem.title || topItem.name;
-            console.log(`✨ Magic Mode: Spawning ${title} theme...`);
+            let title = topItem.title || topItem.name;
+            console.log(`✨ Magic Mode: Attempting theme for: ${title}`);
             
-            // 2. Fetch Stickers from Giphy
-            const giphyRes = await fetch(`https://api.giphy.com/v1/stickers/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(title)}&limit=15&rating=pg-13`);
-            const giphyData = await giphyRes.json();
+            // 2. SEARCH STRATEGY
+            // Attempt 1: Exact Title
+            let stickers = await fetchStickers(title);
             
-            if (!giphyData.data || giphyData.data.length === 0) return;
-            const stickers = giphyData.data;
+            // Attempt 2: Shortened Title (clean subtitle)
+            if (stickers.length === 0) {
+                // Splits at ':', '-', or '(' and takes the first part.
+                const shortTitle = title.split(/[:(-]/)[0].trim();
+                if (shortTitle !== title && shortTitle.length > 2) {
+                     console.log(`No results for exact title. Trying cleaned title: ${shortTitle}`);
+                     stickers = await fetchStickers(shortTitle);
+                }
+            }
 
-            // 3. Spawn 8 random elements
+            // Attempt 3: Fallback to "Cinema" or "Popcorn"
+            if (stickers.length === 0) {
+                 console.log(`Still no results. Falling back to generic.`);
+                 stickers = await fetchStickers(browseType === 'movie' ? 'popcorn cinema' : 'tv show aesthetic');
+            }
+            
+            if (stickers.length === 0) return;
+
+            // 3. Spawn elements
             for (let i = 0; i < 8; i++) {
                 const randomSticker = stickers[Math.floor(Math.random() * stickers.length)];
                 const imgUrl = randomSticker.images.fixed_height.url;
@@ -558,6 +566,13 @@
                 overlay.appendChild(el);
             }
         } catch(e) { console.error("Magic Error:", e); }
+    }
+
+    async function fetchStickers(query) {
+        // We look for 'stickers' specifically to get transparency
+        const res = await fetch(`https://api.giphy.com/v1/stickers/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(query)}&limit=25&rating=pg-13`);
+        const data = await res.json();
+        return data.data || [];
     }
 </script>
 </body>
