@@ -46,32 +46,19 @@
             background: linear-gradient(to bottom, #090a0c, #15181c);
         }
 
-        /* --- CINEMATIC SMOKE ENGINE (VIDEO OVERLAY) --- */
+        /* --- CINEMATIC SMOKE ENGINE --- */
         #fog-layer {
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%;
-            pointer-events: none; 
-            z-index: 9998; 
-            opacity: 0; 
-            transition: opacity 1.5s ease;
-            
-            /* CRITICAL: This blends the black background away */
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9998; 
+            opacity: 0; transition: opacity 1.5s ease;
             mix-blend-mode: screen; 
         }
 
-        #fog-layer.active { 
-            /* Adjust this value (0.1 to 1.0) to control smoke intensity */
-            opacity: 0.6; 
-        }
+        #fog-layer.active { opacity: 0.6; }
 
         #smoke-video {
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; /* Ensures video fills screen without stretching */
-            filter: contrast(1.2); /* Optional: makes the smoke pop more */
+            width: 100%; height: 100%; object-fit: cover; 
+            filter: contrast(1.2);
         }
 
         /* --- HEADER --- */
@@ -281,10 +268,10 @@
     <div class="ambient-background"></div>
     
     <div id="fog-layer">
-    <video id="smoke-video" autoplay loop muted playsinline>
-        <source src="https://assets.mixkit.co/videos/preview/mixkit-white-smoke-floating-on-black-background-3298-large.mp4" type="video/mp4">
-    </video>
-</div>
+        <video id="smoke-video" loop muted playsinline autoplay>
+            <source src="https://assets.mixkit.co/videos/preview/mixkit-white-smoke-floating-on-black-background-3298-large.mp4" type="video/mp4">
+        </video>
+    </div>
     
     <div id="theme-overlay"></div>
 
@@ -392,7 +379,7 @@
 
 <script>
     const TMDB_KEY = "09ca3ca71692ba80b848d268502d24ed"; 
-    const GIPHY_API_KEY = 'DS1KOjHWZWCWkWZjJmCIUXRsx5XApvHE'; // <--- PASTE YOUR KEY HERE
+    const GIPHY_API_KEY = 'DS1KOjHWZWCWkWZjJmCIUXRsx5XApvHE'; 
     
     const BASE_URL = 'https://api.themoviedb.org/3';
     const IMG_URL = 'https://image.tmdb.org/t/p/w500';
@@ -532,7 +519,6 @@
         const grid = document.getElementById('grid-container');
         list.forEach(m => {
             if(!m.poster_path) return;
-            // Handle differences between movie and tv object properties
             const isTv = m.media_type === 'tv' || type === 'tv';
             const releaseDate = m.release_date || m.first_air_date || '';
             const start = releaseDate.split('-')[0];
@@ -562,7 +548,7 @@
     function goBack() { document.getElementById('view-dossier').style.display='none'; document.getElementById('view-collection').style.display='block'; document.getElementById('btn-back').style.display='none'; }
     function closeModal() { document.querySelector('.modal-overlay').classList.remove('active'); }
     
-    // --- UPDATED INTEL SEARCH: Displays results instead of auto-opening ---
+    // --- UPDATED INTEL SEARCH ---
     async function runKnowledgeSearch() { 
         const query = document.getElementById('know-search').value.trim();
         if(!query) return;
@@ -571,21 +557,19 @@
         const originalText = btn.innerText;
         btn.innerText = "SEARCHING...";
         
-        // Ensure the grid is visible for results
         document.getElementById('view-collection').style.display = 'block';
         document.getElementById('view-dossier').style.display = 'none';
-        document.getElementById('grid-container').innerHTML = ''; // Clear previous
+        document.getElementById('grid-container').innerHTML = ''; 
 
         try {
             const res = await fetch(`${BASE_URL}/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(query)}`);
             const data = await res.json();
 
             if(data.results && data.results.length > 0) {
-                // Filter only Movies and TV shows
                 const validResults = data.results.filter(i => i.media_type === 'movie' || i.media_type === 'tv' && i.poster_path);
                 
                 if(validResults.length > 0) {
-                    renderGrid(validResults, 'mixed'); // 'mixed' is handled inside renderGrid now
+                    renderGrid(validResults, 'mixed'); 
                 } else {
                     document.getElementById('grid-container').innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:50px;">NO CLASSIFIED FILES FOUND.</div>';
                 }
@@ -671,25 +655,69 @@
         }
     }
     
+    // --- UPDATED TOGGLE FUNCTION WITH SAFETY CHECK ---
     function toggleFogMode() {
         isFogActive = !isFogActive;
         const btn = document.getElementById('btn-fog');
         const layer = document.getElementById('fog-layer');
-        const video = document.getElementById('smoke-video'); // Select the video
+        const video = document.getElementById('smoke-video');
 
         if (isFogActive) { 
             btn.classList.add('active'); 
             layer.classList.add('active'); 
-            
-            // FORCE PLAY: This fixes the "video not starting" issue
-            video.play().catch(e => console.error("Video failed to play:", e));
+            // Safety check: only play if video element exists
+            if(video) video.play().catch(e => console.error("Video failed to play:", e));
         } else { 
             btn.classList.remove('active'); 
             layer.classList.remove('active');
-            
-            // Optional: Pause when hidden to save performance
-            video.pause(); 
         }
+    }
+
+    async function toggleMagicMode() {
+        isMagicActive = !isMagicActive;
+        const btn = document.getElementById('btn-magic');
+        const overlay = document.getElementById('theme-overlay');
+        if (isMagicActive) { btn.classList.add('active'); updateMagicTheme(); } else { btn.classList.remove('active'); overlay.innerHTML = ''; }
+    }
+    
+    async function updateMagicTheme() {
+        const overlay = document.getElementById('theme-overlay'); overlay.innerHTML = ''; 
+        try {
+            let title = '';
+            if (currentMode === 'knowledge' && activeModalMovie) {
+                title = activeModalMovie.title || activeModalMovie.name;
+                console.log(`✨ Magic Mode: Intel Context -> ${title}`);
+            } else {
+                const trendUrl = `${BASE_URL}/trending/${browseType}/day?api_key=${TMDB_KEY}`;
+                const trendRes = await fetch(trendUrl);
+                const trendData = await trendRes.json();
+                if (!trendData.results || trendData.results.length === 0) return;
+                const topItem = trendData.results[0];
+                title = topItem.title || topItem.name;
+                console.log(`✨ Magic Mode: Trending Context -> ${title}`);
+            }
+
+            let stickers = await fetchStickers(title);
+            if (stickers.length === 0) {
+                const shortTitle = title.split(/[:(-]/)[0].trim();
+                if (shortTitle !== title && shortTitle.length > 2) stickers = await fetchStickers(shortTitle);
+            }
+            if (stickers.length === 0) stickers = await fetchStickers('cinema aesthetic');
+            if (stickers.length === 0) return;
+
+            for (let i = 0; i < 8; i++) {
+                const randomSticker = stickers[Math.floor(Math.random() * stickers.length)];
+                const imgUrl = randomSticker.images.fixed_height.url;
+                const el = document.createElement('img');
+                el.src = imgUrl; el.className = 'theme-sticker';
+                const size = Math.floor(Math.random() * 100) + 80;
+                el.style.width = `${size}px`; el.style.left = `${Math.random() * 90}%`;
+                const duration = Math.floor(Math.random() * 15) + 15;
+                const delay = Math.floor(Math.random() * 20);
+                el.style.animationDuration = `${duration}s, 2s`; el.style.animationDelay = `-${delay}s, 0s`;
+                overlay.appendChild(el);
+            }
+        } catch(e) { console.error("Magic Error:", e); }
     }
 
     async function fetchStickers(query) {
