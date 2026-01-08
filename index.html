@@ -50,37 +50,28 @@
             background: linear-gradient(to bottom, #090a0c, #15181c);
         }
 
-        /* --- VANTA FOG LAYER (CRITICAL FIX) --- */
+        /* --- VANTA FOG LAYER --- */
         #fog-layer {
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%;
-            z-index: 10; /* Visual: On top of content */
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10; /* On top of cards (z=1) but below Header (z=50) */
             opacity: 0; 
             transition: opacity 2s ease;
             mix-blend-mode: screen; 
-            
-            /* INTERACTION: FORCE DISABLE CLICKS */
-            pointer-events: none !important; 
+            pointer-events: none !important; /* CRITICAL: Allows clicks to pass through */
         }
         
-        /* Force the Vanta Canvas to also ignore clicks */
+        /* Force the Vanta Canvas to ignore clicks */
         #fog-layer canvas, .vanta-canvas {
             pointer-events: none !important;
-            user-select: none !important;
         }
 
-        #fog-layer.active {
-            opacity: 1; 
-        }
+        #fog-layer.active { opacity: 1; }
 
         /* --- HEADER --- */
         .masthead { 
             height: 90px; display: flex; justify-content: space-between; align-items: center; padding: 0 50px; 
             background: var(--glass-panel); backdrop-filter: blur(15px); border-bottom: 1px solid var(--glass-border); 
-            z-index: 50; /* Header stays above smoke for usability */
+            z-index: 50; /* Header above smoke */
             box-shadow: 0 4px 30px rgba(0,0,0,0.4);
         }
         .logo { 
@@ -126,7 +117,7 @@
             width: 400px; background: var(--glass-panel); backdrop-filter: blur(40px); padding: 40px; 
             overflow-y: auto; border-right: 1px solid var(--glass-border); display: flex; flex-direction: column; gap: 25px; 
             box-shadow: 10px 0 50px rgba(0,0,0,0.5);
-            position: relative; z-index: 20; /* Sidebar sits above smoke for usability */
+            position: relative; z-index: 20; /* Sidebar above smoke */
         }
         .canvas { flex: 1; padding: 60px 80px; overflow-y: auto; scroll-behavior: smooth; }
 
@@ -181,7 +172,6 @@
             position: relative; background: var(--glass-panel); border-radius: 6px; overflow: hidden; 
             transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); border: 1px solid var(--glass-border); cursor: pointer; 
         }
-        /* No z-index bump here to ensure fog covers it, but pointer-events will allow click */
         .exhibit-card:hover { transform: scale(1.02); border-color: var(--accent); box-shadow: 0 20px 60px rgba(0,0,0,0.7); }
         .poster-frame { width: 100%; aspect-ratio: 2/3; filter: grayscale(20%) contrast(110%); transition: 0.4s; }
         .exhibit-card:hover .poster-frame { filter: grayscale(0%) contrast(100%); }
@@ -416,16 +406,13 @@
         resetAndRunBrowse(); 
     };
 
-    // --- VANTA CONFIG ---
+    // --- VANTA CONFIG: Aggressive Click Passthrough ---
     function initVantaFog() {
         vantaEffect = VANTA.FOG({
             el: "#fog-layer",
-            
-            // --- CRITICAL CHANGE: DISABLE MOUSE INTERACTION ---
-            mouseControls: false, 
-            touchControls: false, 
+            mouseControls: false, // DISABLE MOUSE LISTENING
+            touchControls: false,
             gyroControls: false,
-            
             minHeight: 200.00,
             minWidth: 200.00,
             highlightColor: 0xffffff,
@@ -437,18 +424,20 @@
             zoom: 1.0
         });
         
-        // JS SAFEGUARD: Force pointer-events off after Vanta initializes
+        // --- JS FORCE: Ensure Vanta canvas is non-interactive ---
         const layer = document.getElementById('fog-layer');
         if(layer) layer.style.pointerEvents = 'none';
         
-        // Also target the canvas Vanta creates
-        setTimeout(() => {
+        // Loop to catch the canvas immediately after Vanta creates it
+        const interval = setInterval(() => {
             const canvas = layer.querySelector('canvas');
-            if(canvas) {
+            if (canvas) {
                 canvas.style.pointerEvents = 'none';
-                canvas.style.userSelect = 'none';
+                canvas.style.position = 'absolute'; 
+                canvas.style.zIndex = "10";
+                clearInterval(interval);
             }
-        }, 500);
+        }, 100);
     }
 
     function toggleTheme() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme')==='light'?'dark':'light'); }
@@ -584,7 +573,6 @@
             
             const div = document.createElement('div'); div.className = 'exhibit-card'; 
             
-            // Pass correct type to open function
             const finalType = isTv ? 'tv' : 'movie';
             
             div.onclick = () => { if(currentMode==='knowledge') openDossier(m, finalType); else openModal(m, finalType); };
@@ -599,7 +587,7 @@
     function goBack() { document.getElementById('view-dossier').style.display='none'; document.getElementById('view-collection').style.display='block'; document.getElementById('btn-back').style.display='none'; }
     function closeModal() { document.querySelector('.modal-overlay').classList.remove('active'); }
     
-    // --- UPDATED INTEL SEARCH ---
+    // --- INTEL SEARCH ---
     async function runKnowledgeSearch() { 
         const query = document.getElementById('know-search').value.trim();
         if(!query) return;
@@ -660,7 +648,6 @@
             let title = '';
             if (currentMode === 'knowledge' && activeModalMovie) {
                 title = activeModalMovie.title || activeModalMovie.name;
-                console.log(`✨ Magic Mode: Intel Context -> ${title}`);
             } else {
                 const trendUrl = `${BASE_URL}/trending/${browseType}/day?api_key=${TMDB_KEY}`;
                 const trendRes = await fetch(trendUrl);
@@ -668,7 +655,6 @@
                 if (!trendData.results || trendData.results.length === 0) return;
                 const topItem = trendData.results[0];
                 title = topItem.title || topItem.name;
-                console.log(`✨ Magic Mode: Trending Context -> ${title}`);
             }
 
             let stickers = await fetchStickers(title);
@@ -698,6 +684,102 @@
         const res = await fetch(`https://api.giphy.com/v1/stickers/search?api_key=${GIPHY_API_KEY}&q=${encodeURIComponent(query)}&limit=25&rating=pg-13`);
         const data = await res.json();
         return data.data || [];
+    }
+
+    // --- REFACTORED OPEN MODAL (Instant-Open Version) ---
+    async function openModal(m, type) { 
+        // 1. Setup basic data immediately
+        if(m.first_air_date) type='tv'; else type='movie';
+        activeModalMovie = m; activeModalType = type;
+        
+        const modal = document.getElementById('quick-view-modal');
+        const c = document.getElementById('modal-content');
+        const bg = document.getElementById('modal-bg');
+        
+        // 2. Render content with what we have NOW (don't wait for API)
+        if(m.backdrop_path) bg.style.backgroundImage = `url(${ORIGINAL_IMG_URL + m.backdrop_path})`; else bg.style.backgroundImage = 'none';
+        const start = (m.release_date || m.first_air_date || 'N/A').split('-')[0];
+        
+        c.innerHTML = `
+            <div class="modal-poster-area"><img src="${IMG_URL+m.poster_path}" class="modal-poster-img"></div>
+            <div class="modal-data">
+                <div class="modal-title-text">${m.title||m.name} <span style="font-size:24px; color:var(--ink-muted); font-weight:400;">(${start})</span></div>
+                <div style="margin-bottom:30px; color:var(--accent); font-weight:700; letter-spacing:1px;">★ ${m.vote_average.toFixed(1)}</div>
+                <p style="line-height:1.8; color:var(--ink-muted); font-size:16px; margin-bottom:40px;">${m.overview}</p>
+                <div id="modal-extras" style="margin-bottom:30px;">
+                    <div style="color:var(--ink-muted); font-style:italic;">Loading cast & streaming info...</div>
+                </div>
+                <button class="intel-btn-modal" onclick="triggerIntel()">📂 Access Classified Intel</button>
+            </div>`;
+            
+        // 3. SHOW MODAL INSTANTLY
+        document.querySelector('.modal-overlay').classList.add('active');
+        
+        // 4. Fetch the heavy stuff in background
+        try {
+            const [provRes, credRes] = await Promise.all([
+                fetch(`${BASE_URL}/${type}/${m.id}/watch/providers?api_key=${TMDB_KEY}`),
+                fetch(`${BASE_URL}/${type}/${m.id}/credits?api_key=${TMDB_KEY}`)
+            ]);
+            
+            const provData = await provRes.json();
+            const credData = await credRes.json();
+            
+            const region = provData.results?.US || provData.results?.IN;
+            const linkHtml = region ? `<a href="${region.link}" target="_blank" class="stream-btn">▶ Watch Now</a>` : `<a href="https://www.google.com/search?q=watch+${encodeURIComponent(m.title||m.name)}" target="_blank" class="stream-btn">🔍 Search</a>`;
+            
+            const castHtml = credData.cast ? credData.cast.slice(0,8).map(c => `<div class="cast-item"><img src="${c.profile_path?IMG_URL+c.profile_path:''}" class="cast-pic"><div class="cast-name">${c.name}</div><div class="cast-role">${c.character}</div></div>`).join('') : '';
+            
+            // 5. Update the UI with new data
+            const extrasDiv = document.getElementById('modal-extras');
+            if(extrasDiv) {
+                extrasDiv.innerHTML = `
+                    <div style="margin-bottom:30px; display:flex; flex-wrap:wrap;">${linkHtml}</div>
+                    <div style="margin-bottom:30px;"><h4 style="margin-bottom:15px; color:var(--ink);">TOP CAST</h4><div class="cast-row">${castHtml}</div></div>
+                `;
+            }
+        } catch(e) {
+            console.error("Extras fetch failed", e);
+            const extrasDiv = document.getElementById('modal-extras');
+            if(extrasDiv) extrasDiv.innerHTML = `<div style="color:var(--ink-muted);">Additional info unavailable.</div>`;
+        }
+    }
+
+    async function openDossier(m, type) {
+        if(m.first_air_date) type='tv'; else type='movie';
+        activeModalMovie = m; 
+        document.getElementById('view-collection').style.display='none';
+        document.getElementById('view-dossier').style.display='block';
+        document.getElementById('btn-back').style.display='block';
+        const content = document.getElementById('dossier-content');
+        content.innerHTML = '<div style="text-align:center; padding:100px;">DECRYPTING...</div>';
+        
+        try {
+            const [details, credRes] = await Promise.all([
+                fetch(`${BASE_URL}/${type}/${m.id}?api_key=${TMDB_KEY}`).then(r=>r.json()),
+                fetch(`${BASE_URL}/${type}/${m.id}/credits?api_key=${TMDB_KEY}`).then(r=>r.json())
+            ]);
+
+            let aiRes = {
+                tagline_ai: m.tagline || "TOP SECRET PROJECT",
+                status_verdict: m.status || "UNKNOWN",
+                plot_twist: "DATA CORRUPTED. SECURITY LEVEL INSUFFICIENT FOR FULL DECRYPTION."
+            };
+
+            try {
+                const apiCall = await fetch(API_INTEL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({title: m.title||m.name, type: type}) });
+                if(apiCall.ok) aiRes = await apiCall.json();
+            } catch(e) {
+                console.warn("Intel API offline, engaging manual override.");
+            }
+
+            const castHtml = credRes.cast.slice(0,6).map(c => `<div class="cast-item"><img src="${c.profile_path?IMG_URL+c.profile_path:''}" class="cast-pic"><div class="cast-name">${c.name}</div></div>`).join('');
+            
+            content.innerHTML = `<div class="dossier-header"><img src="${IMG_URL + m.poster_path}" class="dossier-poster"><div class="dossier-data"><div class="modal-title-text">${m.title||m.name}</div><div class="dossier-tagline">"${aiRes.tagline_ai}"</div><p>${m.overview}</p><div class="intel-grid"><div class="intel-box"><div class="intel-label">BUDGET</div><div class="intel-value">${details.budget?'$'+(details.budget/1000000).toFixed(1)+'M':'N/A'}</div></div><div class="intel-box"><div class="intel-label">STATUS</div><div class="intel-value">${aiRes.status_verdict}</div></div></div><div style="margin:20px 0;"><div class="intel-label">KEY AGENTS</div><div class="cast-row">${castHtml}</div></div><div class="spoiler-box" onclick="this.classList.add('revealed')">⚠️ REVEAL PLOT TWIST: ${aiRes.plot_twist}</div></div></div>`;
+        } catch(e) { 
+            console.error(e);
+            content.innerHTML = '<div style="text-align:center; padding:50px;">ACCESS DENIED. SERVER UNREACHABLE.</div>'; 
+        }
     }
 </script>
 </body>
