@@ -50,23 +50,20 @@
             background: linear-gradient(to bottom, #090a0c, #15181c);
         }
 
-        /* --- VANTA FOG LAYER (CRITICAL FIX) --- */
+        /* --- VANTA FOG LAYER (CLICK-THROUGH ENABLED) --- */
         #fog-layer {
             position: fixed; 
             top: 0; 
             left: 0; 
             width: 100%; 
             height: 100%;
-            z-index: 10; /* Visual: On top of content */
+            z-index: 10; 
             opacity: 0; 
             transition: opacity 2s ease;
             mix-blend-mode: screen; 
-            
-            /* INTERACTION: FORCE DISABLE CLICKS */
             pointer-events: none !important; 
         }
         
-        /* Force the Vanta Canvas to also ignore clicks */
         #fog-layer canvas, .vanta-canvas {
             pointer-events: none !important;
             user-select: none !important;
@@ -80,7 +77,7 @@
         .masthead { 
             height: 90px; display: flex; justify-content: space-between; align-items: center; padding: 0 50px; 
             background: var(--glass-panel); backdrop-filter: blur(15px); border-bottom: 1px solid var(--glass-border); 
-            z-index: 50; /* Header stays above smoke for usability */
+            z-index: 50; 
             box-shadow: 0 4px 30px rgba(0,0,0,0.4);
         }
         .logo { 
@@ -126,7 +123,7 @@
             width: 400px; background: var(--glass-panel); backdrop-filter: blur(40px); padding: 40px; 
             overflow-y: auto; border-right: 1px solid var(--glass-border); display: flex; flex-direction: column; gap: 25px; 
             box-shadow: 10px 0 50px rgba(0,0,0,0.5);
-            position: relative; z-index: 20; /* Sidebar sits above smoke for usability */
+            position: relative; z-index: 20; 
         }
         .canvas { flex: 1; padding: 60px 80px; overflow-y: auto; scroll-behavior: smooth; }
 
@@ -181,7 +178,6 @@
             position: relative; background: var(--glass-panel); border-radius: 6px; overflow: hidden; 
             transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); border: 1px solid var(--glass-border); cursor: pointer; 
         }
-        /* No z-index bump here to ensure fog covers it, but pointer-events will allow click */
         .exhibit-card:hover { transform: scale(1.02); border-color: var(--accent); box-shadow: 0 20px 60px rgba(0,0,0,0.7); }
         .poster-frame { width: 100%; aspect-ratio: 2/3; filter: grayscale(20%) contrast(110%); transition: 0.4s; }
         .exhibit-card:hover .poster-frame { filter: grayscale(0%) contrast(100%); }
@@ -574,7 +570,8 @@
             if(isTv) {
                 if(m.status === 'Returning Series') dateStr = `${start}-Present`;
                 else if(m.status === 'Ended' && m.last_air_date) dateStr = `${start}-${m.last_air_date.split('-')[0]}`;
-                seasonStr = m.number_of_seasons ? `${m.number_of_seasons} Seas` : '';
+                // UPDATED: "Seas" -> "Seasons"
+                seasonStr = m.number_of_seasons ? `${m.number_of_seasons} Seasons` : '';
             }
             
             const div = document.createElement('div'); div.className = 'exhibit-card'; 
@@ -613,7 +610,6 @@
                 const validResults = data.results.filter(i => i.media_type === 'movie' || i.media_type === 'tv' && i.poster_path);
                 
                 if(validResults.length > 0) {
-                    // CRITICAL FIX: Fetch full details for these results to get status/seasons
                     const detailedResults = await Promise.all(validResults.map(i => 
                         fetch(`${BASE_URL}/${i.media_type}/${i.id}?api_key=${TMDB_KEY}`).then(r => r.json())
                     ));
@@ -638,10 +634,9 @@
         if(m.first_air_date) type='tv'; else type='movie';
         activeModalMovie = m; activeModalType = type;
         
-        // NEW: Force fetch details to get missing status/seasons data
         try {
             const details = await fetch(`${BASE_URL}/${type}/${m.id}?api_key=${TMDB_KEY}`).then(r => r.json());
-            m = { ...m, ...details }; // Merge fresh details into m
+            m = { ...m, ...details }; 
         } catch(e) { console.error("Detail fetch failed", e); }
 
         const modal = document.getElementById('quick-view-modal');
@@ -714,13 +709,7 @@
         isFogActive = !isFogActive;
         const btn = document.getElementById('btn-fog');
         const layer = document.getElementById('fog-layer');
-        if (isFogActive) { 
-            btn.classList.add('active'); 
-            layer.classList.add('active'); 
-        } else { 
-            btn.classList.remove('active'); 
-            layer.classList.remove('active');
-        }
+        if (isFogActive) { btn.classList.add('active'); layer.classList.add('active'); } else { btn.classList.remove('active'); layer.classList.remove('active'); }
     }
 
     async function toggleMagicMode() {
