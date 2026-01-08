@@ -50,28 +50,39 @@
             background: linear-gradient(to bottom, #090a0c, #15181c);
         }
 
-        /* --- VANTA FOG LAYER --- */
+        /* --- VANTA FOG LAYER (UPDATED) --- */
         #fog-layer {
             position: fixed; 
             top: 0; 
             left: 0; 
             width: 100%; 
             height: 100%;
-            z-index: 0; /* Behind content but in front of background */
-            opacity: 0; /* Hidden by default */
+            z-index: 10; /* UPDATED: Brings smoke in FRONT of content */
+            opacity: 0; 
             transition: opacity 2s ease;
-            pointer-events: none; /* Allows clicking through the smoke */
-            mix-blend-mode: screen; /* Blends smoke nicely with background */
+            
+            /* CRITICAL FIXES FOR CLICKING */
+            pointer-events: none !important; 
+            user-select: none;
+            
+            /* Blends smoke so you can see text underneath */
+            mix-blend-mode: screen; 
         }
         
+        /* Ensure the canvas itself doesn't block clicks */
+        #fog-layer canvas {
+            pointer-events: none !important;
+        }
+
         #fog-layer.active {
-            opacity: 0.8; /* Adjust for smoke intensity */
+            opacity: 1; /* Stronger visibility */
         }
 
         /* --- HEADER --- */
         .masthead { 
             height: 90px; display: flex; justify-content: space-between; align-items: center; padding: 0 50px; 
-            background: var(--glass-panel); backdrop-filter: blur(15px); border-bottom: 1px solid var(--glass-border); z-index: 50; 
+            background: var(--glass-panel); backdrop-filter: blur(15px); border-bottom: 1px solid var(--glass-border); 
+            z-index: 50; /* Header stays above smoke for usability */
             box-shadow: 0 4px 30px rgba(0,0,0,0.4);
         }
         .logo { 
@@ -395,20 +406,18 @@
     let activeModalMovie = null; let activeModalType = 'movie';
     let isMagicActive = false;
     let isFogActive = false;
-    let vantaEffect = null; // Store the Vanta instance
+    let vantaEffect = null; 
 
     window.onload = () => {
-        // Initialize Vanta Fog
-        initVantaFog();
-
+        initVantaFog(); // Prepare fog engine
         const g = [{id:28,n:"Action"},{id:12,n:"Adventure"},{id:16,n:"Animation"},{id:35,n:"Comedy"},{id:80,n:"Crime"},{id:99,n:"Documentary"},{id:18,n:"Drama"},{id:10751,n:"Family"},{id:14,n:"Fantasy"},{id:36,n:"History"},{id:27,n:"Horror"},{id:10402,n:"Music"},{id:9648,n:"Mystery"},{id:10749,n:"Romance"},{id:878,n:"Sci-Fi"},{id:10770,n:"TV Movie"},{id:53,n:"Thriller"},{id:10752,n:"War"},{id:37,n:"Western"}];
         const c = document.getElementById('genre-container');
         g.forEach(x => { let d = document.createElement('div'); d.className='genre-pill'; d.innerText=x.n; d.dataset.id=x.id; d.onclick=()=>{d.classList.toggle('selected'); resetAndRunBrowse();}; c.appendChild(d); });
         resetAndRunBrowse(); 
     };
 
+    // --- VANTA CONFIG: Using Pure Black for maximum transparency ---
     function initVantaFog() {
-        // Initialize Vanta Fog with Cinematic Noir settings
         vantaEffect = VANTA.FOG({
             el: "#fog-layer",
             mouseControls: true,
@@ -416,10 +425,10 @@
             gyroControls: false,
             minHeight: 200.00,
             minWidth: 200.00,
-            highlightColor: 0xffffff, // White highlights
-            midtoneColor: 0x888888,   // Grey midtones
-            lowlightColor: 0x000000,  // Black shadows
-            baseColor: 0x050608,      // Matches site background
+            highlightColor: 0xffffff,
+            midtoneColor: 0x888888,
+            lowlightColor: 0x000000, 
+            baseColor: 0x000000, // Pure Black makes background invisible with mix-blend-mode: screen
             blurFactor: 0.6,
             speed: 1.5,
             zoom: 1.0
@@ -609,12 +618,10 @@
         }
     }
     
-    // --- UPDATED FOG TOGGLE FOR VANTA JS ---
     function toggleFogMode() {
         isFogActive = !isFogActive;
         const btn = document.getElementById('btn-fog');
         const layer = document.getElementById('fog-layer');
-
         if (isFogActive) { 
             btn.classList.add('active'); 
             layer.classList.add('active'); 
