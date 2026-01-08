@@ -50,32 +50,30 @@
             background: linear-gradient(to bottom, #090a0c, #15181c);
         }
 
-        /* --- VANTA FOG LAYER (UPDATED) --- */
+        /* --- VANTA FOG LAYER (CRITICAL FIX) --- */
         #fog-layer {
             position: fixed; 
             top: 0; 
             left: 0; 
             width: 100%; 
             height: 100%;
-            z-index: 10; /* UPDATED: Brings smoke in FRONT of content */
+            z-index: 10; /* Visual: On top of content */
             opacity: 0; 
             transition: opacity 2s ease;
-            
-            /* CRITICAL FIXES FOR CLICKING */
-            pointer-events: none !important; 
-            user-select: none;
-            
-            /* Blends smoke so you can see text underneath */
             mix-blend-mode: screen; 
+            
+            /* INTERACTION: NUCLEAR OPTION to allow clicking */
+            pointer-events: none !important; 
         }
         
-        /* Ensure the canvas itself doesn't block clicks */
-        #fog-layer canvas {
+        /* Force the Vanta Canvas to also ignore clicks */
+        #fog-layer canvas, .vanta-canvas {
             pointer-events: none !important;
+            user-select: none !important;
         }
 
         #fog-layer.active {
-            opacity: 1; /* Stronger visibility */
+            opacity: 1; 
         }
 
         /* --- HEADER --- */
@@ -128,6 +126,7 @@
             width: 400px; background: var(--glass-panel); backdrop-filter: blur(40px); padding: 40px; 
             overflow-y: auto; border-right: 1px solid var(--glass-border); display: flex; flex-direction: column; gap: 25px; 
             box-shadow: 10px 0 50px rgba(0,0,0,0.5);
+            position: relative; z-index: 20; /* Sidebar sits above smoke for usability */
         }
         .canvas { flex: 1; padding: 60px 80px; overflow-y: auto; scroll-behavior: smooth; }
 
@@ -182,7 +181,8 @@
             position: relative; background: var(--glass-panel); border-radius: 6px; overflow: hidden; 
             transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); border: 1px solid var(--glass-border); cursor: pointer; 
         }
-        .exhibit-card:hover { transform: scale(1.02); border-color: var(--accent); box-shadow: 0 20px 60px rgba(0,0,0,0.7); z-index: 10; }
+        /* No z-index bump here to ensure fog covers it, but pointer-events will allow click */
+        .exhibit-card:hover { transform: scale(1.02); border-color: var(--accent); box-shadow: 0 20px 60px rgba(0,0,0,0.7); }
         .poster-frame { width: 100%; aspect-ratio: 2/3; filter: grayscale(20%) contrast(110%); transition: 0.4s; }
         .exhibit-card:hover .poster-frame { filter: grayscale(0%) contrast(100%); }
         .poster-frame img { width: 100%; height: 100%; object-fit: cover; }
@@ -416,7 +416,7 @@
         resetAndRunBrowse(); 
     };
 
-    // --- VANTA CONFIG: Using Pure Black for maximum transparency ---
+    // --- VANTA CONFIG ---
     function initVantaFog() {
         vantaEffect = VANTA.FOG({
             el: "#fog-layer",
@@ -428,11 +428,24 @@
             highlightColor: 0xffffff,
             midtoneColor: 0x888888,
             lowlightColor: 0x000000, 
-            baseColor: 0x000000, // Pure Black makes background invisible with mix-blend-mode: screen
+            baseColor: 0x000000, 
             blurFactor: 0.6,
             speed: 1.5,
             zoom: 1.0
         });
+        
+        // JS SAFEGUARD: Force pointer-events off after Vanta initializes
+        const layer = document.getElementById('fog-layer');
+        if(layer) layer.style.pointerEvents = 'none';
+        
+        // Also target the canvas Vanta creates
+        setTimeout(() => {
+            const canvas = layer.querySelector('canvas');
+            if(canvas) {
+                canvas.style.pointerEvents = 'none';
+                canvas.style.userSelect = 'none';
+            }
+        }, 500);
     }
 
     function toggleTheme() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme')==='light'?'dark':'light'); }
