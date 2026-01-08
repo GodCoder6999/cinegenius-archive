@@ -62,7 +62,7 @@
             transition: opacity 2s ease;
             mix-blend-mode: screen; 
             
-            /* INTERACTION: NUCLEAR OPTION to allow clicking */
+            /* INTERACTION: FORCE DISABLE CLICKS */
             pointer-events: none !important; 
         }
         
@@ -420,9 +420,12 @@
     function initVantaFog() {
         vantaEffect = VANTA.FOG({
             el: "#fog-layer",
-            mouseControls: true,
-            touchControls: true,
+            
+            // --- CRITICAL CHANGE: DISABLE MOUSE INTERACTION ---
+            mouseControls: false, 
+            touchControls: false, 
             gyroControls: false,
+            
             minHeight: 200.00,
             minWidth: 200.00,
             highlightColor: 0xffffff,
