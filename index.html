@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CineGenius | The Archive</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta/dist/vanta.fog.min.js"></script>
+
     <style>
         /* --- NOLAN-ESQUE THEME VARIABLES --- */
         :root {
@@ -46,19 +50,22 @@
             background: linear-gradient(to bottom, #090a0c, #15181c);
         }
 
-        /* --- CINEMATIC SMOKE ENGINE --- */
+        /* --- VANTA FOG LAYER --- */
         #fog-layer {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 9998; 
-            opacity: 0; transition: opacity 1.5s ease;
-            mix-blend-mode: screen; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            z-index: 0; /* Behind content but in front of background */
+            opacity: 0; /* Hidden by default */
+            transition: opacity 2s ease;
+            pointer-events: none; /* Allows clicking through the smoke */
+            mix-blend-mode: screen; /* Blends smoke nicely with background */
         }
-
-        #fog-layer.active { opacity: 0.6; }
-
-        #smoke-video {
-            width: 100%; height: 100%; object-fit: cover; 
-            filter: contrast(1.2);
+        
+        #fog-layer.active {
+            opacity: 0.8; /* Adjust for smoke intensity */
         }
 
         /* --- HEADER --- */
@@ -267,11 +274,7 @@
 
     <div class="ambient-background"></div>
     
-    <div id="fog-layer">
-        <video id="smoke-video" loop muted playsinline autoplay>
-            <source src="https://assets.mixkit.co/videos/preview/mixkit-white-smoke-floating-on-black-background-3298-large.mp4" type="video/mp4">
-        </video>
-    </div>
+    <div id="fog-layer"></div>
     
     <div id="theme-overlay"></div>
 
@@ -392,13 +395,36 @@
     let activeModalMovie = null; let activeModalType = 'movie';
     let isMagicActive = false;
     let isFogActive = false;
+    let vantaEffect = null; // Store the Vanta instance
 
     window.onload = () => {
+        // Initialize Vanta Fog
+        initVantaFog();
+
         const g = [{id:28,n:"Action"},{id:12,n:"Adventure"},{id:16,n:"Animation"},{id:35,n:"Comedy"},{id:80,n:"Crime"},{id:99,n:"Documentary"},{id:18,n:"Drama"},{id:10751,n:"Family"},{id:14,n:"Fantasy"},{id:36,n:"History"},{id:27,n:"Horror"},{id:10402,n:"Music"},{id:9648,n:"Mystery"},{id:10749,n:"Romance"},{id:878,n:"Sci-Fi"},{id:10770,n:"TV Movie"},{id:53,n:"Thriller"},{id:10752,n:"War"},{id:37,n:"Western"}];
         const c = document.getElementById('genre-container');
         g.forEach(x => { let d = document.createElement('div'); d.className='genre-pill'; d.innerText=x.n; d.dataset.id=x.id; d.onclick=()=>{d.classList.toggle('selected'); resetAndRunBrowse();}; c.appendChild(d); });
         resetAndRunBrowse(); 
     };
+
+    function initVantaFog() {
+        // Initialize Vanta Fog with Cinematic Noir settings
+        vantaEffect = VANTA.FOG({
+            el: "#fog-layer",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            highlightColor: 0xffffff, // White highlights
+            midtoneColor: 0x888888,   // Grey midtones
+            lowlightColor: 0x000000,  // Black shadows
+            baseColor: 0x050608,      // Matches site background
+            blurFactor: 0.6,
+            speed: 1.5,
+            zoom: 1.0
+        });
+    }
 
     function toggleTheme() { document.body.setAttribute('data-theme', document.body.getAttribute('data-theme')==='light'?'dark':'light'); }
 
@@ -583,90 +609,15 @@
         }
     }
     
-    function filterGenres(input) { const f = input.value.toUpperCase(); Array.from(document.getElementsByClassName('genre-pill')).forEach(p => p.style.display = p.innerText.toUpperCase().indexOf(f) > -1 ? 'block' : 'none'); }
-
-    // --- MODAL & OVERLAY LOGIC ---
-    async function openModal(m, type) { 
-        if(m.first_air_date) type='tv'; else type='movie';
-        activeModalMovie = m; activeModalType = type;
-        const modal = document.getElementById('quick-view-modal');
-        const c = document.getElementById('modal-content');
-        const bg = document.getElementById('modal-bg');
-        if(m.backdrop_path) bg.style.backgroundImage = `url(${ORIGINAL_IMG_URL + m.backdrop_path})`; else bg.style.backgroundImage = 'none';
-        
-        const [provRes, credRes] = await Promise.all([
-            fetch(`${BASE_URL}/${type}/${m.id}/watch/providers?api_key=${TMDB_KEY}`),
-            fetch(`${BASE_URL}/${type}/${m.id}/credits?api_key=${TMDB_KEY}`)
-        ]);
-        const provData = await provRes.json();
-        const credData = await credRes.json();
-        
-        const region = provData.results?.US || provData.results?.IN;
-        const linkHtml = region ? `<a href="${region.link}" target="_blank" class="stream-btn">▶ Watch Now</a>` : `<a href="https://www.google.com/search?q=watch+${encodeURIComponent(m.title||m.name)}" target="_blank" class="stream-btn">🔍 Search</a>`;
-        
-        const castHtml = credData.cast ? credData.cast.slice(0,8).map(c => `<div class="cast-item"><img src="${c.profile_path?IMG_URL+c.profile_path:''}" class="cast-pic"><div class="cast-name">${c.name}</div><div class="cast-role">${c.character}</div></div>`).join('') : '';
-
-        const start = (m.release_date || m.first_air_date || 'N/A').split('-')[0];
-        let dateStr = start; let seasonStr = '';
-        if(type === 'tv' && start !== 'N/A') {
-            if (m.status === 'Returning Series') dateStr = `${start}-Present`;
-            else if (m.status === 'Ended' && m.last_air_date) dateStr = `${start}-${m.last_air_date.split('-')[0]}`;
-            if(m.number_of_seasons) seasonStr = `${m.number_of_seasons} SEASONS`;
-        }
-
-        c.innerHTML = `<div class="modal-poster-area"><img src="${IMG_URL+m.poster_path}" class="modal-poster-img"></div><div class="modal-data"><div class="modal-title-text">${m.title||m.name} <span style="font-size:24px; color:var(--ink-muted); font-weight:400;">(${dateStr})</span></div><div style="margin-bottom:30px; color:var(--accent); font-weight:700; letter-spacing:1px;">★ ${m.vote_average.toFixed(1)} &nbsp;&nbsp;|&nbsp;&nbsp; ${type.toUpperCase()} &nbsp;&nbsp;|&nbsp;&nbsp; ${seasonStr || 'Feature Film'}</div><div style="margin-bottom:30px; display:flex; flex-wrap:wrap;">${linkHtml}</div><p style="line-height:1.8; color:var(--ink-muted); font-size:16px; margin-bottom:40px;">${m.overview}</p><div style="margin-bottom:30px;"><h4 style="margin-bottom:15px; color:var(--ink);">TOP CAST</h4><div class="cast-row">${castHtml}</div></div><button class="intel-btn-modal" onclick="triggerIntel()">📂 Access Classified Intel</button></div>`;
-        document.querySelector('.modal-overlay').classList.add('active');
-    }
-
-    async function openDossier(m, type) {
-        if(m.first_air_date) type='tv'; else type='movie';
-        activeModalMovie = m; 
-        document.getElementById('view-collection').style.display='none';
-        document.getElementById('view-dossier').style.display='block';
-        document.getElementById('btn-back').style.display='block';
-        const content = document.getElementById('dossier-content');
-        content.innerHTML = '<div style="text-align:center; padding:100px;">DECRYPTING...</div>';
-        
-        try {
-            const [details, credRes] = await Promise.all([
-                fetch(`${BASE_URL}/${type}/${m.id}?api_key=${TMDB_KEY}`).then(r=>r.json()),
-                fetch(`${BASE_URL}/${type}/${m.id}/credits?api_key=${TMDB_KEY}`).then(r=>r.json())
-            ]);
-
-            let aiRes = {
-                tagline_ai: m.tagline || "TOP SECRET PROJECT",
-                status_verdict: m.status || "UNKNOWN",
-                plot_twist: "DATA CORRUPTED. SECURITY LEVEL INSUFFICIENT FOR FULL DECRYPTION."
-            };
-
-            try {
-                const apiCall = await fetch(API_INTEL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({title: m.title||m.name, type: type}) });
-                if(apiCall.ok) aiRes = await apiCall.json();
-            } catch(e) {
-                console.warn("Intel API offline, engaging manual override.");
-            }
-
-            const castHtml = credRes.cast.slice(0,6).map(c => `<div class="cast-item"><img src="${c.profile_path?IMG_URL+c.profile_path:''}" class="cast-pic"><div class="cast-name">${c.name}</div></div>`).join('');
-            
-            content.innerHTML = `<div class="dossier-header"><img src="${IMG_URL + m.poster_path}" class="dossier-poster"><div class="dossier-data"><div class="modal-title-text">${m.title||m.name}</div><div class="dossier-tagline">"${aiRes.tagline_ai}"</div><p>${m.overview}</p><div class="intel-grid"><div class="intel-box"><div class="intel-label">BUDGET</div><div class="intel-value">${details.budget?'$'+(details.budget/1000000).toFixed(1)+'M':'N/A'}</div></div><div class="intel-box"><div class="intel-label">STATUS</div><div class="intel-value">${aiRes.status_verdict}</div></div></div><div style="margin:20px 0;"><div class="intel-label">KEY AGENTS</div><div class="cast-row">${castHtml}</div></div><div class="spoiler-box" onclick="this.classList.add('revealed')">⚠️ REVEAL PLOT TWIST: ${aiRes.plot_twist}</div></div></div>`;
-        } catch(e) { 
-            console.error(e);
-            content.innerHTML = '<div style="text-align:center; padding:50px;">ACCESS DENIED. SERVER UNREACHABLE.</div>'; 
-        }
-    }
-    
-    // --- UPDATED TOGGLE FUNCTION WITH SAFETY CHECK ---
+    // --- UPDATED FOG TOGGLE FOR VANTA JS ---
     function toggleFogMode() {
         isFogActive = !isFogActive;
         const btn = document.getElementById('btn-fog');
         const layer = document.getElementById('fog-layer');
-        const video = document.getElementById('smoke-video');
 
         if (isFogActive) { 
             btn.classList.add('active'); 
             layer.classList.add('active'); 
-            // Safety check: only play if video element exists
-            if(video) video.play().catch(e => console.error("Video failed to play:", e));
         } else { 
             btn.classList.remove('active'); 
             layer.classList.remove('active');
