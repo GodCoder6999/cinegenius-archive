@@ -8,6 +8,10 @@
     {
       "src": "index.html",
       "use": "@vercel/static"
+    },
+    {
+      "src": "smoke.mp4",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -16,7 +20,8 @@
       "dest": "/api/index.js"
     },
     {
-      "handle": "filesystem"
+      "src": "/smoke.mp4",
+      "dest": "/smoke.mp4"
     },
     {
       "src": "/(.*)",
